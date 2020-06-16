@@ -125,7 +125,7 @@ function parseResult(data) {
 
     let res={};
     res.cancelled=r.cancelled;
-    res.productName = r.productFamily;
+    res.productName = r.productFamily?r.productFamily:r.productName;
     res.distribution=r.distribution;
     res.drawNumber=r.drawNumber;
     res.regCloseTime=r.regCloseTime;
@@ -148,7 +148,7 @@ function parseDraw(data) {
 
     let res={};
     res.drawState=r.drawState;
-    res.productName = r.productFamily; //handle when productName="topptipset Extra for example"
+    res.productName = r.productFamily?r.productFamily:r.productName; //handle when productName="topptipset Extra for example"
     res.drawNumber=r.drawNumber;
     res.regCloseTime=r.regCloseTime;
     res.draws=[];
