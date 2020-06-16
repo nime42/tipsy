@@ -1,0 +1,310 @@
+<script id="user-info" type="text/x-handlebars-template">
+
+  <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Användaruppgifter</h4>
+          </div>
+          <div class="modal-body">
+            <form action="#">
+              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
+
+              <div class="form-group">
+                <label for="username">Användarnamn:</label>
+                <input type="text" class="form-control" id="username" value="{{username}}" disabled>
+              </div>
+      
+              <div class="form-group">
+                <label for="name">Namn:</label>
+                <input type="text" class="form-control" id="name" value="{{name}}">
+              </div>
+      
+              <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" class="form-control" id="email" value="{{email}}">
+              </div>
+              <div class="form-group">
+                <label for="phonenr">Telefon:</label>
+                <input type="text" class="form-control" id="phonenr" value="{{phonenr}}">
+              </div>
+              <br/>
+      
+              <div class="form-group">
+                <label for="password">Lösenord:</label>
+                <input type="password" id="password" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="confirm-password">Verifiera Lösenord:</label>
+                <input type="password"  id="confirm-password" class="form-control">
+              </div>
+
+      
+              <input type="submit" class="btn btn-default" value="Uppdatera"/>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
+            </form>
+      
+      
+      
+      
+      
+          </div>
+        </div>
+      
+      </div>
+  
+</script>
+
+
+
+<script id="groups" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Grupper</h4>
+            </div>
+            <div class="modal-body">
+              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
+              <span class="input-group">
+                <input id="new-group" type="text" class="form-control" placeholder="Ny grupp">
+                <div class="input-group-btn">
+                  <button id="add-group" class="btn btn-default">Lägg till</button>
+                </div>
+              </span>
+              <br />
+              <div>
+                <h4>Mina grupper</h4>
+              {{#each this}}
+              <span class="input-group">
+                <input type="text" class="form-control group-name" value="{{groupname}}" onkeyup="$(this).parent().find('.save-button').css('color', 'lightgreen').prop('disabled', false)">
+                <div class="input-group-btn">
+                  <button class="btn btn-link save-button" disabled title="Spara" onclick="updateGroup({{groupid}},$(this).parent().parent().find('.group-name').val(),$(this))"><span  class="glyphicon glyphicon-ok-sign"></span></button>
+                  <button class="btn btn-link" title="Ta bort" onclick="deleteGroup({{groupid}},$(this).parent().parent())"><span style="color:red" class="glyphicon glyphicon-remove"></span></button>
+                </div>
+              </span>
+              {{/each}}
+
+
+
+
+
+              </div>
+            </div>
+          </div>
+        
+        </div>
+</script>
+
+
+
+
+<script id="group-members" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Gruppens Medlemmar</h4>
+            </div>
+            <div class="modal-body">
+              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
+              
+
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Namn</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Telefon</th>
+                      <th scope="col">Anv-id</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each members}}
+                    <tr>
+                      <td>{{name}}</td>
+                      <td>{{email}}</td>
+                      <td>{{phonenr}}</td>
+                      <td>{{username}}</td>
+                      {{#if ../admin}}
+                       {{#ifnoteq ../currentUser userid}}
+                      <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></span></td>
+                      {{/ifnoteq}}
+                      {{/if}}
+                    </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+                {{#if admin}}
+                <br/>
+                <h4 class="modal-title">Bjud in medlemmar</h4>
+                <span class="input-group">
+                <input id="invite-email" type="text" class="form-control" placeholder="email">
+                <div class="input-group-btn">
+                  <button id="invite-member" class="btn btn-default">Bjud in</button>
+                </div>
+                </span>
+                <br/>
+                <h4 class="modal-title">Skickade inbjudningar</h4>
+
+                <div id="invites"  style="overflow-y:auto;height: 200px;">
+                {{#each invites}}
+                <p style="margin-bottom:0px;">{{email}}<span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeInvite('{{email}}',$(this).parent())"></span></p>
+                <!--<p>
+                  nilsmeinhard@gmail.com <span style="color:red" class="glyphicon glyphicon-remove"></span><br/>
+                  nm807@hotmail.com <span style="color:red" class="glyphicon glyphicon-remove"></span>
+                </p>-->
+                {{/each}}
+                </div>
+
+                
+
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        
+        </div>
+</script>
+
+
+
+
+
+
+<script id="play" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Spela</h4>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="panel with-nav-tabs panel-primary">
+          <div class="panel-heading">
+                  <ul class="nav nav-tabs">
+                    
+                      <li title="Stryktipset" class="active"><a href="#stryk" data-toggle="tab"><img style="background:#00427a;width:60px;height: 30px;" src='/img/stryktipset.svg'></a></li>
+                      <li title="Europatipset"><a href="#euro" data-toggle="tab"><img style="background:#008733;width:50px;height: 30px;" src='/img/europatipset.svg'></a></li>
+                      <li title="Topptipset"><a href="#topp" data-toggle="tab"><img style="background:#f29400;width:50px;height: 30px;" src='/img/topptipset.svg'></a></li>
+                    
+
+          </div>
+          <div class="panel-body">
+              <div class="tab-content">
+                  <div class="tab-pane fade in active" id="stryk"></div>
+                  <div class="tab-pane fade" id="euro"></div>
+                  <div class="tab-pane fade" id="topp"></div>
+              </div>
+          </div>
+          </div>
+          
+      </div>
+
+      </div>
+    </div>
+  </div>
+</script>
+
+
+<script id="matches" type="text/x-handlebars-template">
+  <h2>{{productName}}</h2>
+  <p>Spelstopp:{{regCloseTime}}</p>
+
+  <table class="bettingtable" style="width:75%;border-collapse: separate;border-spacing: 0 0.5em;" >
+    <colgroup>
+      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 80%;">
+      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 5%;">
+   </colgroup>
+   <tbody>
+    {{#each draws}}
+    <tr id="row-{{inc @index}}" class="draw-row">
+      <td>{{inc @index}}.</td>
+      <td>{{eventDescription}}</td>
+      <td><button class="1x2">1</button></td>
+      <td><button class="1x2">X</button></td>
+      <td><button class="1x2">2</button></td>
+    </tr>
+    {{/each}}
+   
+    <tr> <td colspan="5" style="text-align: right;"><b>Antal rader:</b><b id="nr-of-rows">1</b></td></tr>
+   </tbody>
+  </table>
+   <div>
+    <button id="play" type="button" disabled class="btn btn-primary btn-lg pull-left">Spela</button>
+  </div>
+</script>
+
+
+
+<script id="results" type="text/x-handlebars-template">
+  <div id="draw-{{id}}">
+  {{#if (eq product "Topptipset") }}  
+    <H2><img style="background:#f29400;width:120px;height: 30px;" src='/img/topptipset.svg'></H2>
+  {{/if}}
+  {{#if (eq product "Stryktipset") }}  
+    <H2><img style="background:#00427a;width:60px;height: 30px;" src='/img/stryktipset.svg'></H2>
+  {{/if}}
+  {{#if (eq product "Europatipset") }}  
+    <H2><img style="background:#008733;width:50px;height: 30px;" src='/img/europatipset.svg'></H2>
+  {{/if}}
+
+
+  <table>
+    <tr>
+      <td><b>Spelare:<b></td>
+      <td>{{created_by_name}}</td>
+    </tr>
+    <tr>
+      <td><b>Datum:<b></td>
+      <td>{{created}}</td>
+    </tr>
+  </table>
+  <table class="bettingtable" style="width:75%;border-collapse: separate;border-spacing: 0 0.5em;" >
+    <colgroup>
+      <col span="1" style="width: 2%;">
+      <col span="1" style="width: 60%;">
+      <col span="1" style="width: 20%";>
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 2%;">
+   </colgroup>
+   <tbody>
+    {{#each rows}}
+    <tr id="row-{{rownr}}" class="draw-row">
+      <td>{{rownr}}.</td>
+      <td>{{teams}}</td>
+      <td style="text-align:center">{{result}}</td>
+      <td class="{{status1}} {{missed1}}"><button id="col-1" disabled class="1x2 {{on1}}">1</button></td>
+      <td class="{{statusX}} {{missedX}}"><button id="col-X" disabled class="1x2 {{onX}}">X</button></td>
+      <td class="{{status2}} {{missed2}}"><button id="col-2" disabled class="1x2 {{on2}}">2</button></td>
+      {{#if (ne status "Inte startat") }} 
+        {{#if isCorrect}}  
+        <td><span style="color:green;" class="glyphicon glyphicon-ok"></span></td>
+        {{else}}
+        <td><span style="color:red;" class="glyphicon glyphicon-remove"></span></td>
+        {{/if}}
+      {{/if}}
+    </tr>
+    {{/each}}
+   
+    <tr> <td colspan="6" style="text-align: right;"><b>Antal rader:</b><b id="nr-of-rows">{{nrOfRows}}</b></td></tr>
+   </tbody>
+  </table>
+   <div>
+  </div>
+  </div>
+  <hr>
+</script>

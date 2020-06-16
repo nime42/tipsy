@@ -1,0 +1,55 @@
+
+
+<script id="forgot-password" type="text/x-handlebars-template">
+        <div class="modal-dialog" style="top:15%">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Glömt lösenord</h4>
+            </div>
+            <div class="modal-body">
+              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
+              <p id="info">Ange användarnamn eller mail-adress så skickar vi en återställnings-länk!</p>
+              <span class="input-group">
+                <input id="email" type="text" class="form-control" placeholder="email">
+                <div class="input-group-btn">
+                  <button id="send-mail-for-mail-adr" class="btn btn-default forgot-password">Skicka</button>      
+                </div>
+              </span>
+              <br/>
+              <span class="input-group">
+                <input id="userid" type="text" class="form-control" placeholder="användarnamn">
+                <div class="input-group-btn">
+                  <button id="send-mail-for-userid" class="btn btn-default forgot-password">Skicka</button>      
+                </div>
+              </span>
+            </div>
+          </div>
+        
+        </div>
+</script>
+
+<script id="reset-mail-sent" type="text/x-handlebars-template">
+    <!-- Modal -->
+      <div class="modal-dialog" style="top:15%">
+
+
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Mail skickat</h4>
+          </div>
+          <div class="modal-body">
+            <p>Mail med länk för återställning av lösenord skickat!<br/>
+              Kontrollera din inkorg om en stund.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+</script>
