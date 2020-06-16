@@ -17,6 +17,11 @@ if(dbFile==undefined) {
 fs = require('fs');
 
 
+if (fs.existsSync(dbFile)) {
+  console.log("Dbfile already exists");
+  process.exit();
+}
+
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(dbFile);
 
