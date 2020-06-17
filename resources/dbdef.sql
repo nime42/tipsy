@@ -48,3 +48,8 @@ LEFT JOIN userinfo i ON u.id=i.userid;
 CREATE VIEW v_group_members AS SELECT g.groupname, m.groupid, m.admin, g.created AS group_created, u.*, m.sortorder FROM groups g LEFT JOIN group_members m ON g.id = m.groupid LEFT JOIN v_userinfo u ON u.userid = m.userid;
 
 
+create table saved_sessions(
+key text,
+timestamp timestamp,
+userId integer);
+

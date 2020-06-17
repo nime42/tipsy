@@ -38,7 +38,7 @@ function setPurgeIntervall(seconds) {
 }
 
 
-var saveSql="insert into savedSessions(key,timestamp,userid) values(?,?,?)";
+var saveSql="insert into saved_sessions(key,timestamp,userid) values(?,?,?)";
 var saveAttrs=["timestamp","userId"];
 
 function saveSessions(db,callback) {
@@ -55,7 +55,7 @@ function saveSessions(db,callback) {
 
 }
 
-var getSql="select key,timestamp,userId from savedSessions";
+var getSql="select key,timestamp,userId from saved_sessions";
 function resumeSessions(db) {
     db.all(getSql,function(err,rows) {
         rows.forEach(r=>{
@@ -64,7 +64,7 @@ function resumeSessions(db) {
                 userId:r.userId
             }
         })
-        db.run("delete from savedSessions");
+        db.run("delete from saved_sessions");
     });
 
 
