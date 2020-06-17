@@ -106,3 +106,6 @@ db/tipsy.db
 sslcert/server.crt
 sslcert/server.key
 package-lock.json
+resources/server.crt
+resources/server.key
+resources/tipsy.db

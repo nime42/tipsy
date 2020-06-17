@@ -3,12 +3,15 @@ var http = require('http');
 var https = require('https');
 var db=require('./db/dbfunctions.js');
 var mailsender=require('./utils/mailsender.js');
+var sessionHandler=require('./utils/sessionHandler.js');
+
+sessionHandler.resumeSessions(db.getDbInstance());
 
 
 var matchInfoHandler=require('./utils/matchInfoHandler.js');
 
-var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
-var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+var privateKey  = fs.readFileSync('resources/server.key', 'utf8');
+var certificate = fs.readFileSync('resources/server.crt', 'utf8');
 
 
 var credentials = {key: privateKey, cert: certificate};
@@ -19,17 +22,21 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-const session = require('express-session');
+/*const session = require('express-session');
 app.use(session({
     secret: 'sessionSecret',
     resave: true,
     saveUninitialized: true
-}));
-var sessions=[];
+}));*/
+
+
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+
 
 app.use((req,res,next)=>{
-
-    if(sessions[req.sessionID]) {
+    if(sessionHandler.getSession(req)) {
         next();
         return;
     }
@@ -47,6 +54,7 @@ app.use((req,res,next)=>{
         next();
         return;
     }
+
 
     res.redirect('/login-register.html');
 
@@ -82,7 +90,7 @@ var accessLogStream = rfs.createStream('access.log', {
 
  
 app.get('/', (req, res) => {
-    if(sessions[req.sessionID]) {
+    if(sessionHandler.getSession(req)) {
         res.redirect('/main.html');
     } else {
         res.redirect('/login-register.html');
@@ -95,7 +103,7 @@ app.post('/login',(req,res)=> {
     var password = req.body.password;
     db.authenticateUser(username,password,function(status,userId){
         if(status) {
-            sessions[req.sessionID]={session:req.session,userId:userId};
+            sessionHandler.addSession(req,res,userId);
             res.sendStatus(200);
         } else {
             res.sendStatus(401);
@@ -104,8 +112,7 @@ app.post('/login',(req,res)=> {
 })
 
 app.get('/logout',(req,res)=> {
-    sessions[req.sessionID]=undefined;
-    req.session.destroy();
+    sessionHandler.invalidateSession(req);
     res.redirect('/login-register.html');
 })
 
@@ -116,7 +123,7 @@ app.post('/register',(req,res)=> {
         if(status) {
             db.updateUserInfo(id,req.body, function(status,err) {
                 if(status) {
-                    sessions[req.sessionID]={session:req.session,userId:id};
+                    sessionHandler.addSession(req,res,id);
                     
                     res.sendStatus(200);                    
                     db.getDbInstance().run("Commit");
@@ -182,7 +189,7 @@ app.post('/resetPassword', (req, res) => {
 
 
 app.get('/getUserInfo',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     db.getUserInfo(userId,function(status,userInfo){
         if(status) { 
             res.json(userInfo); 
@@ -196,7 +203,7 @@ app.get('/getUserInfo',(req,res)=> {
 })
 
 app.get('/getGroups',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     db.getGroups(userId,function(status,groups){
         if(status) { 
             res.json(groups); 
@@ -212,7 +219,7 @@ app.get('/getGroups',(req,res)=> {
 
 app.post('/getGroupMembers',(req,res)=> {
     console.log("body",req.body);
-    let userId=sessions[req.sessionID].userId;
+    let userId=sessionHandler.getSession(req).userId;
     let groupId=req.body.groupId
     db.getGroupMembers(userId,groupId,function(status,rows){
         if(status) { 
@@ -241,7 +248,7 @@ app.post('/getGroupMembers',(req,res)=> {
 
 
 app.post('/updateUserInfo',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
 
     db.updateUserInfo(userId,req.body, function(status,err) {
         if(status) {
@@ -254,7 +261,7 @@ app.post('/updateUserInfo',(req,res)=> {
 })
 
 app.post('/createGroup',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
 
     db.createGroup(userId,req.body.groupName, function(status,groupId,err) {
         if(status) {
@@ -271,7 +278,7 @@ app.post('/createGroup',(req,res)=> {
 })
 
 app.post('/updateGroup',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     var groupId=req.body.groupId;
     var groupName=req.body.groupName
 
@@ -291,7 +298,7 @@ app.post('/updateGroup',(req,res)=> {
 
 
 app.post('/deleteGroup',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     var groupId=req.body.groupId;
 
     db.deleteGroup(userId,groupId, function(status,err) {
@@ -305,7 +312,7 @@ app.post('/deleteGroup',(req,res)=> {
 })
 
 app.post('/inviteMemberToGroup',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     var groupId=req.body.groupId;
     var email=req.body.email;
     mailsender.inviteMember(userId,groupId,email,req,res, function(status,err) {
@@ -326,7 +333,7 @@ app.post('/inviteMemberToGroup',(req,res)=> {
 
 
 app.post('/deleteInviteToGroup',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     var groupId=req.body.groupId;
     var email=req.body.email;
     db.deleteInviteToGroup(userId,email,groupId, function(status,err) {
@@ -340,7 +347,7 @@ app.post('/deleteInviteToGroup',(req,res)=> {
 });
 
 app.post('/addInvitedUserToGroup',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     var token=req.body.inviteToken;
     db.addInvitedUserToGroup(userId,token, function(status,data) {
         if(status) {
@@ -353,7 +360,7 @@ app.post('/addInvitedUserToGroup',(req,res)=> {
 
 
 app.post('/removeMember',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     var member=req.body.member;
     var groupId=req.body.groupId;
 
@@ -384,7 +391,7 @@ app.post('/getPlayable',(req,res)=> {
 });
 
 app.post('/play',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     db.addPlay(userId,req.body, function(status,data) {
         if(status) {
             res.sendStatus(200);                    
@@ -397,7 +404,7 @@ app.post('/play',(req,res)=> {
 
 
 app.get('/getResults',(req,res)=> {
-    var userId=sessions[req.sessionID].userId;
+    var userId=sessionHandler.getSession(req).userId;
     var groupId=req.query.groupId;
     db.getResults(userId,groupId,function(status,data) {
         if(status) {
@@ -510,3 +517,8 @@ var httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(8080,() => console.log(`App listening at http://localhost:8080`));
 httpsServer.listen(8443,() => console.log(`App listening at https://localhost:8443`));
+
+process.on('SIGINT', function(e) {
+    console.log("exit");
+    sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
+});

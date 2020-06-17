@@ -2,7 +2,8 @@ function getUserInfo(callback) {
     $.ajax({
         url: "/getUserInfo",
         cache: false, 
-        success: function(data, status){
+        success: function(data, status,jqxhr){
+            reloadIfLoggedOut(jqxhr);
             callback(data);
         }
     });
@@ -21,7 +22,8 @@ function getGroups(callback) {
     $.ajax({
         url: "/getGroups",
         cache: false, 
-        success: function(data, status){
+        success: function(data, status,jqxhr){
+            reloadIfLoggedOut(jqxhr);
             callback(data);
         }
     });
@@ -80,7 +82,8 @@ function configureUser() {
     $.ajax({
         url: "/getUserInfo",
         cache: false, 
-        success: function(data, status){
+        success: function(data, status,jqxhr){
+            reloadIfLoggedOut(jqxhr);
             hbsModal("#basicModal",hbsTemplates["main-snippets"]["user-info"],data);
             $("#basicModal").find("form").submit(function(e) {
 
@@ -112,6 +115,7 @@ function configureUser() {
                     url: "/updateUserInfo",
                     data: conf,
                     success: function (data, status, jqxhr) {
+                        reloadIfLoggedOut(jqxhr);
                         $("#basicModal").modal("hide");
                     },
                     error:function(data, status, jqxhr) {
@@ -147,6 +151,7 @@ function configureGroups() {
             url: "/createGroup",
             data: {groupName:newGroup},
             success: function (data, status, jqxhr) {
+                reloadIfLoggedOut(jqxhr);
                 $("#basicModal").find("#new-group").val("");
                 initGroups(globals.activeGroup.groupid);
                 $("#basicModal").modal('hide');
@@ -170,6 +175,7 @@ function updateGroup(groupId,name,button) {
         url: "/updateGroup",
         data: {groupId:groupId,groupName:name},
         success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
             initGroups(globals.activeGroup.groupid);
             button.css('color', '#428bca').prop('disabled', true);
         },
@@ -192,6 +198,7 @@ function deleteGroup(groupId,row) {
         url: "/deleteGroup",
         data: {groupId:groupId},
         success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
             initGroups(globals.activeGroup.groupid);
             row.empty();
         },
@@ -215,7 +222,8 @@ function configureGroupMembers() {
         type: "POST",
         data: {groupId:groupId},
         cache: false, 
-        success: function(data, status){
+        success: function(data, status,jqxhr){
+            reloadIfLoggedOut(jqxhr);
             hbsModal("#basicModal",hbsTemplates["main-snippets"]["group-members"],{members:data.members,admin:globals.activeGroup.admin,invites:data.invites,currentUser:globals.userinfo.userid});
 
             $("#basicModal").find("#invite-member").click(function(e) {
@@ -231,6 +239,7 @@ function configureGroupMembers() {
                     url: "/inviteMemberToGroup",
                     data: {email:inviteEmail,groupId:globals.activeGroup.groupid},
                     success: function (data, status, jqxhr) {
+                        reloadIfLoggedOut(jqxhr);
                         var row="<p style='margin-bottom:0px;'>"+inviteEmail+"<span style='color:red;' class='glyphicon glyphicon-remove' onclick='removeInvite(\""+inviteEmail+"\",$(this).parent());'></span></p>";
                         $("#basicModal").find("#invites").prepend(row);
                         $("#basicModal").find("#invite-email").val("");
@@ -256,6 +265,7 @@ function removeInvite(email, rowElem) {
         url: "/deleteInviteToGroup",
         data: { email: email, groupId: globals.activeGroup.groupid },
         success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
             rowElem.remove();
         },
         error: function (data, status, jqxhr) {
@@ -271,6 +281,7 @@ function removeMember(memberId,groupId, rowElem) {
         url: "/removeMember",
         data: { member:memberId, groupId: groupId },
         success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
             rowElem.remove();
         },
         error: function (data, status, jqxhr) {
@@ -302,6 +313,7 @@ function getPlayable(product,div) {
         url: "/getPlayable",
         data: { product:product },
         success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
             data.regCloseTime=data.regCloseTime.replace("T"," ").replace(/\+.*$/,"");
             $("#basicModal").find("#"+div).prepend(hbsTemplates["main-snippets"]["matches"](data));
             $("#basicModal").find("#"+div).find(".1x2").click(function(){
@@ -346,6 +358,7 @@ function getPlayable(product,div) {
                     url: "/play",
                     data: drawInfo,
                     success: function (data, status, jqxhr) {
+                        reloadIfLoggedOut(jqxhr);
                         //console.log("ok");
                     },
                     error: function (data, status, jqxhr) {
@@ -382,6 +395,7 @@ function updateResults(groupId) {
         type: "GET",
         url: "/updateResults?groupId="+groupId,
         success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
             getResults(groupId);
         },
         error: function (data, status, jqxhr) {
@@ -401,6 +415,7 @@ function getResults(groupId) {
         type: "GET",
         url: "/getResults?groupId="+groupId,
         success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
             data.forEach(function(e) {
                 e.rows=parseRows(e.rows);
                 e.nrOfRows=1;

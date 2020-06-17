@@ -2,7 +2,7 @@ var crypto = require('crypto');
 var sqlite3 = require('sqlite3');
 
 var path = require('path');
-var db = new sqlite3.Database(path.dirname(module.filename) + '/tipsy.db');
+var db = new sqlite3.Database('resources/tipsy.db');
 db.run("PRAGMA foreign_keys = ON");
 
 var salt = "nimeproject";

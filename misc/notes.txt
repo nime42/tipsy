@@ -6,4 +6,7 @@
 
 sudo apt-get update && sudo apt-get install apache2 -y
 sudo apt-get update && sudo apt-get install npm -y
+sudo apt-get update && sudo apt-get install git -y
 
+Hämta nytt cert:
+https://app.zerossl.com/certificates
