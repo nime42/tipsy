@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+db/tipsy.db
+sslcert/server.crt
+sslcert/server.key
+package-lock.json
