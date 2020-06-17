@@ -55,6 +55,8 @@ app.use((req,res,next)=>{
 
 app.use(express.static('public'))
 
+app.enable("trust proxy"); //So Morgan logging displays remote-address
+
 
 //---------------------------
 var morgan = require('morgan')
