@@ -41,7 +41,8 @@ app.use((req,res,next)=>{
         req.url.startsWith("/login") || 
         req.url.startsWith("/register") ||
         req.url.startsWith("/forgotPassword") ||
-        req.url.startsWith("/resetPassword")
+        req.url.startsWith("/resetPassword") ||
+        req.url.startsWith("/shutdown")
     ) {
         next();
         return;
@@ -78,7 +79,14 @@ var accessLogStream = rfs.createStream('access.log', {
 
 
 
+app.get("/shutdown",(req,res) => {
+    var isLocal = (req.connection.localAddress === req.connection.remoteAddress);
+    if(isLocal) {
+        console.log("Shutting down!");
+        sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
+    }
 
+})
 
  
 app.get('/', (req, res) => {
@@ -502,15 +510,10 @@ function checkDraw(product,drawNr,drawIds,callback) {
     })
 }
 
-//checkDraw("Topptipset",1374);
+
 
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(8080,() => console.log(`App listening at http://localhost:8080`));
 httpsServer.listen(8443,() => console.log(`App listening at https://localhost:8443`));
-
-process.on('SIGINT', function(e) {
-    console.log("exit");
-    sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
-});
