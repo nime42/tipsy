@@ -6,7 +6,7 @@ TARGET_DIR=~/
 rm -rf $REPO_DIR
 git clone $REPO_URL
 rm -rf $TARGET_DIR/$REPO_DIR/public $TARGET_DIR/$REPO_DIR/app
-cp -r $REPO_DIR/public $REPO_DIR/app $TARGET_DIR/$REPO_DIR
+cp -r $REPO_DIR/public $REPO_DIR/app $REPO_DIR/package.json $TARGET_DIR/$REPO_DIR
 cd $TARGET_DIR/$REPO_DIR
 npm update
 npm run shutdown
