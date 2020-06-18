@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "initDB": "node app/db/createDB.js resources/tipsy.db resources/dbdef.sql",
-    "start": "node app/app.js"
+    "start": "node app/app.js",
+    "shutdown": "curl 'http://localhost:8080/shutdown'"
   },
   "author": "Nils Meinhard",
   "license": "ISC",
