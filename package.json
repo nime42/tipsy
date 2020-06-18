@@ -2,10 +2,11 @@
   "name": "tipsy",
   "version": "1.0.0",
   "description": "app for betting info",
-  "main": "app.js",
+  "main": "app/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "initDB":"node db/createDB.js resources/tipsy.db resources/dbdef.sql"
+    "initDB": "node app/db/createDB.js resources/tipsy.db resources/dbdef.sql",
+    "start": "node app/app.js"
   },
   "author": "Nils Meinhard",
   "license": "ISC",
@@ -18,7 +19,7 @@
     "fs": "0.0.1-security",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.0",
-    "nodemailer": "^6.4.6",
+    "nodemailer": "^6.4.10",
     "path": "^0.12.7",
     "rotating-file-stream": "^2.1.1",
     "sqlite3": "^4.2.0"
