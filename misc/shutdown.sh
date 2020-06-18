@@ -1,4 +1,4 @@
 #! /bin/sh
 
-curl "http://localhost:8080/shutdown"
+curl --silent --output /dev/null "http://localhost:8080/shutdown"
 
