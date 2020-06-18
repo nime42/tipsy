@@ -83,6 +83,7 @@ app.get("/shutdown",(req,res) => {
     var isLocal = (req.connection.localAddress === req.connection.remoteAddress);
     if(isLocal) {
         console.log("Shutting down!");
+        res.sendStatus(200);
         sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
     }
 
