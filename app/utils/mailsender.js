@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer');
 
-var db=require('../db/dbfunctions.js');
+var db=require('../db/dbFunctions.js');
 
 var service="gmail";
 var user="nilsmeinhard@gmail.com";

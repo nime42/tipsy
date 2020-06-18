@@ -1,8 +1,8 @@
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
-var db=require('./db/dbfunctions.js');
-var mailsender=require('./utils/mailsender.js');
+var db=require('./db/dbFunctions.js');
+var mailsender=require('./utils/mailSender.js');
 var sessionHandler=require('./utils/sessionHandler.js');
 var matchInfoHandler=require('./utils/matchInfoHandler.js');
 
