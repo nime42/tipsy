@@ -22,13 +22,6 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-/*const session = require('express-session');
-app.use(session({
-    secret: 'sessionSecret',
-    resave: true,
-    saveUninitialized: true
-}));*/
-
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -73,7 +66,7 @@ var rfs = require('rotating-file-stream') // version 2.x
 
 // create a rotating write stream
 var accessLogStream = rfs.createStream('access.log', {
-    interval: '1d', // rotate daily
+    interval: '7d', // rotate daily
     path: path.join(__dirname, 'log')
   })
   

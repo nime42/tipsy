@@ -1,10 +1,11 @@
 {
-  "name": "Tipsy",
+  "name": "tipsy",
   "version": "1.0.0",
   "description": "app for betting info",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "initDB":"node db/createDB.js resources/tipsy.db resources/dbdef.sql"
   },
   "author": "Nils Meinhard",
   "license": "ISC",
