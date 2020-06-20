@@ -6,7 +6,6 @@ const url = "https://api.spela.svenskaspel.se";
 
 function getMatchDates(product, year, month, callback) {
     let httpReq = url + "/draw/results/datepicker?product=" + product + "&year=" + year + "&month=" + month + "&_=" + new Date().getTime();
-
     fetch(httpReq)
     .then(res => res.json())
     .then(
@@ -28,7 +27,7 @@ function getDraw(product, draw, withResult, callback) {
     if (withResult) {
         draw += "/result";
     }
-    let httpReq = url + "/draw/" + product + "/draws/" + draw + "?_=" + new Date().getTime();
+    let httpReq = url + "/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw + "?_=" + new Date().getTime();
     fetch(httpReq)
         .then(res => res.json())
         .then(
@@ -48,42 +47,6 @@ function getDraw(product, draw, withResult, callback) {
 
 
 
-function getMatches(date, product, callback) {
-    let year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    //console.log(year,month);
-    getMatchDates(product, year, month, function (status, resultDates) {
-        if (status) {
-
-            let res = resultDates.find(e => {
-                let d = new Date(e.date);
-                if (d.getFullYear() == date.getFullYear() && d.getMonth() == date.getMonth() && d.getDate() == date.getDate()) {
-                    return true;
-                }
-            });
-            let withResult = false;
-            if (res.drawState === "Finalized") {
-                withResult = true;
-            }
-
-            if (res) {
-                getDraw(res.product, res.drawNumber, withResult, function (status, data) {
-                    if (status) {
-                        callback(true, res.drawState, data)
-                    } else {
-                        callback(false, data)
-                    }
-                });
-            }
-
-
-        } else {
-            callback(false, resultDates);
-        }
-        //console.log(resultDates);
-    });
-
-}
 
 function getPlayable(product,callback) {
     let date = new Date();
@@ -125,7 +88,7 @@ function parseResult(data) {
 
     let res={};
     res.cancelled=r.cancelled;
-    res.productName = r.productFamily?r.productFamily:r.productName;
+    res.productName = r.productName;
     res.distribution=r.distribution;
     res.drawNumber=r.drawNumber;
     res.regCloseTime=r.regCloseTime;
@@ -148,7 +111,7 @@ function parseDraw(data) {
 
     let res={};
     res.drawState=r.drawState;
-    res.productName = r.productFamily?r.productFamily:r.productName; //handle when productName="topptipset Extra for example"
+    res.productName = r.productName, //r.productFamily?r.productFamily:r.productName; //handle when productName="topptipset Extra for example"
     res.drawNumber=r.drawNumber;
     res.regCloseTime=r.regCloseTime;
     res.draws=[];
