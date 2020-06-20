@@ -313,7 +313,7 @@
       <td>{{created}}</td>
     </tr>
   </table>
-  <table class="bettingtable" style="width:90%;border-collapse: collapse;border-spacing: 0 0.5em;" >
+  <table class="bettingtable" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;" >
     <colgroup>
       <col span="1" style="width: 2%;">
       <col span="1" style="width: 60%;">
@@ -327,8 +327,8 @@
     {{#each rows}}
     <tr id="row-{{rownr}}" class="draw-row">
       <td>{{rownr}}.</td>
-      <td>{{teams}}</td>
-      <td style="text-align:center">{{result}}</td>
+      <td nowrap>{{teams}}</td>
+      <td nowrap style="text-align:center">{{result}}</td>
       <td class="{{status1}} {{missed1}}"><button id="col-1" disabled class="1x2 {{on1}}">1</button></td>
       <td class="{{statusX}} {{missedX}}"><button id="col-X" disabled class="1x2 {{onX}}">X</button></td>
       <td class="{{status2}} {{missed2}}"><button id="col-2" disabled class="1x2 {{on2}}">2</button></td>
