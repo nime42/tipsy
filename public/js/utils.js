@@ -20,7 +20,8 @@ function getUrlVars() {
 
 function reloadIfLoggedOut(jqxhr) {
   if (jqxhr.getResponseHeader("content-type").match(/text\/html;/) !== null) {
-    location.reload();
+    deleteCookie("SessId");
+    window.location.href = window.location.pathname;
   }
 }
 

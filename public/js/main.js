@@ -157,6 +157,7 @@ function getUserInfo(callback) {
         url: "/getUserInfo",
         cache: false, 
         success: function(data, status,jqxhr){
+            reloadIfLoggedOut(jqxhr);
             callback(data);
         },
         error: function(data, status,jqxhr){
