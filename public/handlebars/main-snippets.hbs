@@ -14,7 +14,7 @@
 
               <div class="form-group">
                 <label for="username">Användarnamn:</label>
-                <input type="text" class="form-control" id="username" value="{{username}}" disabled>
+                <input type="text" class="form-control" id="username" value="{{username}}" {{#ifnoteq register true}} disabled {{/ifnoteq}}>
               </div>
       
               <div class="form-group">
@@ -41,20 +41,62 @@
                 <input type="password"  id="confirm-password" class="form-control">
               </div>
 
-      
+              {{#if register}}
+              <input type="submit" class="btn btn-default" value="Skapa"/>
+              {{else}}
               <input type="submit" class="btn btn-default" value="Uppdatera"/>
+              {{/if}}
+
               <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
             </form>
-      
-      
-      
-      
-      
           </div>
         </div>
       
       </div>
   
+</script>
+
+
+<script id="login" type="text/x-handlebars-template">
+<div class="modal-dialog">
+        
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Logga in</h4>
+      </div>
+      <div class="modal-body">
+
+
+				<form action="#" method="post">
+          <p id="error-message" class="text-center text-danger" style="display: none;"></p>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-user"></i></span>
+							<input type="text" class="form-control" id="username" name="username" placeholder="Användarnamn" >
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+							<input type="password" class="form-control" id="password" name="password" placeholder="Lösenord">
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary btn-block btn-lg">Logga in</button>
+					</div>
+					<p class="hint-text"><a id="forgot-password" href="#">Glömt lösenord?</a></p>
+				</form>
+
+
+
+
+
+      </div>
+
+  </div>
+</div>
 </script>
 
 
@@ -308,3 +350,79 @@
   </div>
   <hr>
 </script>
+
+
+
+<script id="forgot-password" type="text/x-handlebars-template">
+        <div class="modal-dialog" style="top:15%">
+        
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Glömt lösenord</h4>
+            </div>
+            <div class="modal-body">
+              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
+              <p id="info">Ange användarnamn eller mail-adress så skickar vi en återställnings-länk!</p>
+              <span class="input-group">
+                <input id="email" type="text" class="form-control" placeholder="email">
+                <div class="input-group-btn">
+                  <button id="send-mail-for-mail-adr" class="btn btn-default forgot-password">Skicka</button>      
+                </div>
+              </span>
+              <br/>
+              <span class="input-group">
+                <input id="userid" type="text" class="form-control" placeholder="användarnamn">
+                <div class="input-group-btn">
+                  <button id="send-mail-for-userid" class="btn btn-default forgot-password">Skicka</button>      
+                </div>
+              </span>
+            </div>
+          </div>
+        
+        </div>
+</script>
+
+
+<script id="reset-password" type="text/x-handlebars-template">
+<div class="modal-dialog">
+        
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Återställ lösenord</h4>
+      </div>
+      <div class="modal-body">
+
+
+				<form action="#" method="post">
+          <p id="error-message" class="text-center text-danger" style="display: none;"></p>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-user"></i></span>
+							<input type="password" class="form-control" id="password" name="password" placeholder="Lösenord" >
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+							<input type="password" class="form-control" id="password2" name="password2" placeholder="Bekräfta lösenord">
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary btn-block btn-lg">Uppdatera</button>
+					</div>
+				</form>
+
+
+
+
+
+      </div>
+
+  </div>
+</div>
+</script>
+

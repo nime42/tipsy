@@ -1,10 +1,167 @@
+
+function login() {
+    hbsModal("#basicModal", hbsTemplates["main-snippets"]["login"]);
+    $("#basicModal").find("form").submit(function (e) {
+        var loginInfo = collectLoginInfo("#basicModal");
+        if (loginInfo !== null) {
+            $.ajax({
+                type: "POST",
+                url: "/login",
+                data: loginInfo,
+                success: function (data, status, jqxhr) {
+                    $("#basicModal").modal("hide");
+                    initUser();
+                    initGroups();
+                    $("#login").hide();$("#menu-items").show();$("#logout").show();
+                },
+                error:function(data, status, jqxhr) {
+                    if(data.status===401) {
+                        $("#error-message").text("Ogiltigt användarnamn eller lösenord!!!").show();
+                    } else {
+                        $("#error-message").text("Just nu går det inte att logga in, försök senare!").show();
+
+                    }
+                }
+
+            });
+        }
+        return false; //Returnera false så att inte submitten slår igenom
+    });
+
+    $("#basicModal").find('#forgot-password').click(function (e) {
+        forgotPassword(e);
+    });
+
+}
+
+function forgotPassword(e) {
+    data={};
+    hbsModal("#basicModal",hbsTemplates["main-snippets"]["forgot-password"],data);
+    e.preventDefault();
+
+    $("#basicModal").find(".forgot-password").click(function(e) {
+        var buttonId = $(this).attr('id');
+        var identityType;
+        var identity;
+        if(buttonId==="send-mail-for-mail-adr") {
+            identityType="by-mail-adress";
+            identity=$("#basicModal").find("#email").val().trim();
+            if(identity==="" || !identity.match(/^[^@]+@[^@]+\.[^@]+$/)) {
+               $("#basicModal").find("#error-message").text("Mailadress saknas eller verkar vara ogiltig!!").show();
+               return;
+            }
+        } else if(buttonId==="send-mail-for-userid") {
+            identityType="by-user-id";
+            identity=$("#basicModal").find("#userid").val().trim();
+            if(identity==="") {
+                $("#basicModal").find("#error-message").text("Användarnamn saknas!!").show();
+               return;
+            }
+        } else {
+            $("#basicModal").find("#error-message").text("Ett tekniskt fel har inträffat!").show();
+               return;
+
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/forgotPassword",
+            data: {
+                identityType: identityType,
+                identity: identity
+            },
+            success: function (data, status, jqxhr) {
+                $("#basicModal").modal("hide");
+                popup("#popup","Glömt lösenord","Mail med länk för återställning av lösenord skickat!\nKontrollera din inkorg om en stund.");
+            },
+            error:function(data, status, jqxhr) {
+                if(data.status===404) {
+                    if(identityType==="by-mail-adress") {
+                        $("#basicModal").find("#error-message").text("Det finns ingen användare med denna mail-adress!!").show();
+                    } else {
+                        $("#basicModal").find("#error-message").text("Det finns ingen användare med detta användarnamn!!").show();
+
+                    }
+                } else {
+                    $("#basicModal").find("#error-message").text("Det gick inte att skicka återställnings-mailet!!").show();
+                }
+            }
+        });
+
+
+
+
+    });
+
+
+
+}
+
+function resetPassword(resetToken) {
+    data={};
+    hbsModal("#basicModal",hbsTemplates["main-snippets"]["reset-password"],data);
+    $("#basicModal").find("form").submit(function (e) {
+        var password=$("#basicModal").find("#password").val().trim();
+        var pwd2=$("#basicModal").find("#password2").val().trim();
+
+        if (password === "") {
+            $("#basicModal").find("#error-message").text("Lösenord saknas!!!").show();
+            return false;
+        } 
+
+
+        if(password!==pwd2) {
+            $("#basicModal").find("#error-message").text("Lösenorden stämmer inte överens!!").show();
+            return false;
+        }
+
+        $.ajax({
+                type: "POST",
+                url: "/resetPassword",
+                data: {
+                    password: password,
+                    resetToken:resetToken
+                },
+                success: function (data, status, jqxhr) {
+                    $("#basicModal").modal("hide");
+                    popup("#popup","Återställning","Lösenordet är uppdaterat");
+
+                },
+                error:function(data, status, jqxhr) {
+                    if(data.status===404) {
+                        $("#error-message").text("Det gick inte att uppdatera lösenordet").show();
+                    } else {
+                        $("#error-message").text("Ett Tekniskt fel har inträffat, försök igen senare!").show();
+                    }
+                }
+            });
+            return false;
+    })
+
+}
+
+function logout() {
+    $.ajax({
+        url: "/logout",
+        cache: false, 
+        success: function(data, status,jqxhr){
+            deleteCookie("SessId");
+            window.location.href = window.location.pathname;
+            //window.location.reload();
+        }
+    });
+}
+
 function getUserInfo(callback) {
     $.ajax({
         url: "/getUserInfo",
         cache: false, 
         success: function(data, status,jqxhr){
-            reloadIfLoggedOut(jqxhr);
             callback(data);
+        },
+        error: function(data, status,jqxhr){
+            deleteCookie("SessId");
+            location.reload();
         }
     });
 }
@@ -13,7 +170,7 @@ function initUser() {
     globals.userinfo={};
     getUserInfo(function(data) {
       globals.userinfo=data;
-      $("#configure-user").find("a").html($("#configure-user").find("a").html()+globals.userinfo.username);
+      $("#logged-in-user").text(globals.userinfo.username);
 
     });
 }
@@ -29,7 +186,7 @@ function getGroups(callback) {
     });
 }
 
-function initGroups(selectedId) {
+function initGroups() {
     globals.usergroups = [];
     if (!globals.activeGroup) {
         globals.activeGroup = {}
@@ -38,7 +195,7 @@ function initGroups(selectedId) {
         globals.usergroups = data;
         $('#available-groups').empty();
 
-        $('#available-groups').append($('<option>', { value: -1, text: "Välj grupp..." }));
+        $('#available-groups').append($('<option>', { value: -1, text: "Välj grupp...", }).prop("disabled", true));
 
         for (var i = 0; i < globals.usergroups.length; i++) {
             $('#available-groups').append($('<option>', { value: globals.usergroups[i].groupid, text: globals.usergroups[i].groupname }));
@@ -56,11 +213,14 @@ function initGroups(selectedId) {
                     break;
                 }
             }
+            $("#latest-games").show();
+            $("#info").hide();
             $("#group-title").text(globals.activeGroup.groupname?globals.activeGroup.groupname:"");
             updateResults(globals.activeGroup.groupid);
         })
 
         $("#group-title").text("");
+        $("#latest-games").hide();
 
         if(globals.activeGroup.groupid===undefined && globals.usergroups.length>0) {
             globals.activeGroup=globals.usergroups[0];
@@ -79,58 +239,71 @@ function initGroups(selectedId) {
 
 
 function configureUser() {
-    $.ajax({
-        url: "/getUserInfo",
-        cache: false, 
-        success: function(data, status,jqxhr){
-            reloadIfLoggedOut(jqxhr);
-            hbsModal("#basicModal",hbsTemplates["main-snippets"]["user-info"],data);
-            $("#basicModal").find("form").submit(function(e) {
 
-                var conf={};
-           
-                
-                conf.name = $("#basicModal").find("#name").val().trim();
-                conf.email=$("#basicModal").find("#email").val().trim();
-                conf.phonenr=$("#basicModal").find("#phonenr").val().trim();
-
-                var password=$("#basicModal").find("#password").val().trim();
-                var pwd2=$("#basicModal").find("#confirm-password").val().trim();
-                
-                if(password!=="" && password!==pwd2) {
-                    $("#basicModal").find("#error-message").text("Lösenorden stämmer inte överens!!").show();
-                    return false;
-                }
-                if(conf.email==="" || !conf.email.match(/^[^@]+@[^@]+\.[^@]+$/)) {
-                    $("#basicModal").find("#error-message").text("Mailadress saknas eller verkar vara ogiltig!!").show();
-                    return false;
-                }
-                if(password!=="") {
-                    conf.password=password;
-                }
-
-
+    if (!globals.userinfo) {
+        hbsModal("#basicModal", hbsTemplates["main-snippets"]["user-info"], { register: true });
+        $("#basicModal").find("form").submit(function (e) {
+            var userInfo = collectUserInfo("#basicModal",true);
+            if (userInfo !== null) {
                 $.ajax({
                     type: "POST",
-                    url: "/updateUserInfo",
-                    data: conf,
+                    url: "/register",
+                    data: userInfo,
                     success: function (data, status, jqxhr) {
                         reloadIfLoggedOut(jqxhr);
                         $("#basicModal").modal("hide");
+                        initUser();
+                        initGroups();
+                        $("#login").hide();$("#menu-items").show();$("#logout").show();
                     },
-                    error:function(data, status, jqxhr) {
-                        $("#basicModal").find("#error-message").text("Ett Tekniskt fel har inträffat, försök igen senare!").show();
+                    error: function (data, status, jqxhr) {
+                        console.log(data,status,jqxhr);
+                        if(data.status===403) {
+                            $("#basicModal").find("#error-message").text("Användarnamnet finns redan!").show();
+                        } else {
+                            $("#basicModal").find("#error-message").text("Ett Tekniskt fel har inträffat, försök igen senare!").show();
+                        }
                     }
                 });
-                //Returnera false så att inte submitten slår igenom
-                return false;
 
-            });
+            }
+        });
+        //Returnera false så att inte submitten slår igenom
+        return false;
+    } else {
 
-    
-    
-          }
-    });
+        $.ajax({
+            url: "/getUserInfo",
+            cache: false,
+            success: function (data, status, jqxhr) {
+                reloadIfLoggedOut(jqxhr);
+                hbsModal("#basicModal", hbsTemplates["main-snippets"]["user-info"], data);
+                $("#basicModal").find("form").submit(function (e) {
+                    var userInfo = collectUserInfo("#basicModal");
+                    if (userInfo !== null) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/updateUserInfo",
+                            data: userInfo,
+                            success: function (data, status, jqxhr) {
+                                reloadIfLoggedOut(jqxhr);
+                                $("#basicModal").modal("hide");
+                            },
+                            error: function (data, status, jqxhr) {
+                                $("#basicModal").find("#error-message").text("Ett Tekniskt fel har inträffat, försök igen senare!").show();
+                            }
+                        });
+                    }
+                    //Returnera false så att inte submitten slår igenom
+                    return false;
+
+                });
+
+
+
+            }
+        });
+    }
 }
 
 
@@ -149,6 +322,7 @@ function configureGroups() {
         $.ajax({
             type: "POST",
             url: "/createGroup",
+            cache: false,
             data: {groupName:newGroup},
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);

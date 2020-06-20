@@ -38,7 +38,8 @@ app.use((req,res,next)=>{
         req.url.startsWith("/js") || 
         req.url.startsWith("/css") ||
         req.url.startsWith("/img") ||  
-        req.url.startsWith("/login") || 
+        req.url.startsWith("/login") ||
+        req.url.startsWith("/main.html") || 
         req.url.startsWith("/register") ||
         req.url.startsWith("/forgotPassword") ||
         req.url.startsWith("/resetPassword") ||
@@ -49,7 +50,7 @@ app.use((req,res,next)=>{
     }
 
 
-    res.redirect('/login-register.html');
+    res.redirect('/main.html');
 
     });
 
@@ -91,11 +92,7 @@ app.get("/shutdown",(req,res) => {
 
  
 app.get('/', (req, res) => {
-    if(sessionHandler.getSession(req)) {
-        res.redirect('/main.html');
-    } else {
-        res.redirect('/login-register.html');
-    }
+    res.redirect('/main.html');
        
 })
 
@@ -113,8 +110,8 @@ app.post('/login',(req,res)=> {
 })
 
 app.get('/logout',(req,res)=> {
-    sessionHandler.invalidateSession(req);
-    res.redirect('/login-register.html');
+    sessionHandler.invalidateSession(req,res);
+    res.sendStatus(200);
 })
 
 app.post('/register',(req,res)=> {
@@ -512,9 +509,16 @@ function checkDraw(product,drawNr,drawIds,callback) {
 }
 
 
+process.on('SIGINT', function(e) {
+    console.log("exit");
+    sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
+});
+
+
 
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(8080,() => console.log(`App listening at http://localhost:8080`));
 httpsServer.listen(8443,() => console.log(`App listening at https://localhost:8443`));
+

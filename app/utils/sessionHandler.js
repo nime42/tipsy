@@ -5,7 +5,7 @@ var sessions=[];
 
 function addSession(req,res,userId) {
     var sessionID="S"+new Date().getTime() + "" + Math.floor(Math.random() * Math.floor(1000));
-    res.cookie('SessId',sessionID, { maxAge: 900000});
+    res.cookie('SessId',sessionID, { maxAge: maxAge*1000});
     sessions[sessionID]={
         userId:userId,
         timestamp:new Date()
@@ -20,7 +20,8 @@ function getSession(req) {
     return sessions[sessionID];
 }
 
-function invalidateSession(req) {
+function invalidateSession(req,res) {
+    res.clearCookie('SessId');
     var sessionID = req.cookies.SessId;
     sessions[sessionID]=undefined;
 }
