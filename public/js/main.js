@@ -595,7 +595,7 @@ function getResults(groupId) {
                 e.rows=parseRows(e.rows);
                 e.nrOfRows=1;
                 e.rows.forEach(function(r) {e.nrOfRows*=r.bet.length})
-                
+                console.log(e);
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 
                 

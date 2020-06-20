@@ -292,13 +292,13 @@
 
 <script id="results" type="text/x-handlebars-template">
   <div id="draw-{{id}}">
-  {{#if (eq product "Topptipset") }}  
+  {{#if (match product "Topptipset") }}  
     <H2><img style="background:#f29400;width:120px;height: 30px;" src='/img/topptipset.svg'></H2>
   {{/if}}
-  {{#if (eq product "Stryktipset") }}  
+  {{#if (match product "Stryktipset") }}  
     <H2><img style="background:#00427a;width:60px;height: 30px;" src='/img/stryktipset.svg'></H2>
   {{/if}}
-  {{#if (eq product "Europatipset") }}  
+  {{#if (match product "Europatipset") }}  
     <H2><img style="background:#008733;width:50px;height: 30px;" src='/img/europatipset.svg'></H2>
   {{/if}}
 
