@@ -375,24 +375,32 @@ function updateGroup(groupId,name,button) {
 
 
 
-function deleteGroup(groupId,row) {
+function deleteGroup(groupId, row) {
+    
 
-    $.ajax({
-        type: "POST",
-        url: "/deleteGroup",
-        data: {groupId:groupId},
-        success: function (data, status, jqxhr) {
-            reloadIfLoggedOut(jqxhr);
-            if(globals.activeGroup.groupid===groupId) {
-                globals.activeGroup={};
+    var fun = function () {
+        $.ajax({
+            type: "POST",
+            url: "/deleteGroup",
+            data: { groupId: groupId },
+            success: function (data, status, jqxhr) {
+                reloadIfLoggedOut(jqxhr);
+                if (globals.activeGroup.groupid === groupId) {
+                    globals.activeGroup = {};
+                }
+                initGroups();
+                row.empty();
+            },
+            error: function (data, status, jqxhr) {
+                popup("#popup", "Ta bort grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
             }
-            initGroups();
-            row.empty();
-        },
-        error:function(data, status, jqxhr) {
-            popup("#popup","Ta bort grupp","Ett Tekniskt fel har inträffat, försök igen senare!");
-        }
-    });
+        });
+    }
+
+    dialog("#yes-no", "Ta bort Grupp",
+        "Är du säker på att du vill ta bort gruppen?<br>(Tänk på att all om info gruppen då försvinner)",
+        { text: "Ja", func: fun },
+        { text: "Nej", func: function () {return; } })
 
 }
 

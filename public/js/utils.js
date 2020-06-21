@@ -14,6 +14,22 @@ function getUrlVars() {
     $(div).find("#popup-header").text(title);
     $(div).find("#popup-message").text(message);
     $(div).modal('show');
+  }
+
+  function dialog(div,title,message,button1,button2) {
+    $(div).find("#modal-title").text(title);
+    $(div).find("#modal-message").html(message);
+
+    $(div).find("#button1").html(button1.text);
+    $(div).find("#button1").unbind("click");
+    $(div).find("#button1").click(button1.func);
+
+    $(div).find("#button2").html(button2.text);
+    $(div).find("#button2").unbind("click");
+    $(div).find("#button2").click(button2.func);
+
+
+    $(div).modal('show')
 
   }
 
