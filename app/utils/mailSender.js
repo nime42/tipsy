@@ -35,7 +35,7 @@ function sendMail(from,to,subject,text, callback) {
 function sendPasswordReset(userId,mailadress,req,res,callback) {
     db.createPassWordResetToken(userId,function(status,token) {
         if(status) {
-            var resetLink = req.protocol + '://' + req.get('host') +"/login-register.html?reset-token="+token;
+            var resetLink = req.protocol + '://' + req.get('host') +"/main.html?reset-token="+token;
             var from="no-reply@tipsy.nu";
             var to=mailadress;
             var subject="Uppdatera lösenord";
@@ -60,7 +60,7 @@ function inviteMember(groupAdmin,groupId,mailadress,req,res,callback) {
     db.inviteUserToGroup(groupAdmin,mailadress,groupId,function(status,data) {
         if(status) {
             var token=data;
-            var inviteLink = req.protocol + '://' + req.get('host') +"/login-register.html?invite-token="+token;
+            var inviteLink = req.protocol + '://' + req.get('host') +"/main.html?invite-token="+token;
             console.log(inviteLink);
             res.sendStatus(200); 
         } else {

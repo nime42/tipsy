@@ -32,6 +32,24 @@ function login() {
 
 }
 
+function checkInvites(inviteToken) {
+    var inviteToken=getUrlVars()["invite-token"];
+    if(inviteToken!==null) {
+        inviteToken=inviteToken.replace(/#/g, ""); //sometimes there is a trailing # (because i have a-elements href to #) 
+        $.ajax({
+            type: "POST",
+            url: "/addInvitedUserToGroup",
+            data: {inviteToken:inviteToken},
+            success: function (data, status, jqxhr) {
+                var groupName=data.groupName;
+                popup("#popup","Ny grupp","Grattis du är nu medlem i gruppen: "+groupName);
+                initGroups();
+            }
+        });                       
+    } 
+}
+
+
 function forgotPassword(e) {
     data={};
     hbsModal("#basicModal",hbsTemplates["main-snippets"]["forgot-password"],data);
@@ -155,7 +173,7 @@ function initApp() {
     initUser();
     initGroups();
     $("#login").hide();$("#menu-items").show();$("#logout").show();//$('.navbar-collapse').collapse('hide');
-    console.log("hiding menubar");
+    checkInvites();
 }
 
 
