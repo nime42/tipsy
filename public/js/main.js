@@ -34,7 +34,7 @@ function login() {
 
 function checkInvites(inviteToken) {
     var inviteToken=getUrlVars()["invite-token"];
-    if(inviteToken!==null) {
+    if(inviteToken!==undefined && inviteToken!==null) {
         inviteToken=inviteToken.replace(/#/g, ""); //sometimes there is a trailing # (because i have a-elements href to #) 
         $.ajax({
             type: "POST",

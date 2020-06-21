@@ -17,7 +17,7 @@ token TEXT, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (groupid) R
 );
 
 
-CREATE TABLE draws (id integer PRIMARY KEY AUTOINCREMENT, groupid INTEGER REFERENCES groups (id) ON DELETE CASCADE, drawnumber integer, product text, drawstate text, regclosetime date, created_by INTEGER, created_by_name text, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE draws (id integer PRIMARY KEY AUTOINCREMENT, groupid INTEGER REFERENCES groups (id) ON DELETE CASCADE, drawnumber integer, product text, drawstate text, regclosetime date, created_by INTEGER, created_by_name text, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,nrofrights INTEGER DEFAULT (0));
 
 
 CREATE TABLE "users" ( "id" INTEGER PRIMARY KEY AUTOINCREMENT, "username" TEXT);

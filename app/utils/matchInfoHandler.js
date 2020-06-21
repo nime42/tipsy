@@ -23,11 +23,12 @@ function getMatchDates(product, year, month, callback) {
 
 
 
-function getDraw(product, draw, withResult, callback) {
+function getDraw_old(product, draw, withResult, callback) {
     if (withResult) {
         draw += "/result";
     }
     let httpReq = url + "/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw + "?_=" + new Date().getTime();
+    console.log(httpReq);
     fetch(httpReq)
         .then(res => res.json())
         .then(
@@ -43,9 +44,31 @@ function getDraw(product, draw, withResult, callback) {
 }
 
 
+function getDraw(product, draw, callback) {
+    let urls=[];
+    urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw);
+    urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/forecast/" + draw);
+    urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw+"/result");
+    let httpReq=url+"/multifetch?urls="+urls.join("|")+"&_="+ new Date().getTime();
 
+    console.log(httpReq);
+    fetch(httpReq)
+        .then(res => res.json())
+        .then(
+            json => {
+                //console.log(json);
+                let res={};
+                res.draws=parseDraw(json.responses[0]);
+                res.forecast=parseForecast(json.responses[1]);
+                res.result=parseResult(json.responses[2]);
+                callback(true,res);
+                
+            },
+            err => callback(false, err)
+        );
+}
 
-
+//getDraw2("europatipset",1966,function(status,data) {console.log(status,data)});
 
 
 function getPlayable(product,callback) {
@@ -61,7 +84,7 @@ function getPlayable(product,callback) {
 
 
             if (res) {
-                getDraw(res.product, res.drawNumber, false, function (status, data) {
+                getDraw(res.product, res.drawNumber, function (status, data) {
                     if (status) {
                         callback(true, data);
                     } else {
@@ -85,6 +108,9 @@ function getPlayable(product,callback) {
 
 function parseResult(data) {
     let r = data.result;
+    if(r===undefined) {
+        return null;
+    }
 
     let res={};
     res.cancelled=r.cancelled;
@@ -96,18 +122,37 @@ function parseResult(data) {
     r.events.forEach(e => {
         let row={};
         row.eventDescription=e.eventDescription;
+        row.eventNumber=e.eventNumber;
         row.outcome=e.outcome;
-        row.outcomeScore=e.outcomeScore;
+        row.result=e.outcomeScore.home+" - "+e.outcomeScore.away;
         res.results.push(row);
 
     });
+    res.distribution=r.distribution;
     return res;
 }
 
+function parseForecast(data) {
+    let r = data.forecastResult;
+    if(r===undefined) {
+        return null;
+    }
+    let res={};
+    if(r.winresult) {
+        res.winresult=r.winresult.map(e=>{e.amount=e.winValue;return e});
+        return res;
+    } else {
+        return null;
+    }
+}
 
 function parseDraw(data) {                
 
     let r = data.draw;
+
+    if(r===undefined) {
+        return null;
+    }
 
     let res={};
     res.drawState=r.drawState;
@@ -122,6 +167,16 @@ function parseDraw(data) {
         row.odds=e.odds;
         row.svenskaFolket=e.svenskaFolket;
         row.match=e.match;
+
+        let current=e.match.result.find(e=>(e.descripton=="Full time" || e.description.match(/.*Current/i)));
+        if(current) {
+            row.result=current.home+" - "+current.away;
+        } else {
+            row.result="0 - 0";
+        }
+
+
+
         res.draws.push(row);
 
     });

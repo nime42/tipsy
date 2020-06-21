@@ -421,59 +421,108 @@ function getResults(userId, groupId, callback) {
 
 }
 
-function rectify(drawId) {
-    let sql = "select * from draw_rows where drawid=? order by rownr";
-    db.all(sql, drawId, function (err, rows) {
-        let nrOfWrongSingle=0;
-        let nrOfHalf=0;
-        let nrOfFull=0;
-        let nrOfWrongHalf=0;
-        
-        rows.forEach(r => {
-            let tmp = r.result.split("-");
-            let home = parseInt(tmp[0].trim());
-            let away = parseInt(tmp[1].trim());
-            let result;
-            if(home>away) {
-                result="1";
-            } else if(home===away) {
-                result="X";
-            } else {
-                result="2";
+function updateDrawResult(drawId,drawState,outcome) {
+    //console.log("Hej",drawId,outcome);
+    rectify(drawId,function(status,data) {
+        //console.log(status,data);
+        if(status) {
+            let fullpott=data.nrOfRows;
+            let res=[];
+            for(let i=0;i<outcome.length;i++) {
+                res[fullpott-i]={};
+                res[fullpott-i].worth=outcome[i].amount;
+                res[fullpott-i].rights=fullpott-i;
+                res[fullpott-i].rows=0;
             }
-            if(r.bet.match(result)===null) {
-                switch(r.bet.length) {
-                    case 1:
-                        nrOfWrongSingle++;
-                        break;
-                    case 2:
-                        nrOfWrongHalf++; 
-                        break;
+            for(let i=0;i<data.nrOfRights.length;i++) {
+                let n=data.maxRights;
+                if(res[n-i]) {
+                    res[n-i].rows=data.nrOfRights[i];
                 }
             }
-            switch(r.bet.length) {
-                case 2:
-                    nrOfHalf++;
-                    break;
-                case 3:
-                    nrOfFull++;
-            }
-        })
+            res.forEach(e=>console.log(e));
+            console.log(drawId,res);
+            db.serialize(() => {
+                db.run("begin");
+                let sql="update draws set drawstate=?,nrofrights=? where id=?";
+                db.run(sql,drawState,data.maxRights,drawId);
+                sql="delete from draw_results where drawid=?";
+                db.run(sql,drawId);
+                sql="insert into draw_results(drawid,rights,rows,worth) values(?,?,?,?)";
+                res.forEach(e=>{
+                    db.run(sql,drawId,e.rights,e.rows,e.worth);   
+                });
+                db.run("commit");
 
-        let M=nrOfFull;
-        let N=nrOfHalf-nrOfWrongHalf;
-        let maxRights=rows.length-(nrOfWrongSingle+nrOfWrongHalf);
-        let maxMinus1=(2*M+(N));
-        let maxMinus2=2*M*(M-1)+(N*(N-1)/2)+2*M*N;
-        let maxMinus3=(4*M*(M-1)*(M-2)/3)+2*M*(M-1)*N+N*(N-1)*M+(N*(N-1)*(N-2)/6);
-        //(nrOfWrongHalf>0?2*nrOfWrongHalf:1)*
-        if(nrOfWrongHalf>0) {
-            max=2*nrOfWrongHalf;
-            maxMinus1*=2*nrOfWrongHalf;
-            maxMinus2*=2*nrOfWrongHalf;
-            maxMinus3*=2*nrOfWrongHalf;
+            });
+
         }
-        console.log(maxRights,max,maxMinus1,maxMinus2,maxMinus3);
+    });
+
+}
+
+function rectify(drawId, callback) {
+    let sql = "select * from draw_rows where drawid=? order by rownr";
+    db.all(sql, drawId, function (err, rows) {
+        if (err === null) {
+            let nrOfWrongSingle = 0;
+            let nrOfHalf = 0;
+            let nrOfFull = 0;
+            let nrOfWrongHalf = 0;
+
+            rows.forEach(r => {
+                let tmp = r.result.split("-");
+                let home = parseInt(tmp[0].trim());
+                let away = parseInt(tmp[1].trim());
+                let result;
+                if (home > away) {
+                    result = "1";
+                } else if (home === away) {
+                    result = "X";
+                } else {
+                    result = "2";
+                }
+                if (r.bet.match(result) === null) {
+                    switch (r.bet.length) {
+                        case 1:
+                            nrOfWrongSingle++;
+                            break;
+                        case 2:
+                            nrOfWrongHalf++;
+                            break;
+                    }
+                }
+                switch (r.bet.length) {
+                    case 2:
+                        nrOfHalf++;
+                        break;
+                    case 3:
+                        nrOfFull++;
+                }
+            })
+
+            let M = nrOfFull;
+            let N = nrOfHalf - nrOfWrongHalf;
+            let maxRights = rows.length - (nrOfWrongSingle + nrOfWrongHalf);
+            let max=1;
+            let maxMinus1 = (2 * M + (N));
+            let maxMinus2 = 2 * M * (M - 1) + (N * (N - 1) / 2) + 2 * M * N;
+            let maxMinus3 = (4 * M * (M - 1) * (M - 2) / 3) + 2 * M * (M - 1) * N + N * (N - 1) * M + (N * (N - 1) * (N - 2) / 6);
+            //(nrOfWrongHalf>0?2*nrOfWrongHalf:1)*
+            if (nrOfWrongHalf > 0) {
+                max = 2 * nrOfWrongHalf;
+                maxMinus1 *= 2 * nrOfWrongHalf;
+                maxMinus2 *= 2 * nrOfWrongHalf;
+                maxMinus3 *= 2 * nrOfWrongHalf;
+            }
+            let res = {};
+            res.nrOfRows=rows.length;
+            res.maxRights = maxRights;
+            res.nrOfRights = [max, maxMinus1, maxMinus2, maxMinus3];
+            callback(true,res);
+        } else {
+            callback(false,err);
+        }
     })
 }
 
@@ -505,6 +554,7 @@ module.exports = {
     addInvitedUserToGroup:addInvitedUserToGroup,
     addPlay:addPlay,
     getResults:getResults,
+    updateDrawResult:updateDrawResult,
     getDbInstance:getDbInstance
 }
 

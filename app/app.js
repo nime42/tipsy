@@ -465,23 +465,28 @@ function updateResults(groupId,callback) {
 
 
 function checkDraw(product,drawNr,drawIds,callback) {
-    matchInfoHandler.getDraw(product.toLowerCase(),drawNr,false, function(status,data) {
+    matchInfoHandler.getDraw(product.toLowerCase(),drawNr, function(status,data) {
         if(status) {
             //console.log(data);
+            let matches=[];
+            let outcome=null;
+            if(data.result!==null) {
+                matches=data.result.result;
+                outcome=data.result.distribution;
+            } else {
+                matches=data.draws.draws;
+                outcome=data.forecast.winresult;
+            }
             let rows=[];
-            data.draws.forEach(e => {
+            matches.forEach(e => {
                 let row={}
                 row.status=e.match.status;
                 row.rownr=e.eventNumber;
-                let current=e.match.result.find(e=>(e.descripton=="Full time" || e.description.match(/.*Current/i)));
-                if(current) {
-                    row.result=current.home+" - "+current.away;
-                } else {
-                    row.result="0 - 0";
-                }
+                row.result=e.result;
                 rows.push(row);
                 
             });
+            let drawState=data.draws.drawState
             let dbi=db.getDbInstance();
             dbi.serialize(() => {
                 dbi.run("begin");
@@ -498,6 +503,7 @@ function checkDraw(product,drawNr,drawIds,callback) {
                             }
                         });
                     })
+                    db.updateDrawResult(i,drawState,outcome);
                 });
                 dbi.run("commit",function(err) {
                     if(callback) {
