@@ -221,7 +221,6 @@ function getInvites(groupAdmin, groupId, callback) {
 function addUserToGroup(groupAdmin, userId, groupId,admin, callback) {
 
     db.get('SELECT * FROM group_members WHERE groupid = ? and userid=? and admin=true', groupId, groupAdmin, function (err, row) {
-        console.log(err,row);
         if (!row) {
             callback(false, { errno: -1, errmsg: "User is not groupadmin!" });
         } else {
@@ -440,8 +439,6 @@ function updateDrawResult(drawId,drawState,outcome) {
                     res[n-i].rows=data.nrOfRights[i];
                 }
             }
-            res.forEach(e=>console.log(e));
-            console.log(drawId,res);
             db.serialize(() => {
                 db.run("begin");
                 let sql="update draws set drawstate=?,nrofrights=? where id=?";

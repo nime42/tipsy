@@ -65,6 +65,8 @@ var morgan = require('morgan')
 var path = require('path')
 var rfs = require('rotating-file-stream') // version 2.x
 
+morgan.token('remote-user', function (req, res) { let session=sessionHandler.getSession(req);console.log(session); if(session) {return session.userId} else {return ""}});
+
 // create a rotating write stream
 var accessLogStream = rfs.createStream('access.log', {
     interval: '7d', // rotate daily
@@ -217,7 +219,6 @@ app.get('/getGroups',(req,res)=> {
 
 
 app.post('/getGroupMembers',(req,res)=> {
-    console.log("body",req.body);
     let userId=sessionHandler.getSession(req).userId;
     let groupId=req.body.groupId
     db.getGroupMembers(userId,groupId,function(status,rows){
