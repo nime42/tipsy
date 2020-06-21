@@ -36,8 +36,17 @@ function sendPasswordReset(userId,mailadress,req,res,callback) {
     db.createPassWordResetToken(userId,function(status,token) {
         if(status) {
             var resetLink = req.protocol + '://' + req.get('host') +"/login-register.html?reset-token="+token;
-            console.log(resetLink);
-            res.sendStatus(200); 
+            var from="no-reply@tipsy.nu";
+            var to=mailadress;
+            var subject="Uppdatera lösenord";
+            var message="Hej!\nAnvänd nedanstående länk för att återställa dit lösenord på tipsy.nu:\n"+resetLink+"\n"
+            sendMail(from,to,subject,message, function(err) {
+                if(err!==null) {
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(200);          
+                }
+            });
         } else {
             res.sendStatus(500);
         }

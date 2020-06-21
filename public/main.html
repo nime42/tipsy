@@ -95,11 +95,15 @@
    if(getCookie("SessId")) {
       initApp();
    } else {
-    $('.navbar-collapse').collapse('show');
+     if($(".navbar-toggle").is(":visible")) {
+      $('.navbar-collapse').collapse('show');
+     }
    }
    //close navbar after click
    $('.navbar-nav>li>a').on('click', function(){
-    $('.navbar-collapse').collapse('hide');
+     if($(".navbar-toggle").is(":visible")) {
+      $('.navbar-collapse').collapse('hide');
+     }
 });
 
 

@@ -157,7 +157,8 @@ app.post('/forgotPassword',(req,res)=> {
                 return;
             } else {
                 var userId=rows[0].userid;
-                mailsender.sendPasswordReset(userId,email,req,res);
+                var mailAdr=rows[0].email;
+                mailsender.sendPasswordReset(userId,mailAdr,req,res);
             }
         } else {
             res.sendStatus(500);
