@@ -192,6 +192,7 @@ function initGroups() {
     if (!globals.activeGroup) {
         globals.activeGroup = {}
     }
+
     getGroups(function (data) {
         globals.usergroups = data;
         $('#available-groups').empty();
@@ -328,7 +329,7 @@ function configureGroups() {
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 $("#basicModal").find("#new-group").val("");
-                initGroups(globals.activeGroup.groupid);
+                initGroups();
                 $("#basicModal").modal('hide');
                 popup("#popup","Skapa grupp","Grupp skapad!");
             },
@@ -351,7 +352,7 @@ function updateGroup(groupId,name,button) {
         data: {groupId:groupId,groupName:name},
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            initGroups(globals.activeGroup.groupid);
+            initGroups();
             button.css('color', '#428bca').prop('disabled', true);
         },
         error:function(data, status, jqxhr) {
@@ -368,13 +369,17 @@ function updateGroup(groupId,name,button) {
 
 
 function deleteGroup(groupId,row) {
+
     $.ajax({
         type: "POST",
         url: "/deleteGroup",
         data: {groupId:groupId},
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            initGroups(globals.activeGroup.groupid);
+            if(globals.activeGroup.groupid===groupId) {
+                globals.activeGroup={};
+            }
+            initGroups();
             row.empty();
         },
         error:function(data, status, jqxhr) {

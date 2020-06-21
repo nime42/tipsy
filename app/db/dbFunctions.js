@@ -128,7 +128,7 @@ function createGroup(userId,groupName,callback) {
 
 function updateGroup(userId,groupId,groupName, callback) {
     var sql="update groups set groupname=? where id=? and ? in (select userid from group_members where groupid=? and admin=true)";
-    db.run(sql,groupName,groupId,userId,function(err) {
+    db.run(sql,groupName,groupId,userId,groupId,function(err) {
         if (callback) {
             if (err == null) {
                 callback(true, null);

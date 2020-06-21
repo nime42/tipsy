@@ -23,7 +23,7 @@ function getSession(req) {
 function invalidateSession(req,res) {
     res.clearCookie('SessId');
     var sessionID = req.cookies.SessId;
-    sessions[sessionID]=undefined;
+    delete sessions[sessionID];
 }
 
 function purge() {
