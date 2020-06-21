@@ -51,6 +51,8 @@
   $(function () {
     precompileHbs(function() {
     globals={};
+
+
   
     var newGroup=getUrlVars()["new-group"];
     if(newGroup) {
@@ -89,12 +91,16 @@
         return;
    }
 
-
+   
    if(getCookie("SessId")) {
-        initUser();
-        initGroups();
-        $("#login").hide();$("#menu-items").show();$("#logout").show();
-    }
+      initApp();
+   } else {
+    $('.navbar-collapse').collapse('show');
+   }
+   //close navbar after click
+   $('.navbar-nav>li>a').on('click', function(){
+    $('.navbar-collapse').collapse('hide');
+});
 
 
    });

@@ -10,9 +10,7 @@ function login() {
                 data: loginInfo,
                 success: function (data, status, jqxhr) {
                     $("#basicModal").modal("hide");
-                    initUser();
-                    initGroups();
-                    $("#login").hide();$("#menu-items").show();$("#logout").show();
+                    initApp();
                 },
                 error:function(data, status, jqxhr) {
                     if(data.status===401) {
@@ -152,6 +150,17 @@ function logout() {
     });
 }
 
+
+function initApp() {
+    initUser();
+    initGroups();
+    $("#login").hide();$("#menu-items").show();$("#logout").show();//$('.navbar-collapse').collapse('hide');
+    console.log("hiding menubar");
+}
+
+
+
+
 function getUserInfo(callback) {
     $.ajax({
         url: "/getUserInfo",
@@ -254,9 +263,7 @@ function configureUser() {
                     success: function (data, status, jqxhr) {
                         reloadIfLoggedOut(jqxhr);
                         $("#basicModal").modal("hide");
-                        initUser();
-                        initGroups();
-                        $("#login").hide();$("#menu-items").show();$("#logout").show();
+                        initApp();
                     },
                     error: function (data, status, jqxhr) {
                         console.log(data,status,jqxhr);
@@ -664,3 +671,5 @@ function parseRows(rows) {
     });
     return res.sort(function(a,b) {return a.rownr-b.rownr});
 }
+
+
