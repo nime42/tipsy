@@ -291,7 +291,7 @@
 
 
 <script id="results" type="text/x-handlebars-template">
-  <div id="draw-{{id}} col-xs-12">
+  <div id="draw-{{id}}" width="100%">
   {{#if (match product "Topptipset") }}  
     <H2><img style="background:#f29400;width:120px;height: 30px;" src='/img/topptipset.svg'></H2>
   {{/if}}
@@ -303,16 +303,17 @@
   {{/if}}
 
 
-  <table>
+  <table style="width:100%"">
     <tr>
-      <td><b>SpelareX:<b></td>
-      <td>{{created_by_name}}</td>
+      <td style="width:20%"><b>Spelare:<b></td>
+      <td style="width:80%">{{created_by_name}}</td>
     </tr>
     <tr>
       <td><b>Datum:<b></td>
       <td>{{created}}</td>
     </tr>
   </table>
+ 
   <table class="bettingtable" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;" >
     <colgroup>
       <col span="1" style="width: 4%;">
