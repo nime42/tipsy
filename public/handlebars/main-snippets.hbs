@@ -261,7 +261,7 @@
   <h2>{{productName}}</h2>
   <p>Spelstopp:{{regCloseTime}}</p>
 
-  <table class="bettingtable" style="width:75%;border-collapse: separate;border-spacing: 0 0.5em;" >
+  <table class="bettingtable" style="width:100%;border-collapse: separate;border-spacing: 0 0.5em;" >
     <colgroup>
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 80%;">
@@ -305,8 +305,8 @@
 
   <table style="width:100%"">
     <tr>
-      <td style="width:20%"><b>Spelare:<b></td>
-      <td style="width:80%">{{created_by_name}}</td>
+      <td style="width:1%"><b>Spelare:<b></td>
+      <td style="width:99%">{{created_by_name}}</td>
     </tr>
     <tr>
       <td><b>Datum:<b></td>
@@ -316,13 +316,13 @@
  
   <table class="bettingtable" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;" >
     <colgroup>
-      <col span="1" style="width: 4%;">
-      <col span="1" style="width: 50%;">
-      <col span="1" style="width: 30%";>
-      <col span="1" style="width: 4%;">
-      <col span="1" style="width: 4%;">
-      <col span="1" style="width: 4%;">
-      <col span="1" style="width: 4%;">
+      <col span="1" style="width: 1%;">
+      <col span="1" style="width: 94%;">
+      <col span="1" style="width: 1%";>
+      <col span="1" style="width: 1%;">
+      <col span="1" style="width: 1%;">
+      <col span="1" style="width: 1%;">
+      <col span="1" style="width: 1%;">
    </colgroup>
    <tbody>
     {{#each rows}}
@@ -335,9 +335,9 @@
       <td class="{{status2}} {{missed2}}"><button id="col-2" disabled class="1x2 {{on2}}">2</button></td>
       {{#if (ne status "Inte startat") }} 
         {{#if isCorrect}}  
-        <td><span style="color:green;" class="glyphicon glyphicon-ok"></span></td>
+        <td style="padding-left: 10px;"><span style="color:green;" class="glyphicon glyphicon-ok"></span></td>
         {{else}}
-        <td><span style="color:red;" class="glyphicon glyphicon-remove"></span></td>
+        <td style="padding-left: 10px;"><span style="color:red;" class="glyphicon glyphicon-remove"></span></td>
         {{/if}}
       {{/if}}
     </tr>
