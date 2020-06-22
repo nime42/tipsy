@@ -105,7 +105,7 @@ function createGroup(userId,groupName,callback) {
     db.run("insert into groups(groupname) values(?)", groupName, function (err) {
         if (err == null) {
             var groupId=this.lastID;
-            db.run("insert into group_members(userid,groupid,admin) values(?,?,true)", userId, groupId, function (err) {
+            db.run("insert into group_members(userid,groupid,sortorder,admin) values(?,?,0,true)", userId, groupId, function (err) {
                 if(err==null) {
                     db.run("commit");
                     callback(true,groupId,null);
@@ -263,12 +263,10 @@ function addInvitedUserToGroup(userId,token,callback) {
 
 
 function deleteUserFromGroup(groupAdmin, userId, groupId, callback) {
-    if(parseInt(groupAdmin)===parseInt(userId)) {
-        callback(false,{ errno: -2, errmsg: "You can't remove yourself"})
-    }
 
-    var sql="delete from group_members where userid=? and groupid=? and ? in (select userid from group_members where groupid=? and admin=true)";
-    db.run(sql,userId,groupId,groupAdmin,groupId,function(err) {
+    var sql="delete from group_members where userid=? and groupid=? and (?<>? and admin=false) or ? in (select userid from group_members where groupid=? and admin=true and userid<>?)";
+    db.run(sql,userId,groupId,userId,groupAdmin,groupAdmin,groupId,groupAdmin,function(err) {
+        console.log(err);
         if (callback) {
             if (err == null) {
                 callback(true, null);
@@ -523,7 +521,17 @@ function rectify(drawId, callback) {
     })
 }
 
-//rectify(11);
+function deleteDraw(drawId,userId,callback) {
+    let sql="delete from draws where id=? and drawstate<>'Finalized' and created_by=?";
+    db.run(sql, drawId, userId, function (err) {
+        if (err === null) {
+                callback(true,null);
+        } else {
+            callback(false,err);
+        } 
+    });
+
+}
 
 function getDbInstance() {
     return db;
@@ -552,6 +560,7 @@ module.exports = {
     addPlay:addPlay,
     getResults:getResults,
     updateDrawResult:updateDrawResult,
+    deleteDraw:deleteDraw,
     getDbInstance:getDbInstance
 }
 

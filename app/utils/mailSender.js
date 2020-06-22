@@ -2,20 +2,20 @@ var nodemailer = require('nodemailer');
 
 var db=require('../db/dbFunctions.js');
 
-var service="gmail";
-var user="nilsmeinhard@gmail.com";
-var passwd="s01r0s20!";
+var config=require('../../resources/config.js');
+
+
 
 var transporter = nodemailer.createTransport({
-    service: service,//smtp.gmail.com  //in place of service use host...
+    service: config.mail.service,//smtp.gmail.com  //in place of service use host...
     secure: false,//true
-    port: 25,//465
+    port: config.mail.port,//465
     tls: {
         rejectUnauthorized: false
     },
     auth: {
-      user: user,
-      pass: passwd
+      user: config.mail.user,
+      pass: config.mail.passwd
     }
 
   });

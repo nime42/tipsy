@@ -245,7 +245,8 @@ function initGroups() {
             $("#latest-games").show();
             $("#info").hide();
             $("#group-title").text(globals.activeGroup.groupname?globals.activeGroup.groupname:"");
-            updateResults(globals.activeGroup.groupid);
+             updateResults(globals.activeGroup.groupid);
+             
         })
 
         $("#group-title").text("");
@@ -437,6 +438,15 @@ function configureGroupMembers() {
         cache: false, 
         success: function(data, status,jqxhr){
             reloadIfLoggedOut(jqxhr);
+            var isAdmin=globals.activeGroup.admin;
+            data.members.map(function (e) {
+                if((isAdmin && e.userid != globals.userinfo.userid) || (!isAdmin && e.userid == globals.userinfo.userid)) {
+                    e.isDeletable = true;
+                } 
+                return e;
+            })
+
+
             hbsModal("#basicModal",hbsTemplates["main-snippets"]["group-members"],{members:data.members,admin:globals.activeGroup.admin,invites:data.invites,currentUser:globals.userinfo.userid});
 
             $("#basicModal").find("#invite-member").click(function(e) {
@@ -488,19 +498,37 @@ function removeInvite(email, rowElem) {
 }
 
 
-function removeMember(memberId,groupId, rowElem) {
-    $.ajax({
-        type: "POST",
-        url: "/removeMember",
-        data: { member:memberId, groupId: groupId },
-        success: function (data, status, jqxhr) {
-            reloadIfLoggedOut(jqxhr);
-            rowElem.remove();
-        },
-        error: function (data, status, jqxhr) {
-            popup("#popup", "Ta bort medlem", "Tekniskt fel!");
-        }
-    });
+function removeMember(memberId, groupId, rowElem) {
+    var fun = function () {
+        $.ajax({
+            type: "POST",
+            url: "/removeMember",
+            data: { member: memberId, groupId: groupId },
+            success: function (data, status, jqxhr) {
+                reloadIfLoggedOut(jqxhr);
+                rowElem.remove();
+                if(memberId==globals.userinfo.userid) {
+                    initGroups();
+                }
+            },
+            error: function (data, status, jqxhr) {
+                popup("#popup", "Ta bort medlem", "Tekniskt fel!");
+            }
+        });
+    }
+
+    if(memberId==globals.userinfo.userid) {
+        dialog("#yes-no", "Lämna grupp",
+        "Är du säker på att du vill lämna denna gruppen?",
+        { text: "Ja", func: function() {fun();$("#basicModal").modal('hide');} },
+        { text: "Nej", func: function () {return; } })
+    } else {
+        dialog("#yes-no", "Ta bort medlem",
+        "Är du säker på att du vill ta bort denna medlem?",
+        { text: "Ja", func: fun },
+        { text: "Nej", func: function () {return; } })        
+
+    }
 }
 
 
@@ -603,6 +631,12 @@ function getDrawBettings(div) {
 }
 
 function updateResults(groupId) {
+    if(groupId==undefined) {
+        $("#latest-games").hide();
+        $("#info").show();
+        $("#results").empty();
+        return;
+    }
 
     $.ajax({
         type: "GET",
@@ -632,8 +666,11 @@ function getResults(groupId) {
             data.forEach(function(e) {
                 e.rows=parseRows(e.rows);
                 e.nrOfRows=1;
-                e.rows.forEach(function(r) {e.nrOfRows*=r.bet.length})
-                console.log(e);
+                e.rows.forEach(function(r) {e.nrOfRows*=r.bet.length});
+                if(e.drawstate!="Finalized" && e.created_by==globals.userinfo.userid) {
+                    e.showDelete=true;
+                }
+
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 
                 
@@ -698,4 +735,21 @@ function parseRows(rows) {
     return res.sort(function(a,b) {return a.rownr-b.rownr});
 }
 
+function deleteDraw(drawId) {
+    $.ajax({
+        type: "POST",
+        url: "/deleteDraw",
+        data: { drawId: drawId },
+        success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
+            $("#results").find("#draw-"+drawId).empty(); 
+        },
+        error: function (data, status, jqxhr) {
+            popup("#popup", "Ta bort spel", "Ett Tekniskt fel har inträffat, försök igen senare!");
+        }
+    });
 
+
+
+
+}

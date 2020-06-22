@@ -1,11 +1,11 @@
 
 
 const fetch = require('node-fetch'); 
+var config=require('../../resources/config.js');
 
-const url = "https://api.spela.svenskaspel.se";
 
 function getMatchDates(product, year, month, callback) {
-    let httpReq = url + "/draw/results/datepicker?product=" + product + "&year=" + year + "&month=" + month + "&_=" + new Date().getTime();
+    let httpReq = config.matchInfo.url + "/draw/results/datepicker?product=" + product + "&year=" + year + "&month=" + month + "&_=" + new Date().getTime();
     fetch(httpReq)
     .then(res => res.json())
     .then(
@@ -23,33 +23,25 @@ function getMatchDates(product, year, month, callback) {
 
 
 
-function getDraw_old(product, draw, withResult, callback) {
-    if (withResult) {
-        draw += "/result";
-    }
-    let httpReq = url + "/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw + "?_=" + new Date().getTime();
-    console.log(httpReq);
+function getDraw(product, draw, callback) {
+    let httpReq = config.matchInfo.url + "/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw + "?_=" + new Date().getTime();
     fetch(httpReq)
         .then(res => res.json())
         .then(
             json => {
-                if (withResult)
-                    callback(true, parseResult(json));
-                else {
-                    callback(true, parseDraw(json));
-                }
+                callback(true, parseDraw(json));
             },
             err => callback(false, err)
         );
 }
 
 
-function getDraw(product, draw, callback) {
+function getDrawAndResult(product, draw, callback) {
     let urls=[];
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw);
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/forecast/" + draw);
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw+"/result");
-    let httpReq=url+"/multifetch?urls="+urls.join("|")+"&_="+ new Date().getTime();
+    let httpReq=config.matchInfo.url+"/multifetch?urls="+urls.join("|")+"&_="+ new Date().getTime();
 
     console.log(httpReq);
     fetch(httpReq)
@@ -125,6 +117,7 @@ function parseResult(data) {
         row.eventNumber=e.eventNumber;
         row.outcome=e.outcome;
         row.result=e.outcomeScore.home+" - "+e.outcomeScore.away;
+        row.status="Avslutad"; // To harmonze with drawInfo (see parseDraw)
         res.results.push(row);
 
     });
@@ -167,10 +160,12 @@ function parseDraw(data) {
         row.odds=e.odds;
         row.svenskaFolket=e.svenskaFolket;
         row.match=e.match;
+        row.status=e.match.status;//To harmonize with resultInfo (see parseResult)
 
+        
         let current=e.match.result.find(e=>(e.descripton=="Full time" || e.description.match(/.*Current/i)));
         if(current) {
-            row.result=current.home+" - "+current.away;
+            row.result=current.home+" - "+current.away;//Also for harmonizing with resultInfo
         } else {
             row.result="0 - 0";
         }
@@ -187,7 +182,7 @@ function parseDraw(data) {
 
 module.exports={
     getPlayable:getPlayable,
-    getDraw:getDraw
+    getDrawAndResult:getDrawAndResult
 }
 
 

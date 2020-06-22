@@ -9,6 +9,9 @@ var matchInfoHandler=require('./utils/matchInfoHandler.js');
 sessionHandler.resumeSessions(db.getDbInstance());
 
 
+var config=require('../resources/config.js');
+
+
 var privateKey  = fs.readFileSync('./resources/server.key', 'utf8');
 var certificate = fs.readFileSync('./resources/server.crt', 'utf8');
 
@@ -33,13 +36,14 @@ app.use((req,res,next)=>{
         return;
     }
 
+ 
     if(
         req.url.startsWith("/handlebars") || 
         req.url.startsWith("/js") || 
         req.url.startsWith("/css") ||
         req.url.startsWith("/img") ||  
-        req.url.startsWith("/login") ||
         req.url.startsWith("/main.html") || 
+        req.url.startsWith("/login") ||
         req.url.startsWith("/register") ||
         req.url.startsWith("/forgotPassword") ||
         req.url.startsWith("/resetPassword") ||
@@ -55,7 +59,6 @@ app.use((req,res,next)=>{
     });
 
 
-app.use(express.static('public'))
 
 app.enable("trust proxy"); //So Morgan logging displays remote-address
 
@@ -65,7 +68,7 @@ var morgan = require('morgan')
 var path = require('path')
 var rfs = require('rotating-file-stream') // version 2.x
 
-morgan.token('remote-user', function (req, res) { let session=sessionHandler.getSession(req);console.log(session); if(session) {return session.userId} else {return ""}});
+morgan.token('remote-user', function (req, res) { let session=sessionHandler.getSession(req); if(session) {return session.userId} else {return ""}});
 
 // create a rotating write stream
 var accessLogStream = rfs.createStream('access.log', {
@@ -76,6 +79,7 @@ var accessLogStream = rfs.createStream('access.log', {
   // setup the logger
   app.use(morgan('common', { stream: accessLogStream }))
   
+  app.use(express.static('public'))
 
 
 //---------------------------
@@ -368,6 +372,7 @@ app.post('/removeMember',(req,res)=> {
         if(status) {
             res.sendStatus(200);                    
         } else {
+            console.log(err);
             res.sendStatus(500);
         }
     })
@@ -466,22 +471,25 @@ function updateResults(groupId,callback) {
 
 
 function checkDraw(product,drawNr,drawIds,callback) {
-    matchInfoHandler.getDraw(product.toLowerCase(),drawNr, function(status,data) {
+    matchInfoHandler.getDrawAndResult(product.toLowerCase(),drawNr, function(status,data) {
         if(status) {
-            //console.log(data);
             let matches=[];
             let outcome=null;
             if(data.result!==null) {
-                matches=data.result.result;
-                outcome=data.result.distribution;
+                matches=data.result.results;
+                if(data.result) {
+                    outcome=data.result.distribution;
+                }
             } else {
                 matches=data.draws.draws;
-                outcome=data.forecast.winresult;
+                if(data.forecast) {
+                    outcome=data.forecast.winresult;
+                }
             }
             let rows=[];
             matches.forEach(e => {
                 let row={}
-                row.status=e.match.status;
+                row.status=e.status;
                 row.rownr=e.eventNumber;
                 row.result=e.result;
                 rows.push(row);
@@ -504,7 +512,9 @@ function checkDraw(product,drawNr,drawIds,callback) {
                             }
                         });
                     })
-                    db.updateDrawResult(i,drawState,outcome);
+                    if(outcome!==null) {
+                        db.updateDrawResult(i,drawState,outcome);
+                    }
                 });
                 dbi.run("commit",function(err) {
                     if(callback) {
@@ -516,6 +526,20 @@ function checkDraw(product,drawNr,drawIds,callback) {
     })
 }
 
+app.post('/deleteDraw',(req,res)=> {
+    var userId=sessionHandler.getSession(req).userId;
+    var drawId=req.body.drawId;
+
+    db.deleteDraw(drawId,userId, function(status,err) {
+        if(status) {
+            res.sendStatus(200);                    
+        } else {
+            console.log(err);
+            res.sendStatus(500);
+        }
+    })
+
+})
 
 process.on('SIGINT', function(e) {
     console.log("exit");
@@ -527,6 +551,6 @@ process.on('SIGINT', function(e) {
 var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(8080,() => console.log(`App listening at http://localhost:8080`));
-httpsServer.listen(8443,() => console.log(`App listening at https://localhost:8443`));
+httpServer.listen(config.app.http,() => console.log('App listening at http://localhost:'+config.app.http));
+httpsServer.listen(config.app.https,() => console.log('App listening at https://localhost:'+config.app.https));
 

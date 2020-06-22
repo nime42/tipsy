@@ -174,10 +174,8 @@
                       <td>{{email}}</td>
                       <td>{{phonenr}}</td>
                       <td>{{username}}</td>
-                      {{#if ../admin}}
-                       {{#ifnoteq ../currentUser userid}}
-                      <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></span></td>
-                      {{/ifnoteq}}
+                      {{#if isDeletable}}
+                        <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></span></td>
                       {{/if}}
                     </tr>
                     {{/each}}
@@ -346,6 +344,11 @@
     <tr> <td colspan="6" style="text-align: right;"><b>Antal rader:</b><b id="nr-of-rows">{{nrOfRows}}</b></td></tr>
    </tbody>
   </table>
+  {{#if showDelete}} 
+    <div>
+      <button id="delete" type="button" class="btn btn-primary" style="margin-top: 5px;" onclick="deleteDraw({{id}})">Ta bort</button>
+    </div>
+  {{/if}}
    <div>
   </div>
   </div>
