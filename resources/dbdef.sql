@@ -53,3 +53,10 @@ key text,
 timestamp timestamp,
 userId integer);
 
+create view v_draws_in_groups as
+select d.*,r.rows from draws d left join (select drawid,group_concat(rownr||';'||teams||';'||bet||';'||coalesce(result,'')||';'||coalesce(status,''),'|') as rows from draw_rows group by drawid) r on d.id=r.drawid; 
+
+
+create view v_draw_results as
+select drawid,group_concat(results,'|') as results from (
+select drawid,rights||';'||rows||';'||worth as results from draw_results order by rights desc) group by drawid;

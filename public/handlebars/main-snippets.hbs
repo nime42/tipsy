@@ -349,8 +349,37 @@
       <button id="delete" type="button" class="btn btn-primary" style="margin-top: 5px;" onclick="deleteDraw({{id}})">Ta bort</button>
     </div>
   {{/if}}
-   <div>
+  {{#ifnoteq drawstate "Open" }}
+  <div>
+    <table>
+      <tr>
+        <td style="padding-top: 5px;">
+          <table class="table-condensed" style="border:1px solid">
+            <tr>
+              <th></th>
+              <th>Antal</th>
+              <th>Utdelning</th>
+              <th>Totalt</th>
+            </tr>
+            {{#each results}}
+            <tr>
+              <td style="white-space:nowrap;padding-right: 5px;"><b>{{rights}} rätt</b></td>
+              <td style="text-align: center;">{{rows}}</td>
+              <td style="text-align: right;">{{worth}}kr</td>
+              <td style="text-align: right;">{{total}}kr</td>
+            </tr>
+            {{/each}}
+          </table>
+          <td style="padding-left: 10px;padding-top:5px">
+          <div class="circle">{{nrofrights}} Rätt</div>
+        </td>
+
+      </tr>
+    </table>
+    <p><b>Vinst: {{totalWin}} kr</b></td>
+    </p>
   </div>
+  {{/ifnoteq}}
   </div>
   <hr>
 </script>

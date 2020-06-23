@@ -614,6 +614,9 @@ function getPlayable(product,div) {
                     data: drawInfo,
                     success: function (data, status, jqxhr) {
                         reloadIfLoggedOut(jqxhr);
+                        updateResults(globals.activeGroup.groupid);
+                        $("#basicModal").modal('hide');
+
                         //console.log("ok");
                     },
                     error: function (data, status, jqxhr) {
@@ -687,6 +690,13 @@ function getResults(groupId) {
                     e.showDelete=true;
                 }
 
+                e.results=parseResults(e.results);
+                if(e.results!=undefined) {
+                    e.totalWin=0;
+                    e.results.forEach(function(el) {e.totalWin +=el.total;});
+                }
+                console.log(e);
+
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 
                 
@@ -749,6 +759,28 @@ function parseRows(rows) {
         return res;
     });
     return res.sort(function(a,b) {return a.rownr-b.rownr});
+}
+
+function parseResults(rows) {
+    if(!rows) {
+        return undefined;
+    }
+    var res=rows.split('|').map(function(e) {
+        var a=e.split(";");
+        var r={
+            rights:a[0],
+            rows:a[1],
+            worth:a[2]
+        }
+        r.total=0;
+        try {
+            r.total=Number(r.rows.replace(",","."))*Number(r.worth.replace(",","."));
+        } catch(err) {} ;
+
+        return r;
+        
+    })
+    return res.sort(function(a,b) {return b.rights-a.rights});
 }
 
 function deleteDraw(drawId) {

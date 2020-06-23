@@ -406,7 +406,8 @@ function getResults(userId, groupId, callback) {
             callback(false, { errno: -1, errmsg: "User is not member in group!" });
             return;
         }
-        sql = "select d.*,r.rows from draws d left join (select drawid,group_concat(rownr||';'||teams||';'||bet||';'||coalesce(result,'')||';'||coalesce(status,''),'|') as rows from draw_rows group by drawid) r on d.id=r.drawid where groupid=? order by created desc";
+        sql = "select d.*,results from v_draws_in_groups d left join v_draw_results r on d.id=r.drawid where groupid=? order by created desc";
+
         db.all(sql, groupId, function (err, rows) {
             if (err != null) {
                 callback(false, err);
