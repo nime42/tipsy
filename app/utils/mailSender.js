@@ -36,7 +36,7 @@ function sendPasswordReset(userId,mailadress,req,res,callback) {
     db.createPassWordResetToken(userId,function(status,token) {
         if(status) {
             var resetLink = req.protocol + '://' + req.get('host') +"/main.html?reset-token="+token;
-            var from="no-reply@tipsy.nu";
+            var from="tipsy.nu@gmail.com";
             var to=mailadress;
             var subject="Uppdatera lösenord";
             var message="Hej!\nAnvänd nedanstående länk för att återställa dit lösenord på tipsy.nu:\n"+resetLink+"\n"

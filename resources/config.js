@@ -7,7 +7,7 @@ module.exports = {
 
     mail: {
         service: "gmail",
-        user: "nilsmeinhard@gmail.com",
+        user: "tipsy.nu@gmail.com",
         passwd: "??????",
         port:25
     },
