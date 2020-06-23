@@ -7,6 +7,7 @@ function login() {
             $.ajax({
                 type: "POST",
                 url: "/login",
+                cache: false, 
                 data: loginInfo,
                 success: function (data, status, jqxhr) {
                     $("#basicModal").modal("hide");
@@ -39,6 +40,7 @@ function checkInvites(inviteToken) {
         $.ajax({
             type: "POST",
             url: "/addInvitedUserToGroup",
+            cache: false, 
             data: {inviteToken:inviteToken},
             success: function (data, status, jqxhr) {
                 var groupName=data.groupName;
@@ -82,6 +84,7 @@ function forgotPassword(e) {
         $.ajax({
             type: "POST",
             url: "/forgotPassword",
+            cache: false, 
             data: {
                 identityType: identityType,
                 identity: identity
@@ -134,6 +137,7 @@ function resetPassword(resetToken) {
         $.ajax({
                 type: "POST",
                 url: "/resetPassword",
+                cache: false, 
                 data: {
                     password: password,
                     resetToken:resetToken
@@ -278,6 +282,7 @@ function configureUser() {
                 $.ajax({
                     type: "POST",
                     url: "/register",
+                    cache: false, 
                     data: userInfo,
                     success: function (data, status, jqxhr) {
                         reloadIfLoggedOut(jqxhr);
@@ -312,6 +317,7 @@ function configureUser() {
                         $.ajax({
                             type: "POST",
                             url: "/updateUserInfo",
+                            cache: false, 
                             data: userInfo,
                             success: function (data, status, jqxhr) {
                                 reloadIfLoggedOut(jqxhr);
@@ -375,6 +381,7 @@ function updateGroup(groupId,name,button) {
     $.ajax({
         type: "POST",
         url: "/updateGroup",
+        cache: false, 
         data: {groupId:groupId,groupName:name},
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
@@ -401,6 +408,7 @@ function deleteGroup(groupId, row) {
         $.ajax({
             type: "POST",
             url: "/deleteGroup",
+            cache: false, 
             data: { groupId: groupId },
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
@@ -434,6 +442,7 @@ function configureGroupMembers() {
     $.ajax({
         url: "/getGroupMembers",
         type: "POST",
+        cache: false, 
         data: {groupId:groupId},
         cache: false, 
         success: function(data, status,jqxhr){
@@ -460,6 +469,7 @@ function configureGroupMembers() {
                 $.ajax({
                     type: "POST",
                     url: "/inviteMemberToGroup",
+                    cache: false, 
                     data: {email:inviteEmail,groupId:globals.activeGroup.groupid},
                     success: function (data, status, jqxhr) {
                         reloadIfLoggedOut(jqxhr);
@@ -486,6 +496,7 @@ function removeInvite(email, rowElem) {
     $.ajax({
         type: "POST",
         url: "/deleteInviteToGroup",
+        cache: false, 
         data: { email: email, groupId: globals.activeGroup.groupid },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
@@ -503,6 +514,7 @@ function removeMember(memberId, groupId, rowElem) {
         $.ajax({
             type: "POST",
             url: "/removeMember",
+            cache: false, 
             data: { member: memberId, groupId: groupId },
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
@@ -552,6 +564,7 @@ function getPlayable(product,div) {
     $.ajax({
         type: "POST",
         url: "/getPlayable",
+        cache: false, 
         data: { product:product },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
@@ -597,6 +610,7 @@ function getPlayable(product,div) {
                  $.ajax({
                     type: "POST",
                     url: "/play",
+                    cache: false, 
                     data: drawInfo,
                     success: function (data, status, jqxhr) {
                         reloadIfLoggedOut(jqxhr);
@@ -641,6 +655,7 @@ function updateResults(groupId) {
     $.ajax({
         type: "GET",
         url: "/updateResults?groupId="+groupId,
+        cache: false, 
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             getResults(groupId);
@@ -661,6 +676,7 @@ function getResults(groupId) {
     $.ajax({
         type: "GET",
         url: "/getResults?groupId="+groupId,
+        cache: false, 
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             data.forEach(function(e) {
@@ -739,6 +755,7 @@ function deleteDraw(drawId) {
     $.ajax({
         type: "POST",
         url: "/deleteDraw",
+        cache: false, 
         data: { drawId: drawId },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
