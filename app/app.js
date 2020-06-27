@@ -315,19 +315,25 @@ app.post('/deleteGroup',(req,res)=> {
 
 })
 
-app.post('/inviteMemberToGroup',(req,res)=> {
-    var userId=sessionHandler.getSession(req).userId;
-    var groupId=req.body.groupId;
-    var email=req.body.email;
-    mailsender.inviteMember(userId,groupId,email,req,res, function(status,err) {
-        if(status) {
-            res.sendStatus(200);                    
+app.post('/inviteMemberToGroup', (req, res) => {
+    var userId = sessionHandler.getSession(req).userId;
+    var groupId = req.body.groupId;
+    var email = req.body.email;
+    db.getGroupInfo(groupId, userId, function (status, groupInfo) {
+        if (status) {
+            mailsender.inviteMember(userId, groupInfo, email, req, res, function (status, err) {
+                if (status) {
+                    res.sendStatus(200);
+                } else {
+                    if (err.errno === 19) {
+                        res.sendStatus(403);
+                    } else {
+                        res.sendStatus(500);
+                    }
+                }
+            });
         } else {
-            if(err.errno===19) {
-                res.sendStatus(403);
-            } else {
-                res.sendStatus(500);
-            }
+            res.sendStatus(500);
         }
     })
 

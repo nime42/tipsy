@@ -123,8 +123,16 @@ function createGroup(userId,groupName,callback) {
     })  
 }
 
-//createGroup(20,"nisses",function(status,groupId,err) {console.log(status,groupId,err)});
-
+function getGroupInfo(groupId,groupAdmin,callback) {
+    var sql="select groupid,groupname,username,email,name from v_group_members where groupid=? and userid=? and admin=true";
+    db.all(sql,groupId,groupAdmin,function (err, row) {
+        if (!row) {
+            callback(false,err);
+        } else {
+            callback(true, row[0]);
+        }
+    });
+} 
 
 function updateGroup(userId,groupId,groupName, callback) {
     var sql="update groups set groupname=? where id=? and ? in (select userid from group_members where groupid=? and admin=true)";
@@ -562,6 +570,7 @@ module.exports = {
     getResults:getResults,
     updateDrawResult:updateDrawResult,
     deleteDraw:deleteDraw,
+    getGroupInfo:getGroupInfo,
     getDbInstance:getDbInstance
 }
 

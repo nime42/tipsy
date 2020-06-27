@@ -21,13 +21,15 @@ var transporter = nodemailer.createTransport({
   });
   
 
-function sendMail(from,to,subject,text, callback) {
+function sendMail(from,to,cc,subject,text, callback) {
     var mailOptions = {
         from: from,
         to: to,
+        cc:cc,
         subject: subject,
         text: text
       };
+      console.log(mailOptions);
       transporter.sendMail(mailOptions, callback);      
 }
 
@@ -40,7 +42,7 @@ function sendPasswordReset(userId,mailadress,req,res,callback) {
             var to=mailadress;
             var subject="Uppdatera lösenord";
             var message="Hej!\nAnvänd nedanstående länk för att återställa dit lösenord på tipsy.nu:\n"+resetLink+"\n"
-            sendMail(from,to,subject,message, function(err) {
+            sendMail(from,to,undefined,subject,message, function(err) {
                 if(err!==null) {
                     res.sendStatus(500);
                 } else {
@@ -56,13 +58,28 @@ function sendPasswordReset(userId,mailadress,req,res,callback) {
 } 
 
 
-function inviteMember(groupAdmin,groupId,mailadress,req,res,callback) {
-    db.inviteUserToGroup(groupAdmin,mailadress,groupId,function(status,data) {
+function inviteMember(groupAdmin,groupInfo,mailadress,req,res,callback) {
+    db.inviteUserToGroup(groupAdmin,mailadress,groupInfo.groupid,function(status,data) {
         if(status) {
             var token=data;
             var inviteLink = req.protocol + '://' + req.get('host') +"/main.html?invite-token="+token;
-            console.log(inviteLink);
-            res.sendStatus(200); 
+            var name=groupInfo.name!==""?groupInfo.name:groupInfo.username;
+            var ccmail=groupInfo.mail;
+            var groupName=groupInfo.groupname;
+            var message="Hej\nDu har blivit inbjuden av "+name+" att bli medlem i tipsgruppen "+groupName+" på www.tipsy.nu.\nAnvänd denna länk för att logga in eller skapa din användare:\n\t"+inviteLink+"\n\nMvh\nTipsy";
+            var from="tipsy.nu@gmail.com";
+            var to=mailadress;
+            var subject="Inbjudan till Tipsy.nu";
+            cc=groupInfo.email;
+            sendMail(from,to,cc,subject,message, function(err) {
+                if(err!==null) {
+                    console.log(err);
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(200);          
+                }
+            });
+
         } else {
             if(data.errno===19) {
                 res.sendStatus(403);

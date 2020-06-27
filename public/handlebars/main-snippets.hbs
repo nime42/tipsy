@@ -154,7 +154,7 @@
               <button type="button" class="close" data-dismiss="modal">&times;</button>
               <h4 class="modal-title">Gruppens Medlemmar</h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="overflow:auto;">
               <p id="error-message" class="text-center text-danger" style="display: none;"></p>
               
 
@@ -170,10 +170,10 @@
                   <tbody>
                     {{#each members}}
                     <tr>
-                      <td>{{name}}</td>
-                      <td>{{email}}</td>
-                      <td>{{phonenr}}</td>
-                      <td>{{username}}</td>
+                      <td nowrap>{{name}}</td>
+                      <td nowrap>{{email}}</td>
+                      <td nowrap>{{phonenr}}</td>
+                      <td nowrap>{{username}}</td>
                       {{#if isDeletable}}
                         <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></span></td>
                       {{/if}}
