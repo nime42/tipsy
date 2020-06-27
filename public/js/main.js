@@ -758,7 +758,9 @@ function parseRows(rows) {
             }
         }
 
-        if(res.status!="Avslutad") {
+        if (res.status == "Inte startat") {
+            res.result="- -";
+        } else if(res.status!="Avslutad") {
             res.result="("+res.result+")";
         }
 
