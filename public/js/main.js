@@ -616,7 +616,13 @@ function getPlayable(product,div) {
                         reloadIfLoggedOut(jqxhr);
                         updateResults(globals.activeGroup.groupid);
                         $("#basicModal").modal('hide');
-
+                        var url=
+                        dialog("#yes-no", "Lägg spel hos Svenska spel",
+                        "Vill du gå till svenska spel och göra det faktiska spelet där?",
+                        { text: "Ja", func: function() {
+                            window.open("https://spela.svenskaspel.se/"+drawInfo.product.toLowerCase().split(" ")[0]+"/"+drawInfo.drawnumber);
+                         }},
+                        { text: "Nej", func: function () {return; } })
                         //console.log("ok");
                     },
                     error: function (data, status, jqxhr) {
