@@ -70,7 +70,7 @@ function getPlayable(product,callback) {
     getMatchDates(product, year, month, function (status, resultDates) {
         if (status) {
             let res = resultDates.find(e => {
-                return e.drawState === "Open";
+                return e.drawState === "Closed";
             });
 
 
