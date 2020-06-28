@@ -42,9 +42,9 @@
               </div>
 
               {{#if register}}
-              <input type="submit" class="btn btn-default" value="Skapa"/>
+              <input type="button" id="reg-or-update" class="btn btn-default" value="Skapa"/>
               {{else}}
-              <input type="submit" class="btn btn-default" value="Uppdatera"/>
+              <input type="button" id="reg-or-update" class="btn btn-default" value="Uppdatera"/>
               {{/if}}
 
               <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
@@ -84,7 +84,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<button type="submit" class="btn btn-primary btn-block btn-lg">Logga in</button>
+						<button type="button" id="log-in" class="btn btn-primary btn-block btn-lg">Logga in</button>
 					</div>
 					<p class="hint-text"><a id="forgot-password" href="#">Glömt lösenord?</a></p>
 				</form>
@@ -446,7 +446,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<button type="submit" class="btn btn-primary btn-block btn-lg">Uppdatera</button>
+						<button type="button" id="reset-passw" class="btn btn-primary btn-block btn-lg">Uppdatera</button>
 					</div>
 				</form>
 

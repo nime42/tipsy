@@ -53,7 +53,6 @@ app.use((req,res,next)=>{
         return;
     }
 
-
     res.redirect('/main.html');
 
     });
@@ -121,9 +120,11 @@ app.get('/logout',(req,res)=> {
 })
 
 app.post('/register',(req,res)=> {
+    console.log("register",req.body);
     var username = req.body.username;
     db.getDbInstance().run("Begin");
     db.createUser(username,function(status,id,err) {
+        console.log("createuser",status,id,err);
         if(status) {
             db.updateUserInfo(id,req.body, function(status,err) {
                 if(status) {

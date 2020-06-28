@@ -1,7 +1,7 @@
 
 function login() {
     hbsModal("#basicModal", hbsTemplates["main-snippets"]["login"]);
-    $("#basicModal").find("form").submit(function (e) {
+    $("#basicModal").find("#log-in").click(function (e) {
         var loginInfo = collectLoginInfo("#basicModal");
         if (loginInfo !== null) {
             $.ajax({
@@ -24,7 +24,6 @@ function login() {
 
             });
         }
-        return false; //Returnera false så att inte submitten slår igenom
     });
 
     $("#basicModal").find('#forgot-password').click(function (e) {
@@ -119,7 +118,7 @@ function forgotPassword(e) {
 function resetPassword(resetToken) {
     data={};
     hbsModal("#basicModal",hbsTemplates["main-snippets"]["reset-password"],data);
-    $("#basicModal").find("form").submit(function (e) {
+    $("#basicModal").find("#reset-passw").click(function (e) {
         var password=$("#basicModal").find("#password").val().trim();
         var pwd2=$("#basicModal").find("#password2").val().trim();
 
@@ -276,7 +275,7 @@ function configureUser() {
 
     if (!globals.userinfo) {
         hbsModal("#basicModal", hbsTemplates["main-snippets"]["user-info"], { register: true });
-        $("#basicModal").find("form").submit(function (e) {
+        $("#basicModal").find("#reg-or-update").click(function (e) {
             var userInfo = collectUserInfo("#basicModal",true);
             if (userInfo !== null) {
                 $.ajax({
@@ -285,7 +284,7 @@ function configureUser() {
                     cache: false, 
                     data: userInfo,
                     success: function (data, status, jqxhr) {
-                        reloadIfLoggedOut(jqxhr);
+                        //reloadIfLoggedOut(jqxhr);
                         $("#basicModal").modal("hide");
                         initApp();
                     },
@@ -301,8 +300,6 @@ function configureUser() {
 
             }
         });
-        //Returnera false så att inte submitten slår igenom
-        return false;
     } else {
 
         $.ajax({
@@ -311,7 +308,7 @@ function configureUser() {
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 hbsModal("#basicModal", hbsTemplates["main-snippets"]["user-info"], data);
-                $("#basicModal").find("form").submit(function (e) {
+                $("#basicModal").find("#reg-or-update").click(function (e) {
                     var userInfo = collectUserInfo("#basicModal");
                     if (userInfo !== null) {
                         $.ajax({
@@ -328,8 +325,6 @@ function configureUser() {
                             }
                         });
                     }
-                    //Returnera false så att inte submitten slår igenom
-                    return false;
 
                 });
 
