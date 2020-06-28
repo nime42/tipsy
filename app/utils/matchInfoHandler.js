@@ -151,6 +151,7 @@ function parseDraw(data) {
     res.productName = r.productName, //r.productFamily?r.productFamily:r.productName; //handle when productName="topptipset Extra for example"
     res.drawNumber=r.drawNumber;
     res.regCloseTime=r.regCloseTime;
+    res.rowPrice=r.rowPrice.replace(",",".");
     res.draws=[];
     
     r.drawEvents.forEach(e => {

@@ -592,6 +592,7 @@ function getPlayable(product,div) {
                      product:data.productName,
                      drawstate:data.drawState,
                      regclosetime:data.regCloseTime,
+                     rowprice:data.rowPrice,
                      rows:[]
                  }
                  let bettings=getDrawBettings(div);

@@ -362,13 +362,13 @@ function addPlay(userId, playdata, callback) {
             callback(false, { errno: -1, errmsg: "User is not member in group!" });
         } else {
             var dbprops = {};
-            ["groupid","drawnumber", "product", "drawstate", "regclosetime"].forEach(function (key) {
+            ["groupid","drawnumber", "product", "drawstate", "regclosetime","rowprice"].forEach(function (key) {
                 dbprops["$" + key] = playdata[key];
             });
             dbprops["$created_by"] = userId;
             dbprops["$created_by_name"] = row.name !== "" ? row.name : row.username;
             db.run("Begin");
-            sql = "INSERT INTO draws(groupid,drawnumber,product,drawstate,regclosetime,created_by,created_by_name) VALUES($groupid,$drawnumber,$product,$drawstate,$regclosetime,$created_by,$created_by_name)";
+            sql = "INSERT INTO draws(groupid,drawnumber,product,drawstate,regclosetime,rowprice,created_by,created_by_name) VALUES($groupid,$drawnumber,$product,$drawstate,$regclosetime,$rowprice,$created_by,$created_by_name)";
             db.run(sql, dbprops, function (err) {
                 if (err == null) {
                     var drawId = this.lastID;
