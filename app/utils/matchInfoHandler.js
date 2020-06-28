@@ -153,6 +153,7 @@ function parseDraw(data) {
     res.drawNumber=r.drawNumber;
     res.regCloseTime=r.regCloseTime;
     res.draws=[];
+    
     r.drawEvents.forEach(e => {
         let row={};
         row.eventDescription=e.eventDescription;
@@ -161,15 +162,17 @@ function parseDraw(data) {
         row.svenskaFolket=e.svenskaFolket;
         row.match=e.match;
         row.status=e.match.status;//To harmonize with resultInfo (see parseResult)
-
-        
-        let current=e.match.result.find(e=>(e.descripton=="Full time" || e.description.match(/.*Current/i)));
+        let current=e.match.result.find(e=>(e.description==="Full time" ));
         if(current) {
             row.result=current.home+" - "+current.away;//Also for harmonizing with resultInfo
         } else {
-            row.result="0 - 0";
+            current=e.match.result.find(e=>(e.description.match(/.*Current/i)));
+            if(current) {
+                row.result=current.home+" - "+current.away;//Also for harmonizing with resultInfo
+            } else {
+             row.result="0 - 0";
+            }
         }
-
 
 
         res.draws.push(row);
