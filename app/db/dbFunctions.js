@@ -408,7 +408,7 @@ function addPlay(userId, playdata, callback) {
 
 function getResults(userId, groupId, callback) {
 
-    let sql = "select *from group_members where userid=? and groupid=?";
+    let sql = "select * from group_members where userid=? and groupid=?";
     db.get(sql, userId, groupId, function (err, row) {
         if (!row) {
             callback(false, { errno: -1, errmsg: "User is not member in group!" });

@@ -696,6 +696,8 @@ function getResults(groupId) {
                     e.totalWin=0;
                     e.results.forEach(function(el) {e.totalWin +=el.total;});
                 }
+
+                e.created=new Date(e.created+" GMT+000" ).toLocaleString();
                 console.log(e);
 
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
@@ -755,7 +757,7 @@ function parseRows(rows) {
 
         if (res.status == "Inte startat") {
             res.result="- -";
-        } else if(res.status!="Avslutad") {
+        } else if(res.status!="Avslutad" && res.status!="Slut efter förlängning") {
             res.result="("+res.result+")";
         }
 
