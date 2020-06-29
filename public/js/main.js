@@ -238,29 +238,28 @@ function initGroups() {
         $('#available-groups').change(function () {
             var selected = $(this).find("option:selected").val();
 
-            globals.activeGroup={};
-            for(var i=0;i<globals.usergroups.length;i++) {
-                if(globals.usergroups[i].groupid==selected) {
-                    globals.activeGroup=globals.usergroups[i];
+            globals.activeGroup = {};
+            for (var i = 0; i < globals.usergroups.length; i++) {
+                if (globals.usergroups[i].groupid == selected) {
+                    globals.activeGroup = globals.usergroups[i];
                     break;
                 }
             }
             $("#latest-games").show();
             $("#info").hide();
-            $("#group-title").text(globals.activeGroup.groupname?globals.activeGroup.groupname:"");
-             updateResults(globals.activeGroup.groupid);
-             
+            $("#group-title").text(globals.activeGroup.groupname ? globals.activeGroup.groupname : "");
+            updateResults(globals.activeGroup.groupid);
         })
 
         $("#group-title").text("");
         $("#latest-games").hide();
 
-        if(globals.activeGroup.groupid===undefined && globals.usergroups.length>0) {
-            globals.activeGroup=globals.usergroups[0];
+        if (globals.activeGroup.groupid === undefined && globals.usergroups.length > 0) {
+            globals.activeGroup = globals.usergroups[0];
         }
 
         if (globals.activeGroup.groupid) {
-            $('#available-groups').val(globals.activeGroup.groupid).trigger("change");    
+            $('#available-groups').val(globals.activeGroup.groupid).trigger("change");
         }
 
     });
@@ -396,7 +395,7 @@ function updateGroup(groupId,name,button) {
 
 
 
-function deleteGroup(groupId, row) {
+function deleteGroup(groupId,groupName, row) {
     
 
     var fun = function () {
@@ -420,7 +419,7 @@ function deleteGroup(groupId, row) {
     }
 
     dialog("#yes-no", "Ta bort Grupp",
-        "Är du säker på att du vill ta bort gruppen?<br>(Tänk på att all om info gruppen då försvinner)",
+        "Är du säker på att du vill ta bort gruppen '"+groupName+"'?<br>(Tänk på att all om info gruppen då försvinner)",
         { text: "Ja", func: fun },
         { text: "Nej", func: function () {return; } })
 

@@ -126,7 +126,7 @@
                 <input type="text" class="form-control group-name" value="{{groupname}}" onkeyup="$(this).parent().find('.save-button').css('color', 'lightgreen').prop('disabled', false)">
                 <div class="input-group-btn">
                   <button class="btn btn-link save-button" disabled title="Spara" onclick="updateGroup({{groupid}},$(this).parent().parent().find('.group-name').val(),$(this))"><span  class="glyphicon glyphicon-ok-sign"></span></button>
-                  <button class="btn btn-link" title="Ta bort" onclick="deleteGroup({{groupid}},$(this).parent().parent())"><span style="color:red" class="glyphicon glyphicon-remove"></span></button>
+                  <button class="btn btn-link" title="Ta bort" onclick="deleteGroup({{groupid}},'{{groupname}}',$(this).parent().parent())"><span style="color:red" class="glyphicon glyphicon-remove"></span></button>
                 </div>
               </span>
               {{/each}}
