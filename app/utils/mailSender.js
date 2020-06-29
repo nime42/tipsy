@@ -70,8 +70,8 @@ function inviteMember(groupAdmin,groupInfo,mailadress,req,res,callback) {
             var from="tipsy.nu@gmail.com";
             var to=mailadress;
             var subject="Inbjudan till Tipsy.nu";
-            cc=groupInfo.email;
-            sendMail(from,to,cc,subject,message, function(err) {
+            
+            sendMail(from,to,undefined,subject,message, function(err) {
                 if(err!==null) {
                     console.log(err);
                     res.sendStatus(500);

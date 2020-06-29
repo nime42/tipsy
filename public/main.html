@@ -70,7 +70,11 @@
    text-align: center;
 }
 
-  </style>
+body {
+  font-size: 12px;
+}
+
+</style>
 
 <script>
   $(function () {
@@ -169,10 +173,10 @@
         </ul>
   
         <ul class="nav navbar-nav navbar-right">
-          <li id="configure-user"><a href="#"><span class="glyphicon glyphicon glyphicon-user"></span><span id="logged-in-user">Skapa användare</span></a></li>
+          <li id="configure-user"><a class="clickable-menu" href="#"><span class="glyphicon glyphicon glyphicon-user"></span><span id="logged-in-user">Skapa användare</span></a></li>
   
-          <li id="login"><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logga in</a></li>
-          <li id="logout" style="display: none;"><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logga ut</a></li>
+          <li id="login"><a class="clickable-menu" href="#"><span class="glyphicon glyphicon-log-in"></span> Logga in</a></li>
+          <li id="logout" style="display: none;"><a class="clickable-menu" href="#"><span class="glyphicon glyphicon-log-out"></span> Logga ut</a></li>
   
       </ul>
       </div>
@@ -183,8 +187,10 @@
 
 
   <div class="container-fluid">  
-    <div id="info" class="row content">
+    <div id="info" class="row content" style="max-width: 750px;margin-left: 10px;margin-right: 10px;"
+>
       <div class="col-12 text-left"> 
+        <br/>
         <br/>
         <br/>
         <br/>
