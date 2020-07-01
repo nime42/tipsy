@@ -440,11 +440,13 @@ app.get('/getResults',(req,res)=> {
 
 app.get('/updateResults',(req,res)=> {
     var groupId=req.query.groupId;
-    updateResults(groupId)
-    res.sendStatus(200);
+    updateResults(groupId,function() {
+        res.sendStatus(200);
+    });
+    
 });
 
-function updateResults(groupId) {
+function updateResults(groupId,callback) {
     let sql="select id,drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
     let dbi=db.getDbInstance();
     const rows=dbi.prepare(sql).all(groupId);
@@ -458,12 +460,22 @@ function updateResults(groupId) {
                 drawToCheck[key]=[r.id];
             }
         })
+        let nrOfChecks=Object.keys(drawToCheck).length;
+        if(nrOfChecks===0) {
+            callback();
+        }
         for(key in drawToCheck) {
             let tmp=key.split(";");
             let drawNumber=tmp[0];
             let product=tmp[1];
             let drawIds=drawToCheck[key];
-            checkDraw(product,drawNumber,drawIds);
+            checkDraw(product,drawNumber,drawIds,function(status) {
+                console.log(nrOfChecks);
+                nrOfChecks--;
+                if(nrOfChecks===0) {
+                    callback();
+                }
+            });
         }
     } 
 }
@@ -509,6 +521,7 @@ function checkDraw(product, drawNr, drawIds, callback = console.log) {
                         }
                     });
                 })();
+                callback(true);
             } catch (err) {
                 callback(false, err);
             }

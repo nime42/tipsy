@@ -305,7 +305,8 @@ function addPlay(userId, playdata, callback = console.log) {
             db.transaction(() => {
                 playdata.created_by = userId;
                 playdata.created_by_name = row.name !== "" ? row.name : row.username;
-                sql = "INSERT INTO draws(groupid,drawnumber,product,drawstate,regclosetime,rowprice,created_by,created_by_name,systemsize) VALUES(@groupid,@drawnumber,@product,@drawstate,@regclosetime,@rowprice,@created_by,@created_by_name,@systemsize)";
+                
+                sql = "INSERT INTO draws(groupid,drawnumber,product,drawstate,regclosetime,rowprice,created_by,created_by_name,systemsize,extra_bet) VALUES(@groupid,@drawnumber,@product,@drawstate,@regclosetime,@rowprice,@created_by,@created_by_name,@systemsize,@extra_bet='true')";
                 const res = db.prepare(sql).run(playdata);
                 let drawId = res.lastInsertRowid;
                 sql = "insert into draw_rows(drawid,rownr,teams,bet) values(?,?,?,?)";
