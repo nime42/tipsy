@@ -42,12 +42,11 @@ function getDrawAndResult(product, draw, callback) {
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/forecast/" + draw);
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw+"/result");
     let httpReq=config.matchInfo.url+"/multifetch?urls="+urls.join("|")+"&_="+ new Date().getTime();
-
+    console.log(httpReq);
     fetch(httpReq)
         .then(res => res.json())
         .then(
             json => {
-                //console.log(json);
                 let res={};
                 res.draws=parseDraw(json.responses[0]);
                 res.forecast=parseForecast(json.responses[1]);

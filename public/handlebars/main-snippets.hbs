@@ -197,10 +197,6 @@
                 <div id="invites"  style="overflow-y:auto;height: 200px;">
                 {{#each invites}}
                 <p style="margin-bottom:0px;">{{email}}<span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeInvite('{{email}}',$(this).parent())"></span></p>
-                <!--<p>
-                  nilsmeinhard@gmail.com <span style="color:red" class="glyphicon glyphicon-remove"></span><br/>
-                  nm807@hotmail.com <span style="color:red" class="glyphicon glyphicon-remove"></span>
-                </p>-->
                 {{/each}}
                 </div>
 
@@ -216,6 +212,40 @@
 
 
 
+<script id="statistics" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+              <div style="overflow:auto;">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Namn</th>
+                      <th scope="col">Ordinarie Spel</th>
+                      <th scope="col">Extra spel</th>
+                      <th scope="col">Snitt Ordinarie Spel</th>
+                      <th scope="col">Snitt Extra Spel</th>
+                      <th scope="col">Snitt Totalt</th>
+                      <th scope="col">Vinst</th>
+
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each users}}
+                    <tr>
+                      <td nowrap>{{name}}</td>
+                      <td nowrap>{{email}}</td>
+                      <td nowrap>{{phonenr}}</td>
+                      <td nowrap>{{username}}</td>
+                    </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+
+
+
+  </div> 
+</script>
 
 
 

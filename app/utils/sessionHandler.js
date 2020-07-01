@@ -31,7 +31,7 @@ function purge() {
     sessions=sessions.filter(s=> (now-s.timestamp)<maxAge*1000);
 }
 
-var maxAge=60*60; //age in seconds
+var maxAge=2*60*60; //age in seconds
 var intervalTimer=setInterval(purge,maxAge*1000);
 function setPurgeIntervall(seconds) {
     clearInterval(intervalTimer);
@@ -39,35 +39,29 @@ function setPurgeIntervall(seconds) {
 }
 
 
-var saveSql="insert into saved_sessions(key,timestamp,userid) values(?,?,?)";
-var saveAttrs=["timestamp","userId"];
+var saveSql="insert into saved_sessions(key,timestamp,userid) values(@key,@timestamp,@userId)";
 
 function saveSessions(db,callback) {
-    db.serialize(() => {
-        db.run("begin");
-        Object.keys(sessions).forEach(k=>{
-            let o=sessions[k];
-            let args=[k];
-            saveAttrs.forEach(a=>{args.push(o[a])});
-            db.run(saveSql,args);
-        });
-        db.run("commit",function(err) {callback(err)});
+    let stmt=db.prepare(saveSql);
+    Object.keys(sessions).forEach(k=>{
+        let o=sessions[k];
+        o["key"]=k;
+        o["timestamp"]=o["timestamp"].toISOString();
+        stmt.run(o);
     });
-
+    callback(null);
 }
 
 var getSql="select key,timestamp,userId from saved_sessions";
 function resumeSessions(db) {
-    db.all(getSql,function(err,rows) {
-        rows.forEach(r=>{
-            sessions[r.key]={
-                timestamp:r.timestamp,
-                userId:r.userId
-            }
-        })
-        db.run("delete from saved_sessions");
+    const rows=db.prepare(getSql).all();
+    rows.forEach(r=>{
+        sessions[r.key]={
+            timestamp:r.timestamp,
+            userId:r.userId
+        }
     });
-
+    db.prepare("delete from saved_sessions").run();
 
 }
 

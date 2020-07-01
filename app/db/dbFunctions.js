@@ -447,7 +447,6 @@ function updateDrawResult(drawId,drawState,outcome) {
                 }
             }
             db.serialize(() => {
-                db.run("begin");
                 let sql="update draws set drawstate=?,nrofrights=? where id=?";
                 db.run(sql,drawState,data.maxRights,drawId);
                 sql="delete from draw_results where drawid=?";
@@ -455,14 +454,53 @@ function updateDrawResult(drawId,drawState,outcome) {
                 sql="insert into draw_results(drawid,rights,rows,worth) values(?,?,?,?)";
                 res.forEach(e=>{
                     db.run(sql,drawId,e.rights,e.rows,e.worth);   
-                });
-                db.run("commit");
+                });                
 
             });
 
         }
     });
 
+}
+
+function createEvent(drawId, drawState, callback) {
+    if (drawState === "Finalized") {
+        let sql = "select * from draws where id=?";
+        db.get(sql, drawId, function (err, drawrow) {
+            if (err === null) {
+                sql = "select * from draw_rows where drawid=?"
+                db.all(sql, drawId, function (err, rows) {
+                    if (err === null) {
+                        let system = 1;
+                        rows.forEach(r => { system *= r.bet.length });
+                        sql = "select sum(rows*worth) as worth from draw_results where drawid=?";
+                        db.get(sql, drawId, function (err, row) {
+                            if (err === null) {
+                                let worth=row.worth;
+                                
+                                sql="insert into events(groupid,eventtype,eventtime,userid,username,profit,cost,drawid) values(?,?,?,?,?,?,?,?)";
+                                db.run(sql,drawrow.groupid,drawrow.extra_bet===true?"EXTRA BET":"BETX",drawrow.regclosetime,drawrow.created_by,drawrow.created_by_name,worth,system*drawrow.rowprice,drawId,function(err) {
+                                    if(err===null) {
+                                        callback(true,err);
+                                    } else {
+                                        callback(false,err);
+                                    }
+                                });
+                            } else {
+                                callback(false,err);
+                            }
+                            
+                        })
+                    }  else {
+                        callback(false,err);
+                    }
+                })
+            }  else {
+                callback(false,err);
+            }
+        });
+    }
+    console.log(drawId, drawState);
 }
 
 function rectify(drawId, callback) {

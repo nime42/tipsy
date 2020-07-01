@@ -1,7 +1,7 @@
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
-var db=require('./db/dbFunctions.js');
+var db=require('./db/dbFunctions_better.js');
 var mailsender=require('./utils/mailSender.js');
 var sessionHandler=require('./utils/sessionHandler.js');
 var matchInfoHandler=require('./utils/matchInfoHandler.js');
@@ -120,32 +120,38 @@ app.get('/logout',(req,res)=> {
 })
 
 app.post('/register',(req,res)=> {
-    console.log("register",req.body);
+    console.log("register", req.body);
     var username = req.body.username;
-    db.getDbInstance().run("Begin");
-    db.createUser(username,function(status,id,err) {
-        console.log("createuser",status,id,err);
-        if(status) {
-            db.updateUserInfo(id,req.body, function(status,err) {
-                if(status) {
-                    sessionHandler.addSession(req,res,id);
-                    
-                    res.sendStatus(200);                    
-                    db.getDbInstance().run("Commit");
+    try {
+        db.getDbInstance().transaction(() => {
+            db.createUser(username, function (status, id, err) {
+                if (status) {
+                    db.updateUserInfo(id, req.body, function (status, err) {
+                        if (status) {
+                            sessionHandler.addSession(req, res, id);
+                            res.sendStatus(200);
+                        } else {
+                            res.sendStatus(500);
+                            throw "rollback";
+                        }
+                    })
                 } else {
-                    res.sendStatus(500);
-                    db.getDbInstance().run("Rollback");
+                    if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+                        res.sendStatus(403);
+                    } else {
+                        res.sendStatus(500);
+                    }
                 }
-            })
-        } else {
-            if(err.errno===19) {
-                res.sendStatus(403);
-            } else {
-                res.sendStatus(500);
-            }
-            db.getDbInstance().run("Rollback");
+            });
+
+
+        })();
+    } catch (err) {
+        if (err !== "rollback") {
+            console.log(err);
         }
-    });
+    }
+
 })
 
 app.post('/forgotPassword',(req,res)=> {
@@ -157,14 +163,14 @@ app.post('/forgotPassword',(req,res)=> {
         userName=req.body.identity;
     }    
 
-    db.getUserInfoByUserNameOrEmailOrPhone(userName,email,null,function(status,rows) {
+    db.getUserInfoByUserNameOrEmailOrPhone(userName,email,null,function(status,row) {
         if(status) {
-            if(rows.length===0) {
+            if(row.length===0) {
                 res.sendStatus(404);
                 return;
             } else {
-                var userId=rows[0].userid;
-                var mailAdr=rows[0].email;
+                var userId=row.userid;
+                var mailAdr=row.email;
                 mailsender.sendPasswordReset(userId,mailAdr,req,res);
             }
         } else {
@@ -259,6 +265,7 @@ app.post('/updateUserInfo',(req,res)=> {
         if(status) {
             res.sendStatus(200);                    
         } else {
+            console.log(err);
             res.sendStatus(500);
         }
     })
@@ -272,7 +279,7 @@ app.post('/createGroup',(req,res)=> {
         if(status) {
             res.sendStatus(200);                    
         } else {
-            if(err.errno===19) {
+            if(err.code==='SQLITE_CONSTRAINT_UNIQUE') {
                 res.sendStatus(403);
             } else {
                 res.sendStatus(500);
@@ -291,7 +298,7 @@ app.post('/updateGroup',(req,res)=> {
         if(status) {
             res.sendStatus(200);                    
         } else {
-            if(err.errno===19) {
+            if(err.code==='SQLITE_CONSTRAINT_UNIQUE') {
                 res.sendStatus(403);
             } else {
                 res.sendStatus(500);
@@ -433,102 +440,79 @@ app.get('/getResults',(req,res)=> {
 
 app.get('/updateResults',(req,res)=> {
     var groupId=req.query.groupId;
-    updateResults(groupId,function(status) {
-        if(status) {
-            res.sendStatus(200);
-        } else {
-            res.sendStatus(200);
-        }
-    })
+    updateResults(groupId)
+    res.sendStatus(200);
 });
 
-function updateResults(groupId,callback) {
+function updateResults(groupId) {
     let sql="select id,drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
     let dbi=db.getDbInstance();
-    dbi.all(sql,groupId,function(err,rows) {
-        if(rows.length>0) {
-            let drawToCheck=[];
-            rows.forEach(r=>{
-                let key=r.drawnumber+";"+r.product;
-                if(drawToCheck[key]) {
-                    drawToCheck[key].push(r.id);
-                } else {
-                    drawToCheck[key]=[r.id];
-                }
-            })
-            let nrOfCallsToAtg=Object.keys(drawToCheck).length
-            for(key in drawToCheck) {
-                let tmp=key.split(";");
-                let drawNumber=tmp[0];
-                let product=tmp[1];
-                let drawIds=drawToCheck[key];
-                checkDraw(product,drawNumber,drawIds,function(status,err) {
-                    --nrOfCallsToAtg;
-                    if(nrOfCallsToAtg===0) {
-                        callback(true);
-                    }
-                });
+    const rows=dbi.prepare(sql).all(groupId);
+    if(rows.length>0) {
+        let drawToCheck=[];
+        rows.forEach(r=>{
+            let key=r.drawnumber+";"+r.product;
+            if(drawToCheck[key]) {
+                drawToCheck[key].push(r.id);
+            } else {
+                drawToCheck[key]=[r.id];
             }
-
-        } else {
-            callback(true);
+        })
+        for(key in drawToCheck) {
+            let tmp=key.split(";");
+            let drawNumber=tmp[0];
+            let product=tmp[1];
+            let drawIds=drawToCheck[key];
+            checkDraw(product,drawNumber,drawIds);
         }
-    })
+    } 
 }
 
 
-function checkDraw(product,drawNr,drawIds,callback) {
-    matchInfoHandler.getDrawAndResult(product.toLowerCase(),drawNr, function(status,data) {
-        if(status) {
-            let matches=[];
-            let outcome=null;
-            if(data.result!==null) {
-                matches=data.result.results;
-                if(data.result) {
-                    outcome=data.result.distribution;
+function checkDraw(product, drawNr, drawIds, callback = console.log) {
+    matchInfoHandler.getDrawAndResult(product.toLowerCase(), drawNr, function (status, data) {
+        if (status) {
+            let matches = [];
+            let outcome = null;
+            if (data.result !== null) {
+                matches = data.result.results;
+                if (data.result) {
+                    outcome = data.result.distribution;
                 }
             } else {
-                matches=data.draws.draws;
-                if(data.forecast) {
-                    outcome=data.forecast.winresult;
+                matches = data.draws.draws;
+                if (data.forecast) {
+                    outcome = data.forecast.winresult;
                 }
             }
-            let rows=[];
+            let rows = [];
             matches.forEach(e => {
-                let row={}
-                row.status=e.status;
-                row.rownr=e.eventNumber;
-                row.result=e.result;
+                let row = {}
+                row.status = e.status;
+                row.rownr = e.eventNumber;
+                row.result = e.result;
                 rows.push(row);
-                
+
             });
-            let drawState=data.draws.drawState
-            let dbi=db.getDbInstance();
-            dbi.serialize(() => {
-                dbi.run("begin");
-                let sql = "update draw_rows set result=?,status=? where drawid=? and rownr=?"
-                drawIds.forEach(i => {
-                    rows.forEach(r => {
-                        dbi.run(sql,r.result,r.status,i,r.rownr,function(err) {
-                            if(err) {
-                                if(callback) {
-                                    callback(false,err);
-                                } else {
-                                    console.log(err);
-                                }
-                            }
+            let drawState = data.draws.drawState;
+            let dbi = db.getDbInstance();
+            try {
+                dbi.transaction(() => {
+                    let sql = "update draw_rows set result=?,status=? where drawid=? and rownr=?"
+                    let stmt = dbi.prepare(sql);
+                    drawIds.forEach(i => {
+                        rows.forEach(r => {
+                            stmt.run(r.result, r.status, i, r.rownr);
                         });
-                    })
-                    if(outcome!==null) {
-                        db.updateDrawResult(i,drawState,outcome);
-                    }
-                });
-                dbi.run("commit",function(err) {
-                    if(callback) {
-                        callback(true);
-                    }
-                })
-            })
+                        if (outcome !== null) {
+                            db.updateDrawResult(i, drawState, outcome);
+                        }
+                    });
+                })();
+            } catch (err) {
+                callback(false, err);
+            }
+
         }
     })
 }
@@ -547,6 +531,16 @@ app.post('/deleteDraw',(req,res)=> {
     })
 
 })
+
+app.post('/getUserSurplus', (req,res)=>{
+    var userId=sessionHandler.getSession(req).userId;
+    var groupId=req.body.groupId;
+    db.getUserSurplus(userId,groupId,function(surplus) {
+        res.json({surplus:surplus});
+    })
+   
+})
+
 
 process.on('SIGINT', function(e) {
     console.log("exit");

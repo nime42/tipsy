@@ -17,7 +17,7 @@ token TEXT, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (groupid) R
 );
 
 
-CREATE TABLE draws (id integer PRIMARY KEY AUTOINCREMENT, groupid INTEGER REFERENCES groups (id) ON DELETE CASCADE, drawnumber integer, product text, drawstate text, regclosetime date, created_by INTEGER, created_by_name text, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,nrofrights INTEGER DEFAULT (0), rowprice number);
+CREATE TABLE draws (id integer PRIMARY KEY AUTOINCREMENT, groupid INTEGER REFERENCES groups (id) ON DELETE CASCADE, drawnumber integer, product text, drawstate text, regclosetime date, created_by INTEGER, created_by_name text, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,nrofrights INTEGER DEFAULT (0), rowprice number,extra_bet BOOLEAN,systemsize integer);
 
 CREATE TABLE "users" ( "id" INTEGER PRIMARY KEY AUTOINCREMENT, "username" TEXT);
 
@@ -51,6 +51,22 @@ create table saved_sessions(
 key text,
 timestamp timestamp,
 userId integer);
+
+
+CREATE TABLE events (
+    id integer PRIMARY KEY AUTOINCREMENT, 
+    groupid integer, 
+    eventtype text NOT NULL CHECK (eventtype IN ('BET', 'EXTRA BET', 'DEPOSIT', 'PAYMENT')), 
+    eventtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    userid integer, 
+    username text, 
+    profit number, 
+    cost number, 
+    drawid integer, 
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    FOREIGN KEY (groupid) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
+    FOREIGN KEY (drawid) REFERENCES draws (id) ON DELETE CASCADE
+    );
 
 create view v_draws_in_groups as
 select d.*,r.rows from draws d left join (select drawid,group_concat(rownr||';'||teams||';'||bet||';'||coalesce(result,'')||';'||coalesce(status,''),'|') as rows from draw_rows group by drawid) r on d.id=r.drawid; 

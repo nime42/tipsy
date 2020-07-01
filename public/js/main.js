@@ -425,6 +425,21 @@ function deleteGroup(groupId,groupName, row) {
 
 }
 
+function getUserSurplus(callback) {
+    var groupId=globals.activeGroup.groupid;
+    $.ajax({
+        url: "/getUserSurplus",
+        type: "POST",
+        cache: false, 
+        data: {groupId:groupId},
+        cache: false,
+        success: function(data, status,jqxhr){
+            callback(data.surplus);
+        }
+    });
+
+
+}
 
 function configureGroupMembers() {
     var groupId=globals.activeGroup.groupid;
