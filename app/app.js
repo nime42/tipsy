@@ -470,7 +470,6 @@ function updateResults(groupId,callback) {
             let product=tmp[1];
             let drawIds=drawToCheck[key];
             checkDraw(product,drawNumber,drawIds,function(status) {
-                console.log(nrOfChecks);
                 nrOfChecks--;
                 if(nrOfChecks===0) {
                     callback();
