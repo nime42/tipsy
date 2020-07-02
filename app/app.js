@@ -120,7 +120,6 @@ app.get('/logout',(req,res)=> {
 })
 
 app.post('/register',(req,res)=> {
-    console.log("register", req.body);
     var username = req.body.username;
     try {
         db.getDbInstance().transaction(() => {
