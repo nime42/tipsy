@@ -460,10 +460,7 @@ function updateResults(groupId,callback) {
                 drawToCheck[key]=[r.id];
             }
         })
-        let nrOfChecks=Object.keys(drawToCheck).length;
-        if(nrOfChecks===0) {
-            callback();
-        }
+
         for(key in drawToCheck) {
             let tmp=key.split(";");
             let drawNumber=tmp[0];
@@ -476,7 +473,9 @@ function updateResults(groupId,callback) {
                 }
             });
         }
-    } 
+    } else {
+        callback();
+    }
 }
 
 
