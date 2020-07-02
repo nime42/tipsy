@@ -460,6 +460,8 @@ function updateResults(groupId,callback) {
             }
         })
 
+        let nrOfChecks=Object.keys(drawToCheck).length;
+                
         for(key in drawToCheck) {
             let tmp=key.split(";");
             let drawNumber=tmp[0];
