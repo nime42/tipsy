@@ -18,7 +18,8 @@ function hashPassword(password) {
 
 function authenticateUser(username, password, callback=console.log) {
     var hashed = hashPassword(password);
-    const row=db.prepare('SELECT userid FROM v_userinfo WHERE username = ? AND password = ?').get(username, hashed);
+    db.prepare("select * from v_userinfo where (lower(username)=lower(?) or lower(email)=lower(?)) and password=?").get(username,username, hashed);
+    const row=db.prepare("select * from v_userinfo where (lower(username)=lower(?) or lower(email)=lower(?)) and password=?").get(username,username, hashed);
         if (!row) {
             callback(false);
         } else {
@@ -72,7 +73,7 @@ function getUserInfo(userId, callback=console.log) {
 function getUserInfoByUserNameOrEmailOrPhone(userName,email,phonenr, callback=console.log) {
     email=(email===""?undefined:email);
     phonenr=(phonenr===""?undefined:phonenr);
-    const row=db.prepare('SELECT distinct * FROM v_userinfo WHERE username=? or email = ? or phonenr=?').get(userName, email,phonenr);
+    const row=db.prepare('SELECT distinct * FROM v_userinfo WHERE lower(username)=lower(?) or lower(email) = lower(?) or phonenr=?').get(userName, email,phonenr);
     if(row!==undefined) {
         delete row.password;
         callback(true, row);
@@ -222,6 +223,8 @@ function addInvitedUserToGroup(userId,token,callback=console.log) {
         }
 
 
+    } else {
+        callback(false,"no invite");
     }
 
 }
@@ -282,7 +285,9 @@ function resetPassword(token, password, callback=console.log) {
             db.prepare(sql).run(password,userid);
             sql="delete from password_reset_tokens where token=?";
             db.prepare(sql).run(token);
-            callback(true);
+            callback(true,userid);
+        } else {
+            callback(false);
         }
 
     })();
@@ -304,7 +309,7 @@ function addPlay(userId, playdata, callback = console.log) {
 
             db.transaction(() => {
                 playdata.created_by = userId;
-                playdata.created_by_name = row.name !== "" ? row.name : row.username;
+                playdata.created_by_name = row.username;
                 
                 sql = "INSERT INTO draws(groupid,drawnumber,product,drawstate,regclosetime,rowprice,created_by,created_by_name,systemsize,extra_bet) VALUES(@groupid,@drawnumber,@product,@drawstate,@regclosetime,@rowprice,@created_by,@created_by_name,@systemsize,@extra_bet='true')";
                 const res = db.prepare(sql).run(playdata);
@@ -389,8 +394,35 @@ function createEvent(drawId, drawState) {
         sql = "select sum(rows*worth) as worth from draw_results where drawid=?";
         const worth=db.prepare(sql).get(drawId);
         sql="insert into events(groupid,eventtype,eventtime,userid,username,profit,cost,drawid) values(?,?,?,?,?,?,?,?)";
-        db.prepare(sql).run(drawrow.groupid,drawrow.extra_bet===true?"EXTRA BET":"BET",drawrow.regclosetime,drawrow.created_by,drawrow.created_by_name,worth.worth,drawrow.systemsize*drawrow.rowprice,drawId)
+        db.prepare(sql).run(drawrow.groupid,drawrow.extra_bet===1?"EXTRA BET":"BET",drawrow.regclosetime,drawrow.created_by,drawrow.created_by_name,worth.worth,drawrow.systemsize*drawrow.rowprice,drawId)
     }
+}
+
+function getStatistics(groupId,callback=console.log) {
+    let sql="select * from events where groupId=?";
+    const stmt = db.prepare(sql);
+    let stats=[];
+    for (const event of stmt.iterate(groupId)) {
+        if(stats[event.userid]===undefined) {
+            stats[event.userid]={};
+            stats[event.userid].username=event.username;
+            stats[event.userid].ord_games=0;
+            stats[event.userid].extra_games=0;
+            stats[event.userid].win_ord=0;
+            stats[event.userid].win_extra=0;
+            stats[event.userid].input_ord=0;
+            stats[event.userid].input_extra=0;
+            stats[event.userid].payment=0;
+
+
+
+
+        }
+    }
+
+
+
+    
 }
 
 function rectify(drawId, callback=console.log) {

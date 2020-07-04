@@ -144,6 +144,8 @@ function resetPassword(resetToken) {
             success: function (data, status, jqxhr) {
                 $("#basicModal").modal("hide");
                 popup("#popup", "Återställning", "Lösenordet är uppdaterat");
+                removeUrlVars();
+                initApp();
 
             },
             error: function (data, status, jqxhr) {

@@ -183,12 +183,13 @@ app.post('/forgotPassword',(req,res)=> {
 app.post('/resetPassword', (req, res) => {
     var token = req.body.resetToken;
     var password = req.body.password;
-    db.resetPassword(token, password, function (status, err) {
+    db.resetPassword(token, password, function (status, userIdOrErr) {
         if(status) {
+            sessionHandler.addSession(req,res,userIdOrErr);
             res.sendStatus(200);
         } else {
-            if(err) {
-                console.log("Failed to resetPassword",err);
+            if(userIdOrErr) {
+                console.log("Failed to resetPassword",userIdOrErr);
                 res.sendStatus(500);
             } else {
                 res.sendStatus(404);  
@@ -370,7 +371,11 @@ app.post('/addInvitedUserToGroup',(req,res)=> {
         if(status) {
             res.json({groupName:data});
         } else {
-            res.sendStatus(500);
+            if(data==="no invite") {
+                res.sendStatus(404);
+            } else {
+                res.sendStatus(500);
+            }
         }
     })
 })
@@ -461,7 +466,7 @@ function updateResults(groupId,callback) {
         })
 
         let nrOfChecks=Object.keys(drawToCheck).length;
-                
+
         for(key in drawToCheck) {
             let tmp=key.split(";");
             let drawNumber=tmp[0];
