@@ -455,7 +455,6 @@ function configureGroupMembers() {
         type: "POST",
         cache: false,
         data: { groupId: groupId },
-        cache: false,
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             var isAdmin = globals.activeGroup.admin;
@@ -571,6 +570,31 @@ function configurePlay() {
     getPlayable("topptipsetfamily", "topp");
 
 }
+
+
+function configureStatistics() {
+
+    var groupId = globals.activeGroup.groupid;
+    if (groupId === undefined) {
+        popup("#popup", "Statistik", "Välj grupp först!");
+        return;
+    }
+    $.ajax({
+        url: "/getStatistics",
+        type: "POST",
+        cache: false,
+        data: { groupId: groupId },
+        success: function (data, status, jqxhr) {
+            console.log(data);
+            hbsModal("#basicModal", hbsTemplates["main-snippets"]["statistics"],data);
+        }
+    });
+
+
+}
+
+
+
 
 function getPlayable(product, div) {
     $.ajax({

@@ -398,32 +398,109 @@ function createEvent(drawId, drawState) {
     }
 }
 
-function getStatistics(groupId,callback=console.log) {
-    let sql="select * from events where groupId=?";
-    const stmt = db.prepare(sql);
-    let stats=[];
-    for (const event of stmt.iterate(groupId)) {
-        if(stats[event.userid]===undefined) {
-            stats[event.userid]={};
-            stats[event.userid].username=event.username;
-            stats[event.userid].ord_games=0;
-            stats[event.userid].extra_games=0;
-            stats[event.userid].win_ord=0;
-            stats[event.userid].win_extra=0;
-            stats[event.userid].input_ord=0;
-            stats[event.userid].input_extra=0;
-            stats[event.userid].payment=0;
+function getStatistics(userId,groupId, callback = console.log) {
 
-
-
-
-        }
+    let sql="select * from v_group_members where userId=? and groupid=?";
+    let row=db.prepare(sql).get(userId,groupId);
+    if(row===undefined) {
+        callback(false,"NOT_GROUPMEMBER");
+        return;
     }
 
+    sql = "select e.*,d.nrofrights,d.product from events e left join draws d on e.drawid = d.id where e.groupid ==?";
+    const stmt = db.prepare(sql);
+    let stats = [];
+    for (const e of stmt.iterate(groupId)) {
+        if (stats[e.userid] === undefined) {
+            stats[e.userid] = {};
+            stats[e.userid].username = e.username;
+            stats[e.userid].games_ord = 0;
+            stats[e.userid].games_extra = 0;
+            stats[e.userid].win_ord = 0;
+            stats[e.userid].win_extra = 0;
+            stats[e.userid].input_ord = 0;
+            stats[e.userid].input_extra = 0;
+            stats[e.userid].payment = 0;
+            stats[e.userid].games_topptips = 0;
+            stats[e.userid].nrOfRights_topptips = 0;
+            stats[e.userid].games_stryktips = 0;
+            stats[e.userid].nrOfRights_stryktips = 0;
+
+        }
+        switch (e.eventtype) {
+            case "BET":
+                stats[e.userid].games_ord++;
+                stats[e.userid].input_ord += e.cost;
+                stats[e.userid].win_ord += e.profit;
+                if (e.product.match(/Topptips/i)) {
+                    stats[e.userid].games_topptips++;
+                    stats[e.userid].nrOfRights_topptips += e.nrofrights;
+                } else {
+                    stats[e.userid].games_stryktips++;
+                    stats[e.userid].nrOfRights_stryktips += e.nrofrights;
+                }
+                break;
+            case "EXTRA BET":
+                stats[e.userid].games_extra++;
+                stats[e.userid].input_extra += e.cost;
+                stats[e.userid].win_extra += e.profit;
+                if (e.product.match(/Topptips/i)) {
+                    stats[e.userid].games_topptips++;
+                    stats[e.userid].nrOfRights_topptips += e.nrofrights;
+                } else {
+                    stats[e.userid].games_stryktips++;
+                    stats[e.userid].nrOfRights_stryktips += e.nrofrights;
+                }
+                break;
+            case "PAYMENT":
+                stats[e.userid].payment += -e.profit;
+                break;
+        }
+
+    }
+    let userStats=[];
+    let totInput=0;
+    let totWin=0;
+    let totNettoWin=0;
+    let totPayments=0;
+    for(key in stats) {
+        let r={};
+        r.name=stats[key].username;
+        r.games_ord=stats[key].games_ord;
+        r.input_ord=stats[key].input_ord;
+        r.games_extra=stats[key].games_extra;
+        r.input_extra=stats[key].input_extra;
+        totInput+=r.input_ord+r.input_extra;
+        r.average_topptips=stats[key].nrOfRights_topptips/stats[key].games_topptips;
+        r.average_stryktips=stats[key].nrOfRights_stryktips/stats[key].games_stryktips;
+        r.win_brutto=stats[key].win_ord+stats[key].win_extra;
+        totWin+=r.win_brutto;
+        r.win_netto=r.win_brutto-(stats[key].input_extra+stats[key].payment);
+        totNettoWin+=r.win_netto;
+        totPayments+=stats[key].payment;
+        userStats.push(r);
+
+    }
+
+    sql="select count(*) as cnt from v_group_members where groupid=?";
+    let nrOfMembers=db.prepare(sql).get(groupId)["cnt"];
 
 
-    
+
+    let res={};
+    res.userStats=userStats;
+    res.totInput=totInput;
+    res.totWin=totWin;
+    res.balance=totWin-totInput;
+    res.totPayments=totPayments;
+    res.totNettoWin=totNettoWin;
+    res.totNettoWinPerMember=totNettoWin/nrOfMembers;
+
+
+    callback(true,res);
+
 }
+
 
 function rectify(drawId, callback=console.log) {
     let sql = "select * from draw_rows where drawid=? order by rownr";
@@ -538,6 +615,7 @@ module.exports = {
     deleteDraw:deleteDraw,
     getGroupInfo:getGroupInfo,
     getUserSurplus:getUserSurplus,
+    getStatistics:getStatistics,
     getDbInstance:getDbInstance
 }
 

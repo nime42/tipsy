@@ -559,6 +559,24 @@ app.post('/getUserSurplus', (req,res)=>{
 })
 
 
+app.post('/getStatistics',(req,res)=>{
+    var userId=sessionHandler.getSession(req).userId;
+    var groupId=req.body.groupId;
+    db.getStatistics(userId,groupId,function(status,resOrErr) {
+        if(status) {
+            res.json(resOrErr);
+        } else {
+            if(resOrErr==="NOT_GROUPMEMBER") {
+                res.sendStatus(403);
+            } else {
+                res.sendStatus(500);
+            }
+        }
+    })
+   
+})
+
+
 process.on('SIGINT', function(e) {
     console.log("exit");
     sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});

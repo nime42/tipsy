@@ -111,6 +111,12 @@ body {
    });
 
 
+   $("#statistics").click(function (e) {
+    configureStatistics();
+   });
+
+
+
    if(getUrlVars()["reset-token"]) {
         resetPassword(getUrlVars()["reset-token"]);
         return;
@@ -162,7 +168,7 @@ body {
           <li id="play"><a class="clickable-menu" href="#">Spela</a></li>
           <li id="group-members"><a class="clickable-menu" href="#">Medlemmar</a></li>
           <li id="groups"><a class="clickable-menu" href="#">Grupper</a></li>
-          <li><a class="clickable-menu" href="#">Statistik</a></li>
+          <li id="statistics"><a class="clickable-menu" href="#">Statistik</a></li>
           <li><a>
             <label>Grupp</label>
             <select id="available-groups" class="selectpicker" style="color:#444;">

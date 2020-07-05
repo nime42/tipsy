@@ -211,39 +211,74 @@
 </script>
 
 
-
 <script id="statistics" type="text/x-handlebars-template">
   <div class="modal-dialog">
-              <div style="overflow:auto;">
-                <table class="table table-bordered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Spela</h4>
+      </div>
+
+      <div class="modal-body"></div>
+              <div id="stat-table" style="max-height: 800px; overflow:auto; margin:10px">
+                <table class="table table-bordered table-striped">
                   <thead>
                     <tr>
-                      <th scope="col">Namn</th>
-                      <th scope="col">Ordinarie Spel</th>
-                      <th scope="col">Extra spel</th>
-                      <th scope="col">Snitt Ordinarie Spel</th>
-                      <th scope="col">Snitt Extra Spel</th>
-                      <th scope="col">Snitt Totalt</th>
-                      <th scope="col">Vinst</th>
-
+                      <th nowrap style="vertical-align:top" scope="col">Namn</th>
+                      <th nowrap style="text-align:center" scope="col">Ordinarie Spel<BR/>(insats)</th>
+                      <th nowrap style="text-align:center" scope="col">Extra spel<BR/>(insats)</th>
+                      <th nowrap style="text-align:center" scope="col">Rätt/spel<BR/>(StrykTips)</th>
+                      <th nowrap style="text-align:center" scope="col">Rätt/spel<BR/>(ToppTips)</th>
+                      <th nowrap style="text-align:center" scope="col">Vinst<BR/>(Totalt)</th>
+                      <th nowrap style="text-align:center"scope="col">Vinst<BR/>(Återstående)</th>
 
                     </tr>
                   </thead>
                   <tbody>
-                    {{#each users}}
+                    {{#each userStats}}
                     <tr>
-                      <td nowrap>{{name}}</td>
-                      <td nowrap>{{email}}</td>
-                      <td nowrap>{{phonenr}}</td>
-                      <td nowrap>{{username}}</td>
+                      <td nowrap style="text-align:center">{{name}}</td>
+                      <td nowrap style="text-align:center"><b>{{games_ord}}</b> (<i>{{input_ord}} kr</i>)</td>
+                      <td nowrap style="text-align:center"><b>{{games_extra}}</b>(<i>{{input_extra}} kr</i>)</td>
+                      <td nowrap style="text-align:center">{{average_stryktips}}</td>
+                      <td nowrap style="text-align:center">{{average_topptips}}</td>
+                      <td nowrap style="text-align:center">{{win_brutto}} kr</td>
+                      <td nowrap style="text-align:center">{{win_netto}} kr</td>
                     </tr>
                     {{/each}}
                   </tbody>
                 </table>
               </div>
+           <br/> 
+           <table class="table" style="width:60%">
+             <tr>
+               <td style="width:1px"><b>Totala insatser:</b></td>
+               <td style="width:1px">{{totInput}} kr</td>
+             </tr>
+             <tr>
+               <td style="width:1px"><b>Totala vinster:</b></td>
+               <td style="width:1px">{{totWin}} kr</td>
+             </tr>
+             <tr>
+               <td style="width:1px"><b>Total balans:</b></td>
+               <td style="width:1px">{{balance}} kr</td>
+             </tr>
+             <tr>
+               <td style="width:1px"><b>Utbetalt:</b></td>
+               <td style="width:1px">{{totPayments}} kr</td>
+             </tr>
+             <tr>
+               <td style="width:1px"><b>Återstående vinst:</b></td>
+               <td style="width:1px">{{totNettoWin}} kr</td>
+             </tr>
+             <tr>
+               <td style="width:1px"><b>Återstående vinst per person:</b></td>
+               <td style="width:1px">{{totNettoWinPerMember}} kr</td>
+             </tr>
+           </table>
 
 
-
+    </div>
   </div> 
 </script>
 
