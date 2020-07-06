@@ -515,6 +515,7 @@ function configurePayment(surplus) {
             reloadIfLoggedOut(jqxhr);
             data.surplus=surplus;
             data.nrOfMembers=data.members.length;
+            data.members.forEach(function(e) {e.name=(e.name!="")?e.name:e.username});
             hbsModal("#basicModal", hbsTemplates["main-snippets"]["payment"],data);
             $('.amount-per-member').text((data.amount/data.nrOfMembers)+' kr')
         }

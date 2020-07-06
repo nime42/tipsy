@@ -40,14 +40,15 @@
                 <label for="confirm-password">Verifiera Lösenord:</label>
                 <input type="password"  id="confirm-password" class="form-control">
               </div>
-
+              <div class="sticky">
               {{#if register}}
-              <input type="button" id="reg-or-update" class="btn btn-default" value="Skapa"/>
+              <input type="button" id="reg-or-update" class="btn btn-primary" value="Skapa"/>
               {{else}}
-              <input type="button" id="reg-or-update" class="btn btn-default" value="Uppdatera"/>
+              <input type="button" id="reg-or-update" class="btn btn-primary" value="Uppdatera"/>
               {{/if}}
 
               <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
+              </div>
             </form>
           </div>
         </div>
@@ -365,7 +366,7 @@
                   <tbody>
                     {{#each members}}
                     <tr>
-                      <td nowrap style="text-align:left">{{username}}</td>
+                      <td nowrap style="text-align:left">{{name}}</td>
                       <td nowrap style="text-align:left">{{phonenr}}</td>
                       <td nowrap style="text-align:left" class="amount-per-member"></td>
                     </tr>

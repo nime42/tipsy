@@ -37,7 +37,7 @@ CREATE UNIQUE INDEX group_members_idx ON group_members (userid, groupid);
 CREATE UNIQUE INDEX groups_idx ON groups (groupname);
 
 
-CREATE UNIQUE INDEX username_idx ON users(username);
+CREATE UNIQUE INDEX username_idx ON users(username COLLATE NOCASE);
 
 CREATE VIEW v_userinfo AS
 SELECT u.username,i.* FROM users u

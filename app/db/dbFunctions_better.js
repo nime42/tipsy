@@ -312,7 +312,7 @@ function addPlay(userId, playdata, callback = console.log) {
 
             db.transaction(() => {
                 playdata.created_by = userId;
-                playdata.created_by_name = row.username;
+                playdata.created_by_name = row.name !== "" ? row.name : row.username;
                 
                 sql = "INSERT INTO draws(groupid,drawnumber,product,drawstate,regclosetime,rowprice,created_by,created_by_name,systemsize,extra_bet) VALUES(@groupid,@drawnumber,@product,@drawstate,@regclosetime,@rowprice,@created_by,@created_by_name,@systemsize,@extra_bet='true')";
                 const res = db.prepare(sql).run(playdata);
@@ -463,11 +463,11 @@ function getStatistics(userId,groupId, callback = console.log) {
     }
 
     //Get all users that not have made any bets yet.
-    sql="select userid,username from v_group_members where groupid=? and userid  not in (select userid from events where groupid=?)";
+    sql="select userid,username,name from v_group_members where groupid=? and userid  not in (select userid from events where groupid=?)";
     stmt=db.prepare(sql);
     for (const e of stmt.iterate(groupId,groupId)) {
             stats[e.userid] = {};
-            stats[e.userid].username = e.username;
+            stats[e.userid].username = e.name !== "" ? e.name : e.username;;
             stats[e.userid].games_ord = 0;
             stats[e.userid].games_extra = 0;
             stats[e.userid].win_ord = 0;
@@ -514,7 +514,7 @@ function getStatistics(userId,groupId, callback = console.log) {
 
 
     let res={};
-    res.userStats=userStats;
+    res.userStats=userStats.sort((a,b)=>{return b.games_ord-a.games_ord});
     res.totInput=totInput;
     res.totWin=totWin;
     res.balance=totWin-totInput;
