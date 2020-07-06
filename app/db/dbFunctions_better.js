@@ -410,7 +410,7 @@ function getStatistics(userId,groupId, callback = console.log) {
         return;
     }
 
-    sql = "select e.*,d.nrofrights,d.product from events e left join draws d on e.drawid = d.id where e.groupid =?";
+    sql = "select e.*,d.nrofrights,d.product from events e left join draws d on e.drawid = d.id where e.groupid =? order by eventtime desc";
     let stmt = db.prepare(sql);
     let stats = [];
     for (const e of stmt.iterate(groupId)) {
@@ -463,22 +463,22 @@ function getStatistics(userId,groupId, callback = console.log) {
     }
 
     //Get all users that not have made any bets yet.
-    sql="select username from v_group_members where groupid=? and userid  not in (select userid from events where groupid=?)";
+    sql="select userid,username from v_group_members where groupid=? and userid  not in (select userid from events where groupid=?)";
     stmt=db.prepare(sql);
     for (const e of stmt.iterate(groupId,groupId)) {
-            stats[e.username] = {};
-            stats[e.username].username = e.username;
-            stats[e.username].games_ord = 0;
-            stats[e.username].games_extra = 0;
-            stats[e.username].win_ord = 0;
-            stats[e.username].win_extra = 0;
-            stats[e.username].input_ord = 0;
-            stats[e.username].input_extra = 0;
-            stats[e.username].payment = 0;
-            stats[e.username].games_topptips = 0;
-            stats[e.username].nrOfRights_topptips = 0;
-            stats[e.username].games_stryktips = 0;
-            stats[e.username].nrOfRights_stryktips = 0;
+            stats[e.userid] = {};
+            stats[e.userid].username = e.username;
+            stats[e.userid].games_ord = 0;
+            stats[e.userid].games_extra = 0;
+            stats[e.userid].win_ord = 0;
+            stats[e.userid].win_extra = 0;
+            stats[e.userid].input_ord = 0;
+            stats[e.userid].input_extra = 0;
+            stats[e.userid].payment = 0;
+            stats[e.userid].games_topptips = 0;
+            stats[e.userid].nrOfRights_topptips = 0;
+            stats[e.userid].games_stryktips = 0;
+            stats[e.userid].nrOfRights_stryktips = 0;
 
     }
 
