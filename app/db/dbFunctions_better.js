@@ -466,19 +466,19 @@ function getStatistics(userId,groupId, callback = console.log) {
     sql="select username from v_group_members where groupid=? and userid  not in (select userid from events where groupid=?)";
     stmt=db.prepare(sql);
     for (const e of stmt.iterate(groupId,groupId)) {
-            stats[e.userid] = {};
-            stats[e.userid].username = e.username;
-            stats[e.userid].games_ord = 0;
-            stats[e.userid].games_extra = 0;
-            stats[e.userid].win_ord = 0;
-            stats[e.userid].win_extra = 0;
-            stats[e.userid].input_ord = 0;
-            stats[e.userid].input_extra = 0;
-            stats[e.userid].payment = 0;
-            stats[e.userid].games_topptips = 0;
-            stats[e.userid].nrOfRights_topptips = 0;
-            stats[e.userid].games_stryktips = 0;
-            stats[e.userid].nrOfRights_stryktips = 0;
+            stats[e.username] = {};
+            stats[e.username].username = e.username;
+            stats[e.username].games_ord = 0;
+            stats[e.username].games_extra = 0;
+            stats[e.username].win_ord = 0;
+            stats[e.username].win_extra = 0;
+            stats[e.username].input_ord = 0;
+            stats[e.username].input_extra = 0;
+            stats[e.username].payment = 0;
+            stats[e.username].games_topptips = 0;
+            stats[e.username].nrOfRights_topptips = 0;
+            stats[e.username].games_stryktips = 0;
+            stats[e.username].nrOfRights_stryktips = 0;
 
     }
 
