@@ -961,6 +961,7 @@ function parseResults(rows) {
 }
 
 function deleteDraw(drawId) {
+    var fun=function() {
     $.ajax({
         type: "POST",
         url: "/deleteDraw",
@@ -974,7 +975,12 @@ function deleteDraw(drawId) {
             popup("#popup", "Ta bort spel", "Ett Tekniskt fel har inträffat, försök igen senare!");
         }
     });
+}
 
+dialog("#yes-no", "Ta bort Spel",
+"Är du säker på att du vill ta bort spelet?",
+{ text: "Ja", func: fun },
+{ text: "Nej", func: function () { return; } })
 
 
 
