@@ -577,6 +577,59 @@ app.post('/getStatistics',(req,res)=>{
 })
 
 
+app.post('/getEvents',(req,res)=>{
+    var userId=sessionHandler.getSession(req).userId;
+    var groupId=req.body.groupId;
+    db.getEvents(userId,groupId,function(status,resOrErr) {
+        if(status) {
+            res.json(resOrErr);
+        } else {
+            if(resOrErr==="NOT_GROUPMEMBER") {
+                res.sendStatus(403);
+            } else {
+                res.sendStatus(500);
+            }
+        }
+    })
+   
+})
+
+
+app.post('/makePayment',(req,res)=>{
+    var userId=sessionHandler.getSession(req).userId;
+    var groupId=req.body.groupId;
+    var amount=req.body.amount;
+    db.makePayment(userId,groupId,amount,function(status,err) {
+        if(status) {
+           
+            if(req.body.mailTo) {
+                mailsender.sendPaymentList(req.body.mailTo,req.body.mailBody,function(status,err) {
+                    if(status) {
+                        res.sendStatus(200);
+                    } else {
+                        res.sendStatus(406);
+                    }
+                })
+        
+            } else {
+                res.sendStatus(200);
+            }
+        
+        } else {
+            if(err==="OVERDRAW") {
+                res.sendStatus(400);
+            } else {
+                res.sendStatus(500);
+            }
+        }
+    })
+
+
+})
+
+
+
+
 process.on('SIGINT', function(e) {
     console.log("exit");
     sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});

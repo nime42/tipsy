@@ -250,6 +250,9 @@ function getGroups(userId, callback=console.log) {
     var sql="select * from v_group_members where userid=? order by group_created desc";
     try {
         const rows=db.prepare(sql).all(userId);
+        if(rows) {
+            rows.forEach(e=>{delete e.password});
+        }
         callback(true, rows);
     } catch(err) {
         callback(false,err);
@@ -407,8 +410,8 @@ function getStatistics(userId,groupId, callback = console.log) {
         return;
     }
 
-    sql = "select e.*,d.nrofrights,d.product from events e left join draws d on e.drawid = d.id where e.groupid ==?";
-    const stmt = db.prepare(sql);
+    sql = "select e.*,d.nrofrights,d.product from events e left join draws d on e.drawid = d.id where e.groupid =?";
+    let stmt = db.prepare(sql);
     let stats = [];
     for (const e of stmt.iterate(groupId)) {
         if (stats[e.userid] === undefined) {
@@ -458,6 +461,29 @@ function getStatistics(userId,groupId, callback = console.log) {
         }
 
     }
+
+    //Get all users that not have made any bets yet.
+    sql="select username from v_group_members where groupid=? and userid  not in (select userid from events where groupid=?)";
+    stmt=db.prepare(sql);
+    for (const e of stmt.iterate(groupId,groupId)) {
+            stats[e.userid] = {};
+            stats[e.userid].username = e.username;
+            stats[e.userid].games_ord = 0;
+            stats[e.userid].games_extra = 0;
+            stats[e.userid].win_ord = 0;
+            stats[e.userid].win_extra = 0;
+            stats[e.userid].input_ord = 0;
+            stats[e.userid].input_extra = 0;
+            stats[e.userid].payment = 0;
+            stats[e.userid].games_topptips = 0;
+            stats[e.userid].nrOfRights_topptips = 0;
+            stats[e.userid].games_stryktips = 0;
+            stats[e.userid].nrOfRights_stryktips = 0;
+
+    }
+
+    
+
     let userStats=[];
     let totInput=0;
     let totWin=0;
@@ -499,6 +525,18 @@ function getStatistics(userId,groupId, callback = console.log) {
 
     callback(true,res);
 
+}
+
+function getEvents(userId,groupId,callback=console.log) {
+    let sql="select * from v_group_members where userId=? and groupid=?";
+    let row=db.prepare(sql).get(userId,groupId);
+    if(row===undefined) {
+        callback(false,"NOT_GROUPMEMBER");
+        return;
+    }
+    sql="select eventtype,eventtime,username,profit,cost from events where groupid=? order by eventtime desc;"   
+    rows=db.prepare(sql).all(groupId);
+    callback(true,{events:rows});
 }
 
 
@@ -583,7 +621,18 @@ function getUserSurplus(userId,groupId,callback=console.log) {
     callback(surplus);
 
 } 
- 
+
+function makePayment(userId,groupId,amount,callback=console.log) {
+    getUserSurplus(userId,groupId,function(surplus) {
+        if(amount>surplus) {
+            callback(false,"OVERDRAW");
+        } else {
+            let sql="insert into events(groupid,userid,username,eventtype,profit) select ?,id,username,'PAYMENT',? from users where id=?";
+            db.prepare(sql).run(groupId,-amount,userId);
+            callback(true);
+        }
+    })
+}
 
 function getDbInstance() {
     return db;
@@ -616,6 +665,8 @@ module.exports = {
     getGroupInfo:getGroupInfo,
     getUserSurplus:getUserSurplus,
     getStatistics:getStatistics,
+    getEvents:getEvents,
+    makePayment:makePayment,
     getDbInstance:getDbInstance
 }
 

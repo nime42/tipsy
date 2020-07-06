@@ -503,6 +503,72 @@ function configureGroupMembers() {
 
 }
 
+function configurePayment(surplus) {
+    var groupId = globals.activeGroup.groupid;
+
+    $.ajax({
+        url: "/getGroupMembers",
+        type: "POST",
+        cache: false,
+        data: { groupId: groupId },
+        success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
+            data.surplus=surplus;
+            data.nrOfMembers=data.members.length;
+            hbsModal("#basicModal", hbsTemplates["main-snippets"]["payment"],data);
+            $('.amount-per-member').text((data.amount/data.nrOfMembers)+' kr')
+        }
+    });
+}
+
+function makePayment(amount,surplus,sendMail) {
+    var groupId = globals.activeGroup.groupid;
+    var res={};
+
+    if(amount<=0) {
+        popup("#popup", "Utbetalning", "Summan måste vara större än noll!");
+        return;
+    } 
+
+    if(amount>surplus) {
+        popup("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
+        return;
+
+    }
+    res.amount=amount;
+    res.groupId=groupId;
+    if(sendMail) {
+        res.mailTo=globals.userinfo.email;
+        res.mailBody=hbsTemplates["main-snippets"]["payment-mail-template"]({amount:amount,tablebody:$("#basicModal").find("#payment-div").html()});
+    }
+    console.log(res.mailBody);
+
+    $.ajax({
+        url: "/makePayment",
+        type: "POST",
+        cache: false,
+        data: res,
+        success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
+            $("#basicModal").modal("hide");
+            popup("#popup", "Utbetalning", "Utbetalning registrerad!");
+        },
+        error: function (data, status, jqxhr) {
+            if (data.status === 400) {
+                popup("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
+        
+            } if(data.status === 406) { 
+                popup("#popup", "Utbetalning", "Utbetalning registrerad men det gick ej att skicka mail!");
+            } else {
+                popup("#popup", "Utbetalning", "Tekniskt fel!");
+            }
+        }
+    });
+
+
+}
+
+
 function removeInvite(email, rowElem) {
     $.ajax({
         type: "POST",
@@ -585,13 +651,48 @@ function configureStatistics() {
         cache: false,
         data: { groupId: groupId },
         success: function (data, status, jqxhr) {
-            console.log(data);
+            reloadIfLoggedOut(jqxhr);
             hbsModal("#basicModal", hbsTemplates["main-snippets"]["statistics"],data);
         }
     });
 
 
 }
+
+
+function configureEvents() {
+
+    var groupId = globals.activeGroup.groupid;
+    if (groupId === undefined) {
+        popup("#popup", "Händelser", "Välj grupp först!");
+        return;
+    }
+    getUserSurplus(function(surplus) {
+        $.ajax({
+            url: "/getEvents",
+            type: "POST",
+            cache: false,
+            data: { groupId: groupId },
+            success: function (data, status, jqxhr) {
+                reloadIfLoggedOut(jqxhr);
+                data.events = data.events.map(e => {
+                    switch (e.eventtype) {
+                        case "BET": e.eventtype = "Spel"; break;
+                        case "EXTRA BET": e.eventtype = "Extra spel"; break;
+                        case "PAYMENT": e.eventtype = "Utbetalning"; break;
+                    }
+                    e.eventtime=new Date(e.eventtime).toLocaleDateString();
+                    return e;
+                });
+                data.surplus=surplus;
+                hbsModal("#basicModal", hbsTemplates["main-snippets"]["events"],data);
+            }
+        });
+    });
+
+}
+
+
 
 
 

@@ -21,13 +21,14 @@ var transporter = nodemailer.createTransport({
   });
   
 
-function sendMail(from,to,cc,subject,text, callback) {
+function sendMail(from,to,cc,subject,text,html, callback) {
     var mailOptions = {
         from: from,
         to: to,
         cc:cc,
         subject: subject,
-        text: text
+        text: text,
+        html:html
       };
       console.log(mailOptions);
       transporter.sendMail(mailOptions, callback);      
@@ -42,7 +43,7 @@ function sendPasswordReset(userId,mailadress,req,res,callback) {
             var to=mailadress;
             var subject="Uppdatera lösenord";
             var message="Hej!\nAnvänd nedanstående länk för att återställa dit lösenord på tipsy.nu:\n"+resetLink+"\n"
-            sendMail(from,to,undefined,subject,message, function(err) {
+            sendMail(from,to,undefined,subject,message,undefined, function(err) {
                 if(err!==null) {
                     res.sendStatus(500);
                 } else {
@@ -71,7 +72,7 @@ function inviteMember(groupAdmin,groupInfo,mailadress,req,res,callback) {
             var to=mailadress;
             var subject="Inbjudan till Tipsy.nu";
             
-            sendMail(from,to,undefined,subject,message, function(err) {
+            sendMail(from,to,undefined,subject,message,undefined, function(err) {
                 if(err!==null) {
                     console.log(err);
                     res.sendStatus(500);
@@ -92,11 +93,26 @@ function inviteMember(groupAdmin,groupInfo,mailadress,req,res,callback) {
 
 } 
 
+function sendPaymentList(to,mailBody,callback) {
+    var from="tipsy.nu@gmail.com";
+    var subject="Utbetalningslista från Tipsy.nu";
+    var text="Det går inte att visa html-tabellen"
+    sendMail(from,to,undefined,subject,text,mailBody, function(err) {
+        if(err) {
+            callback(false,err);
+        } else {
+            callback(true);
+        }
+    });
 
+
+
+}
 
 
 module.exports = {
     sendMail:sendMail,
     sendPasswordReset:sendPasswordReset,
-    inviteMember:inviteMember
+    inviteMember:inviteMember,
+    sendPaymentList:sendPaymentList
 }

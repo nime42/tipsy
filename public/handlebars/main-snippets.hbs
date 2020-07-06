@@ -216,7 +216,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Spela</h4>
+        <h4 class="modal-title">Statistik</h4>
       </div>
 
       <div class="modal-body"></div>
@@ -238,10 +238,10 @@
                     {{#each userStats}}
                     <tr>
                       <td nowrap style="text-align:center">{{name}}</td>
-                      <td nowrap style="text-align:center"><b>{{games_ord}}</b> (<i>{{input_ord}} kr</i>)</td>
-                      <td nowrap style="text-align:center"><b>{{games_extra}}</b>(<i>{{input_extra}} kr</i>)</td>
-                      <td nowrap style="text-align:center">{{average_stryktips}}</td>
-                      <td nowrap style="text-align:center">{{average_topptips}}</td>
+                      <td nowrap style="text-align:center"><b>{{#if (gt games_ord 0) }} {{games_ord}}</b> (<i>{{input_ord}} kr</i>){{else}}0{{/if}}</td>
+                      <td nowrap style="text-align:center"><b>{{#if (gt games_extra 0) }} {{games_extra}}</b> (<i>{{input_extra}} kr</i>){{else}}0{{/if}}</td>
+                      <td nowrap style="text-align:center">{{#if (ne average_stryktips null) }} {{average_stryktips}}</b>{{else}}-{{/if}}</td>
+                      <td nowrap style="text-align:center">{{#if (ne average_topptips null) }} {{average_topptips}}</b>{{else}}-{{/if}}</td>
                       <td nowrap style="text-align:center">{{win_brutto}} kr</td>
                       <td nowrap style="text-align:center">{{win_netto}} kr</td>
                     </tr>
@@ -278,6 +278,117 @@
            </table>
 
 
+    </div>
+  </div> 
+</script>
+
+
+
+<script id="events" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Händelser</h4>
+      </div>
+
+      <div class="modal-body"></div>
+              <div  style="max-height: 180px; overflow:auto; margin:10px;font-size: 11px;">
+                <table id="event-table" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th nowrap style="text-align:left" scope="col">Datum</th>
+                      <th nowrap style="text-align:left" scope="col">Händelse</th>
+                      <th nowrap style="text-align:left" scope="col">Användare</th>
+                      <th nowrap style="text-align:left" scope="col">Kostnad</th>
+                      <th nowrap style="text-align:left" scope="col">Vinst</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each events}}
+                    <tr>
+                      <td nowrap style="text-align:left">{{eventtime}}</td>
+                      <td nowrap style="text-align:left">{{eventtype}}</td>
+                      <td nowrap style="text-align:left">{{username}}</td>
+                      <td nowrap style="text-align:left">{{cost}}</td>
+                      <td nowrap style="text-align:left">{{profit}}</td>
+                    </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+              {{#if (gt surplus 0) }}
+             <div style="margin:10px">
+               <h3>Gör utbetalning?</h3>
+             <p>Du ligger just nu på <b>{{surplus}} kr</b> plus.<a onclick="configurePayment({{surplus}})"> Klicka här för att göra en utbetalning</a>!</p> 
+
+             </div> 
+
+              {{/if}}
+
+    </div>
+  </div> 
+</script>
+
+
+<script id="payment" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Utbetalning</h4>
+      </div>
+
+
+
+
+
+
+      <div class="modal-body">
+       <p>Skriv totalsumman som skall utbetalas och tryck på <i>Utför</i>!<br/>(Tänk på att själva utbetalningen måste du sedan göra själv, t.ex via Swish) </p>
+
+        <div class="input-group" style="width:70%">
+        <span class="input-group-addon">Summa:</span>	
+        <input id="payment-amount" type="number" class="form-control" value="{{surplus}}" onkeyup="$('.amount-per-member').text(($(this).val()/{{nrOfMembers}})+' kr')">
+        <span class="input-group-addon">Kr</span>
+        </div>
+
+              <div  id="payment-div" style="max-height: 160px; overflow:auto; margin:10px;font-size: 11px;">
+                <table id="payment-table" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th nowrap style="text-align:left" scope="col">Användare</th>
+                      <th nowrap style="text-align:left" scope="col">Mobil</th>
+                      <th nowrap style="text-align:left" scope="col">Utbetalning</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each members}}
+                    <tr>
+                      <td nowrap style="text-align:left">{{username}}</td>
+                      <td nowrap style="text-align:left">{{phonenr}}</td>
+                      <td nowrap style="text-align:left" class="amount-per-member"></td>
+                    </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+              <div class="container">
+                <div class="form-check">
+                  <button type="button" class="btn btn-primary" onclick="makePayment($('#payment-amount').val(),{{surplus}},$('#mail-list').val())">Utför</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
+                  &nbsp;&nbsp;
+                  <input type="checkbox" class="form-check-input" id="mail-list" value="true" checked>
+                  <label class="form-check-label" for="mail-list">Maila listan till mig</label>
+                    
+                </div>
+
+
+                
+              
+
+    </div>
+      </div>
     </div>
   </div> 
 </script>
@@ -526,3 +637,31 @@
 </div>
 </script>
 
+<script id="payment-mail-template" type="text/x-handlebars-template">
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+  border-collapse: collapse;
+}
+
+table, td, th {
+  border: 1px solid black;
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+</style>
+</head>
+<body>
+ <p><b>Total summa:</b> {{amount}} kr</p>
+ {{{tablebody}}}
+<br/>
+ Mvh
+ <br/>
+ Tipsy
+</body>
+</html>
+</script>

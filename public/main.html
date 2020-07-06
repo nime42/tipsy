@@ -74,6 +74,16 @@ body {
   font-size: 12px;
 }
 
+
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: white;
+}
+
+
 </style>
 
 <script>
@@ -115,6 +125,10 @@ body {
     configureStatistics();
    });
 
+
+   $("#events").click(function (e) {
+    configureEvents();
+   });
 
 
    if(getUrlVars()["reset-token"]) {
@@ -169,6 +183,7 @@ body {
           <li id="group-members"><a class="clickable-menu" href="#">Medlemmar</a></li>
           <li id="groups"><a class="clickable-menu" href="#">Grupper</a></li>
           <li id="statistics"><a class="clickable-menu" href="#">Statistik</a></li>
+          <li id="events"><a class="clickable-menu" href="#">Händelser</a></li>
           <li><a>
             <label>Grupp</label>
             <select id="available-groups" class="selectpicker" style="color:#444;">
