@@ -152,7 +152,7 @@
               <h4 class="modal-title">Gruppens Medlemmar</h4>
             </div>
                 <div class="modal-body">
-              <div style="overflow:auto;">
+              <div style="max-height: 180px; overflow:auto">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
@@ -309,6 +309,11 @@
                       <td nowrap style="text-align:left">{{profit}}</td>
                     </tr>
                     {{/each}}
+                    {{#if hasMorePages}} 
+                    <tr>
+                      <td colspan="5"><input type="button" id="more" class="btn btn-info" value="Mer..." onclick="getMoreEvents($(this),1)"/></td>
+                    </tr>
+                    {{/if}}
                   </tbody>
                 </table>
               </div>

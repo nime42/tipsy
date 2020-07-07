@@ -429,7 +429,8 @@ app.post('/play',(req,res)=> {
 app.get('/getResults',(req,res)=> {
     var userId=sessionHandler.getSession(req).userId;
     var groupId=req.query.groupId;
-    db.getResults(userId,groupId,function(status,data) {
+    var page=req.query.page;
+    db.getResults(userId,groupId,page,function(status,data) {
         if(status) {
             res.json(data);
         } else {
@@ -580,7 +581,8 @@ app.post('/getStatistics',(req,res)=>{
 app.post('/getEvents',(req,res)=>{
     var userId=sessionHandler.getSession(req).userId;
     var groupId=req.body.groupId;
-    db.getEvents(userId,groupId,function(status,resOrErr) {
+    var page=req.body.page;
+    db.getEvents(userId,groupId,page,function(status,resOrErr) {
         if(status) {
             res.json(resOrErr);
         } else {

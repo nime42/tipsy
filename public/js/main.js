@@ -675,7 +675,7 @@ function configureEvents() {
             url: "/getEvents",
             type: "POST",
             cache: false,
-            data: { groupId: groupId },
+            data: { groupId: groupId,page:0 },
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 data.events = data.events.map(e => {
@@ -695,7 +695,50 @@ function configureEvents() {
 
 }
 
+function getMoreEvents(buttonElem,page) {
+    var groupId = globals.activeGroup.groupid;
+    var nextPage=page;
+    $.ajax({
+        url: "/getEvents",
+        type: "POST",
+        cache: false,
+        data: { groupId: groupId,page:nextPage },
+        success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
+            data.events = data.events.map(e => {
+                switch (e.eventtype) {
+                    case "BET": e.eventtype = "Spel"; break;
+                    case "EXTRA BET": e.eventtype = "Extra spel"; break;
+                    case "PAYMENT": e.eventtype = "Utbetalning"; break;
+                }
+                e.eventtime=new Date(e.eventtime).toLocaleDateString();
+                return e;
+            });
 
+            var rowTemplate=buttonElem.parent().parent().prev().clone();
+            var lastRow=buttonElem.parent().parent();
+            data.events.forEach(function(e) {
+                var row=rowTemplate.clone();
+                var c=row.children();
+                c.get(0).innerText=e.eventtime;
+                c.get(1).innerText=e.eventtype;
+                c.get(2).innerText=e.username;
+                c.get(3).innerText=e.cost;
+                c.get(4).innerText=e.profit;
+                row.insertBefore(lastRow);             
+               
+            });
+            if(data.hasMorePages) {
+                buttonElem.attr("onclick", "").unbind("click");
+                buttonElem.click(function() {getMoreEvents(buttonElem,page+1)});
+            } else {
+                buttonElem.parent().parent().remove();
+            }
+
+        }
+    });
+
+}
 
 
 
@@ -836,7 +879,7 @@ function updateResults(groupId) {
         cache: false,
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            getResults(groupId);
+            getResults(groupId,0);
         },
         error: function (data, status, jqxhr) {
             popup("#popup", "Uppdatera resultat", "Tekniskt fel!");
@@ -849,15 +892,17 @@ function updateResults(groupId) {
 
 
 
-function getResults(groupId) {
-    $("#results").empty();
+function getResults(groupId,page) {
+    if(page==0) {
+        $("#results").empty();
+    }
     $.ajax({
         type: "GET",
-        url: "/getResults?groupId=" + groupId,
+        url: "/getResults?groupId=" + groupId+"&page="+page,
         cache: false,
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            data.forEach(function (e) {
+            data.results.forEach(function (e) {
                 e.rows = parseRows(e.rows);
                 e.nrOfRows = 1;
                 e.rows.forEach(function (r) { e.nrOfRows *= r.bet.length });
@@ -872,12 +917,16 @@ function getResults(groupId) {
                 }
 
                 e.created = new Date(e.created + " GMT+000").toLocaleString();
-                console.log(e);
 
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 
 
             })
+            $("#results").find("#more-results").remove();
+            if(data.hasMorePages) {
+                $("#results").append('<input type="button" id="more-results" class="btn btn-info" value="Mer..." onclick="getResults('+groupId+','+(page+1)+')"/>');
+
+            }
 
         },
         error: function (data, status, jqxhr) {

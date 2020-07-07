@@ -335,17 +335,25 @@ function addPlay(userId, playdata, callback = console.log) {
 }
 
 
-
-function getResults(userId, groupId, callback=console.log) {
+var resultPageSize=50;
+function getResults(userId, groupId,page, callback=console.log) {
 
     let sql = "select * from group_members where userid=? and groupid=?";
     const row=db.prepare(sql).get(userId, groupId);
     if(row===undefined) {
         callback(false, { errno: -1, errmsg: "User is not member in group!" });
     } else {
-        sql = "select d.*,results from v_draws_in_groups d left join v_draw_results r on d.id=r.drawid where groupid=? order by created desc";
-        const rows=db.prepare(sql).all(groupId);
-        callback(true, rows);
+        sql = "select d.*,results from v_draws_in_groups d left join v_draw_results r on d.id=r.drawid where groupid=? order by created desc limit ? offset ?";
+        let rows=db.prepare(sql).all(groupId,resultPageSize+1,page*resultPageSize);
+        let hasMorePages=false;
+        if(rows.length>resultPageSize) {
+            hasMorePages=true;
+            rows=rows.slice(0,resultPageSize);
+        }
+    
+
+
+        callback(true, {results:rows,hasMorePages:hasMorePages});
     }
 }
 
@@ -526,17 +534,23 @@ function getStatistics(userId,groupId, callback = console.log) {
     callback(true,res);
 
 }
-
-function getEvents(userId,groupId,callback=console.log) {
+var eventPageSize=50;
+function getEvents(userId,groupId,page,callback=console.log) {
     let sql="select * from v_group_members where userId=? and groupid=?";
     let row=db.prepare(sql).get(userId,groupId);
     if(row===undefined) {
         callback(false,"NOT_GROUPMEMBER");
         return;
     }
-    sql="select eventtype,eventtime,username,profit,cost from events where groupid=? order by eventtime desc;"   
-    rows=db.prepare(sql).all(groupId);
-    callback(true,{events:rows});
+    sql="select eventtype,eventtime,username,profit,cost from events where groupid=? order by eventtime desc limit ? offset ?"   
+    console.log(page,groupId,eventPageSize+1,page*eventPageSize);
+    rows=db.prepare(sql).all(groupId,eventPageSize+1,page*eventPageSize);
+    let hasMorePages=false;
+    if(rows.length>eventPageSize) {
+        hasMorePages=true;
+        rows=rows.slice(0,eventPageSize);
+    }
+    callback(true,{events:rows,hasMorePages:hasMorePages});
 }
 
 
