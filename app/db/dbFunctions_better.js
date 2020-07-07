@@ -506,7 +506,10 @@ function getStatistics(userId,groupId, callback = console.log) {
         r.input_extra=stats[key].input_extra;
         totInput+=r.input_ord+r.input_extra;
         r.average_topptips=stats[key].nrOfRights_topptips/stats[key].games_topptips;
+        r.average_topptips=Number(r.average_topptips).toFixed(1); 
         r.average_stryktips=stats[key].nrOfRights_stryktips/stats[key].games_stryktips;
+        r.average_stryktips=Number(r.average_stryktips).toFixed(1); 
+
         r.win_brutto=stats[key].win_ord+stats[key].win_extra;
         totWin+=r.win_brutto;
         r.win_netto=r.win_brutto-(stats[key].input_extra+stats[key].payment);
@@ -515,7 +518,6 @@ function getStatistics(userId,groupId, callback = console.log) {
         userStats.push(r);
 
     }
-
     sql="select count(*) as cnt from v_group_members where groupid=?";
     let nrOfMembers=db.prepare(sql).get(groupId)["cnt"];
 
@@ -534,6 +536,8 @@ function getStatistics(userId,groupId, callback = console.log) {
     callback(true,res);
 
 }
+
+
 var eventPageSize=50;
 function getEvents(userId,groupId,page,callback=console.log) {
     let sql="select * from v_group_members where userId=? and groupid=?";
