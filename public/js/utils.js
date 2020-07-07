@@ -56,23 +56,23 @@ function collectUserInfo(div, passwordCantBeEmpty) {
   var pwd2 = $("div").find("#confirm-password").val().trim();
 
   if (conf.username === "") {
-    $("div").find("#error-message").text("Användarnamn saknas!!").show();
+    popup("#popup","Användarinfo", "Användarnamn saknas!!");
     return null;
   }
 
   if (conf.email === "" || !conf.email.match(/^[^@]+@[^@]+\.[^@]+$/)) {
-    $("div").find("#error-message").text("Mailadress saknas eller verkar vara ogiltig!!").show();
+    popup("#popup","Användarinfo", "Mailadress saknas eller verkar vara ogiltig!!");
     return null;
   }
   if (passwordCantBeEmpty) {
-    if (conf.password === "") {
-      $("div").find("#error-message").text("Lösenord saknas!!").show();
+    if (conf.password === "") {b
+      popup("#popup","Användarinfo", "Lösenord saknas!!");
       return null;
     }
   }
 
   if (conf.password !== pwd2) {
-    $("div").find("#error-message").text("Lösenorden stämmer inte överens!!").show();
+    popup("#popup","Användarinfo", "Lösenorden stämmer inte överens!!");
     return null;
   }
 
@@ -89,11 +89,11 @@ function collectLoginInfo(div) {
   conf.password = $("div").find("#password").val().trim();
 
   if (conf.username === "") {
-    $("div").find("#error-message").text("Användarnamn saknas!!").show();
+    popup("#popup","Inloggning", "Användarnamn saknas!!");
     return null;
   }
   if (conf.password === "") {
-    $("div").find("#error-message").text("Lösenord saknas!!").show();
+    popup("#popup","Inloggning", "Lösenord saknas!!");
     return null;
   }
   return conf;

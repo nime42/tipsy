@@ -10,8 +10,6 @@
           </div>
           <div class="modal-body">
             <form action="#">
-              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
-
               <div class="form-group">
                 <label for="username">Användarnamn:</label>
                 <input type="text" class="form-control" id="username" value="{{username}}" {{#ifnoteq register true}} disabled {{/ifnoteq}}>
@@ -71,7 +69,6 @@
 
 
 				<form action="#" method="post">
-          <p id="error-message" class="text-center text-danger" style="display: none;"></p>
 					<div class="form-group">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -112,7 +109,6 @@
               <h4 class="modal-title">Grupper</h4>
             </div>
             <div class="modal-body">
-              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
               <span class="input-group">
                 <input id="new-group" type="text" class="form-control" placeholder="Ny grupp">
                 <div class="input-group-btn">
@@ -156,8 +152,6 @@
               <h4 class="modal-title">Gruppens Medlemmar</h4>
             </div>
                 <div class="modal-body">
-              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
-              
               <div style="overflow:auto;">
                 <table class="table table-bordered">
                   <thead>
@@ -574,7 +568,6 @@
               <h4 class="modal-title">Glömt lösenord</h4>
             </div>
             <div class="modal-body">
-              <p id="error-message" class="text-center text-danger" style="display: none;"></p>
               <p id="info">Ange användarnamn eller mail-adress så skickar vi en återställnings-länk!</p>
               <span class="input-group">
                 <input id="userid" type="text" class="form-control" placeholder="användarnamn">
@@ -610,7 +603,6 @@
 
 
 				<form action="#" method="post">
-          <p id="error-message" class="text-center text-danger" style="display: none;"></p>
 					<div class="form-group">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-user"></i></span>

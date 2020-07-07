@@ -15,9 +15,10 @@ function login() {
                 },
                 error: function (data, status, jqxhr) {
                     if (data.status === 401) {
-                        $("#error-message").text("Ogiltigt användarnamn eller lösenord!!!").show();
+                        popup("#popup", "Inloggning", "Ogiltigt användarnamn eller lösenord!!!");
+
                     } else {
-                        $("#error-message").text("Just nu går det inte att logga in, försök senare!").show();
+                        popup("#popup", "Inloggning", "Just nu går det inte att logga in, försök senare!");
 
                     }
                 }
@@ -64,18 +65,19 @@ function forgotPassword(e) {
             identityType = "by-mail-adress";
             identity = $("#basicModal").find("#email").val().trim();
             if (identity === "" || !identity.match(/^[^@]+@[^@]+\.[^@]+$/)) {
-                $("#basicModal").find("#error-message").text("Mailadress saknas eller verkar vara ogiltig!!").show();
+                popup("#popup", "Glömt lösenord", "Mailadress saknas eller verkar vara ogiltig!!");
                 return;
             }
         } else if (buttonId === "send-mail-for-userid") {
             identityType = "by-user-id";
             identity = $("#basicModal").find("#userid").val().trim();
             if (identity === "") {
-                $("#basicModal").find("#error-message").text("Användarnamn saknas!!").show();
+                popup("#popup", "Glömt lösenord", "Användarnamn saknas!!");
                 return;
             }
         } else {
-            $("#basicModal").find("#error-message").text("Ett tekniskt fel har inträffat!").show();
+            popup("#popup", "Glömt lösenord", "Ett tekniskt fel har inträffat!");
+
             return;
 
         }
@@ -95,13 +97,12 @@ function forgotPassword(e) {
             error: function (data, status, jqxhr) {
                 if (data.status === 404) {
                     if (identityType === "by-mail-adress") {
-                        $("#basicModal").find("#error-message").text("Det finns ingen användare med denna mail-adress!!").show();
+                        popup("#popup", "Glömt lösenord", "Det finns ingen användare med denna mail-adress!!");
                     } else {
-                        $("#basicModal").find("#error-message").text("Det finns ingen användare med detta användarnamn!!").show();
-
+                        popup("#popup", "Glömt lösenord", "Det finns ingen användare med detta användarnamn!!");
                     }
                 } else {
-                    $("#basicModal").find("#error-message").text("Det gick inte att skicka återställnings-mailet!!").show();
+                    popup("#popup", "Glömt lösenord", "Det gick inte att skicka återställnings-mailet!!");
                 }
             }
         });
@@ -123,13 +124,13 @@ function resetPassword(resetToken) {
         var pwd2 = $("#basicModal").find("#password2").val().trim();
 
         if (password === "") {
-            $("#basicModal").find("#error-message").text("Lösenord saknas!!!").show();
+            popup("#popup", "Återställ lösenord", "Lösenord saknas!!!");
             return false;
         }
 
 
         if (password !== pwd2) {
-            $("#basicModal").find("#error-message").text("Lösenorden stämmer inte överens!!").show();
+            popup("#popup","Återställ lösenord", "Lösenorden stämmer inte överens!!");
             return false;
         }
 
@@ -143,16 +144,16 @@ function resetPassword(resetToken) {
             },
             success: function (data, status, jqxhr) {
                 $("#basicModal").modal("hide");
-                popup("#popup", "Återställning", "Lösenordet är uppdaterat");
+                popup("#popup", "Återställ lösenord", "Lösenordet är uppdaterat");
                 removeUrlVars();
                 initApp();
 
             },
             error: function (data, status, jqxhr) {
                 if (data.status === 404) {
-                    $("#error-message").text("Det gick inte att uppdatera lösenordet").show();
+                    popup("#popup","Återställ lösenord", "Det gick inte att uppdatera lösenordet");
                 } else {
-                    $("#error-message").text("Ett Tekniskt fel har inträffat, försök igen senare!").show();
+                    popup("#popup", "Återställ lösenord","Ett Tekniskt fel har inträffat, försök igen senare!");
                 }
             }
         });
@@ -292,9 +293,9 @@ function configureUser() {
                     error: function (data, status, jqxhr) {
                         console.log(data, status, jqxhr);
                         if (data.status === 403) {
-                            $("#basicModal").find("#error-message").text("Användarnamnet finns redan!").show();
+                            popup("#popup","Användarinfo", "Användarnamnet finns redan!");
                         } else {
-                            $("#basicModal").find("#error-message").text("Ett Tekniskt fel har inträffat, försök igen senare!").show();
+                            popup("#popup","Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
                         }
                     }
                 });
@@ -322,7 +323,7 @@ function configureUser() {
                                 $("#basicModal").modal("hide");
                             },
                             error: function (data, status, jqxhr) {
-                                $("#basicModal").find("#error-message").text("Ett Tekniskt fel har inträffat, försök igen senare!").show();
+                                popup("#popup","Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
                             }
                         });
                     }
@@ -346,7 +347,7 @@ function configureGroups() {
     $("#basicModal").find("#add-group").click(function (e) {
         var newGroup = $("#basicModal").find("#new-group").val().trim();
         if (newGroup === "") {
-            $("#basicModal").find("#error-message").text("Gruppnamn saknas!").show();
+            popup("#popup","Skapa grupp", "Gruppnamn saknas!");
             return;
         }
         $.ajax({
@@ -363,9 +364,10 @@ function configureGroups() {
             },
             error: function (data, status, jqxhr) {
                 if (data.status === 403) {
-                    $("#error-message").text("Gruppen finns redan!").show();
+                    popup("#popup","Skapa grupp", "Gruppen finns redan!");
+
                 } else {
-                    $("#error-message").text("Ett Tekniskt fel har inträffat, försök igen senare!").show();
+                    popup("#popup","Skapa grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
                 }
             }
         });
