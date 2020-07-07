@@ -343,7 +343,7 @@ function getResults(userId, groupId,page, callback=console.log) {
     if(row===undefined) {
         callback(false, { errno: -1, errmsg: "User is not member in group!" });
     } else {
-        sql = "select d.*,results from v_draws_in_groups d left join v_draw_results r on d.id=r.drawid where groupid=? order by created desc limit ? offset ?";
+        sql = "select d.*,results from v_draws_in_groups d left join v_draw_results r on d.id=r.drawid where groupid=? and d.drawnumber>-1 order by created desc limit ? offset ?";
         let rows=db.prepare(sql).all(groupId,resultPageSize+1,page*resultPageSize);
         let hasMorePages=false;
         if(rows.length>resultPageSize) {
@@ -530,7 +530,7 @@ function getStatistics(userId,groupId, callback = console.log) {
     res.balance=totWin-totInput;
     res.totPayments=totPayments;
     res.totNettoWin=totNettoWin;
-    res.totNettoWinPerMember=totNettoWin/nrOfMembers;
+    res.totNettoWinPerMember=Number(totNettoWin/nrOfMembers).toFixed(2);
 
 
     callback(true,res);
@@ -546,8 +546,7 @@ function getEvents(userId,groupId,page,callback=console.log) {
         callback(false,"NOT_GROUPMEMBER");
         return;
     }
-    sql="select eventtype,eventtime,username,profit,cost from events where groupid=? order by eventtime desc limit ? offset ?"   
-    console.log(page,groupId,eventPageSize+1,page*eventPageSize);
+    sql="select id,eventtype,eventtime,userid,username,profit,cost from events where groupid=? order by eventtime desc limit ? offset ?"   
     rows=db.prepare(sql).all(groupId,eventPageSize+1,page*eventPageSize);
     let hasMorePages=false;
     if(rows.length>eventPageSize) {
@@ -556,6 +555,18 @@ function getEvents(userId,groupId,page,callback=console.log) {
     }
     callback(true,{events:rows,hasMorePages:hasMorePages});
 }
+
+function deleteEvent(userId,groupId,eventId,callback=console.log) {
+    let sql="delete from events where id=? and (userid=? or exists (select * from v_group_members where groupid=? and userid=? and admin=1))";
+    let res=db.prepare(sql).run(eventId,userId,groupId,userId);
+    if(res.changes>0) {
+        callback(true);
+    } else {
+        callback(false);
+
+    }
+}
+
 
 
 function rectify(drawId, callback=console.log) {
@@ -618,10 +629,10 @@ function rectify(drawId, callback=console.log) {
 }
 
 
-function deleteDraw(drawId,userId,callback=console.log) {
-    let sql="delete from draws where id=? and drawstate<>'Finalized' and created_by=?";
+function deleteDraw(drawId,userId,groupId,callback=console.log) {
+    let sql="delete from draws where id=? and ((created_by=? and drawstate<>'Finalized') or exists (select * from v_group_members where groupid=? and userid=? and admin=1))";
     try {
-    db.prepare(sql).run(drawId, userId);
+    db.prepare(sql).run(drawId, userId,groupId,userId);
     callback(true,null);
     }catch(err) {
         callback(false,err);
@@ -685,6 +696,7 @@ module.exports = {
     getStatistics:getStatistics,
     getEvents:getEvents,
     makePayment:makePayment,
+    deleteEvent:deleteEvent,
     getDbInstance:getDbInstance
 }
 

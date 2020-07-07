@@ -307,6 +307,10 @@
                       <td nowrap style="text-align:left">{{username}}</td>
                       <td nowrap style="text-align:left">{{cost}}</td>
                       <td nowrap style="text-align:left">{{profit}}</td>
+                      {{#if isDeletable}}
+                        <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeEvent({{id}},$(this).parent().parent())"></span></td>
+                      {{/if}}
+
                     </tr>
                     {{/each}}
                     {{#if hasMorePages}} 

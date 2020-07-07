@@ -537,9 +537,10 @@ function checkDraw(product, drawNr, drawIds, callback = console.log) {
 
 app.post('/deleteDraw',(req,res)=> {
     var userId=sessionHandler.getSession(req).userId;
+    var groupId=req.body.groupId;
     var drawId=req.body.drawId;
 
-    db.deleteDraw(drawId,userId, function(status,err) {
+    db.deleteDraw(drawId,userId,groupId, function(status,err) {
         if(status) {
             res.sendStatus(200);                    
         } else {
@@ -595,6 +596,23 @@ app.post('/getEvents',(req,res)=>{
     })
    
 })
+
+
+app.post('/deleteEvent',(req,res)=> {
+    var userId=sessionHandler.getSession(req).userId;
+    var groupId=req.body.groupId;
+    var eventId=req.body.eventId;
+    console.log(userId,groupId,eventId);
+    db.deleteEvent(userId,groupId,eventId, function(status,err) {
+        if(status) {
+            res.sendStatus(200);                    
+        } else {
+            res.sendStatus(500);
+        }
+    })
+
+})
+
 
 
 app.post('/makePayment',(req,res)=>{

@@ -461,7 +461,7 @@ function configureGroupMembers() {
             reloadIfLoggedOut(jqxhr);
             var isAdmin = globals.activeGroup.admin;
             data.members.map(function (e) {
-                if ((isAdmin && e.userid != globals.userinfo.userid) || (!isAdmin && e.userid == globals.userinfo.userid)) {
+                if (isAdmin || e.userid == globals.userinfo.userid ) {
                     e.isDeletable = true;
                 }
                 return e;
@@ -685,6 +685,12 @@ function configureEvents() {
                         case "PAYMENT": e.eventtype = "Utbetalning"; break;
                     }
                     e.eventtime=new Date(e.eventtime).toLocaleDateString();
+                    if(e.eventtype=="Utbetalning") {
+                        var isAdmin = globals.activeGroup.admin;
+                        if (isAdmin || e.userid == globals.userinfo.userid ) {
+                            e.isDeletable = true;
+                        }
+                    }
                     return e;
                 });
                 data.surplus=surplus;
@@ -740,7 +746,32 @@ function getMoreEvents(buttonElem,page) {
 
 }
 
+function removeEvent(eventId,rowElem) {
+    var groupId = globals.activeGroup.groupid;
+    var fun = function () {
+        $.ajax({
+            type: "POST",
+            url: "/deleteEvent",
+            cache: false,
+            data: { groupId: groupId,eventId:eventId },
+            success: function (data, status, jqxhr) {
+                reloadIfLoggedOut(jqxhr);
+                rowElem.remove();
+            },
+            error: function (data, status, jqxhr) {
+                popup("#popup", "Ta bort Händelse", "Ett Tekniskt fel har inträffat, försök igen senare!");
+            }
+        });
+    }
 
+    dialog("#yes-no", "Ta bort Händelse",
+        "Är du säker på att du vill ta bort händelsen?",
+        { text: "Ja", func: fun },
+        { text: "Nej", func: function () { return; } })
+
+
+
+}
 
 
 function getPlayable(product, div) {
@@ -1012,12 +1043,13 @@ function parseResults(rows) {
 }
 
 function deleteDraw(drawId) {
+    var groupId = globals.activeGroup.groupid;
     var fun=function() {
     $.ajax({
         type: "POST",
         url: "/deleteDraw",
         cache: false,
-        data: { drawId: drawId },
+        data: { drawId: drawId,groupId:groupId },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             $("#results").find("#draw-" + drawId).empty();
