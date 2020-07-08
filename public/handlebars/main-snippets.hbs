@@ -207,7 +207,7 @@
 
 
 <script id="statistics" type="text/x-handlebars-template">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -296,6 +296,7 @@
                       <th nowrap style="text-align:left" scope="col">Händelse</th>
                       <th nowrap style="text-align:left" scope="col">Användare</th>
                       <th nowrap style="text-align:left" scope="col">Kostnad</th>
+                      <th nowrap style="text-align:left" scope="col">Antal rätt</th>
                       <th nowrap style="text-align:left" scope="col">Vinst</th>
                     </tr>
                   </thead>
@@ -305,8 +306,9 @@
                       <td nowrap style="text-align:left">{{eventtime}}</td>
                       <td nowrap style="text-align:left">{{eventtype}}</td>
                       <td nowrap style="text-align:left">{{username}}</td>
-                      <td nowrap style="text-align:left">{{cost}}</td>
-                      <td nowrap style="text-align:left">{{profit}}</td>
+                      <td nowrap style="text-align:left">{{cost}} kr</td>
+                      <td nowrap style="text-align:left">{{nrofrights}}</td>
+                      <td nowrap style="text-align:left">{{profit}} kr</td>
                       {{#if isDeletable}}
                         <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeEvent({{id}},$(this).parent().parent())"></span></td>
                       {{/if}}
@@ -527,7 +529,7 @@
   </table>
   {{#if showDelete}} 
     <div>
-      <button id="delete" type="button" class="btn btn-primary" style="margin-top: 5px;" onclick="deleteDraw({{id}})">Ta bort</button>
+      <button id="delete" type="button" class="btn" style="margin-top: 5px;" onclick="deleteDraw({{id}})">Ta bort</button>
     </div>
   {{/if}}
   {{#ifnoteq drawstate "Open" }}

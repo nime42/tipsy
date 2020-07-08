@@ -518,7 +518,7 @@ function configurePayment(surplus) {
             data.nrOfMembers=data.members.length;
             data.members.forEach(function(e) {e.name=(e.name!="")?e.name:e.username});
             hbsModal("#basicModal", hbsTemplates["main-snippets"]["payment"],data);
-            $('.amount-per-member').text((data.amount/data.nrOfMembers)+' kr')
+            $('.amount-per-member').text(Number(data.surplus/data.nrOfMembers).toFixed(2)+' kr')
         }
     });
 }
@@ -683,7 +683,7 @@ function configureEvents() {
                         case "EXTRA BET": e.eventtype = "Extra spel"; break;
                         case "PAYMENT": e.eventtype = "Utbetalning"; break;
                     }
-                    e.eventtime=new Date(e.eventtime).toLocaleDateString();
+                    e.eventtime=new Date(e.eventtime.replace(' ', 'T')).toLocaleDateString();
                     if(e.eventtype=="Utbetalning") {
                         var isAdmin = globals.activeGroup.admin;
                         if (isAdmin || e.userid == globals.userinfo.userid ) {
@@ -716,7 +716,7 @@ function getMoreEvents(buttonElem,page) {
                     case "EXTRA BET": e.eventtype = "Extra spel"; break;
                     case "PAYMENT": e.eventtype = "Utbetalning"; break;
                 }
-                e.eventtime=new Date(e.eventtime).toLocaleDateString();
+                e.eventtime=new Date(e.eventtime.replace(' ', 'T')).toLocaleDateString();
                 return e;
             });
 
@@ -943,10 +943,13 @@ function getResults(groupId,page) {
                 e.results = parseResults(e.results);
                 if (e.results != undefined) {
                     e.totalWin = 0;
-                    e.results.forEach(function (el) { e.totalWin += el.total; });
+                    e.results.forEach(function (el) { 
+                        e.totalWin += el.total; 
+                        el.worth=Number(el.worth.replace(',','.')).toFixed(0);
+                    });
                 }
 
-                e.created = new Date(e.created + " GMT+000").toLocaleString();
+                e.created = new Date(e.created.replace(' ', 'T')+"Z").toLocaleString();
 
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 

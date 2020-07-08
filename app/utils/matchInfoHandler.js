@@ -119,7 +119,6 @@ function parseResult(data) {
         res.results.push(row);
 
     });
-    res.distribution=r.distribution;
     return res;
 }
 

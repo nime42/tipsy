@@ -546,7 +546,7 @@ function getEvents(userId,groupId,page,callback=console.log) {
         callback(false,"NOT_GROUPMEMBER");
         return;
     }
-    sql="select id,eventtype,eventtime,userid,username,profit,cost from events where groupid=? order by eventtime desc limit ? offset ?"   
+    sql="select e.id,eventtype,eventtime,userid,username,profit,cost,d.nrofrights from events e left join draws d on e.drawid=d.id where e.groupid=? order by eventtime desc limit ? offset ?";
     rows=db.prepare(sql).all(groupId,eventPageSize+1,page*eventPageSize);
     let hasMorePages=false;
     if(rows.length>eventPageSize) {
@@ -641,15 +641,34 @@ function deleteDraw(drawId,userId,groupId,callback=console.log) {
 
 
 function getUserSurplus(userId,groupId,callback=console.log) {
-    let sql="select surplus from v_user_surplus where userid=? and groupid=?";
+    let totalWin=0;
+    let extraBet=0;
+    let futureExtraBet=0;
+
+    let sql="select sum(profit) as totalwin from events where eventtype in ('BET','EXTRA BET','PAYMENT') and  userid=? and groupid=?";
     let row=db.prepare(sql).get(userId,groupId);
-    let surplus=0;
-    if(row!==undefined) {
-        surplus=row.surplus;
+    if(row!=undefined) {
+        totalWin=row.totalwin;
     }
+
+    sql="select sum(cost) as extrabet from events where eventtype='EXTRA BET' and  userid=? and groupid=?";
+    row=db.prepare(sql).get(userId,groupId);
+    if(row!=undefined) {
+        extraBet=row.extrabet;
+    }
+
+    sql="select sum(systemsize*rowprice) as future_extrabet,created_by,groupid from draws where extra_bet=true and drawstate<>'Finalized' and created_by=? and groupid=?";
+    row=db.prepare(sql).get(userId,groupId);
+    if(row!=undefined) {
+        futureExtraBet=row.future_extrabet;
+    }
+
+    let surplus=totalWin-extraBet-futureExtraBet;
     callback(surplus);
 
+
 } 
+getUserSurplus(9,4);
 
 function makePayment(userId,groupId,amount,callback=console.log) {
     getUserSurplus(userId,groupId,function(surplus) {
