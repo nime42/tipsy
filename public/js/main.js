@@ -504,6 +504,38 @@ function configureGroupMembers() {
 
 }
 
+function moveTableRow(rowElem, dir) {
+    var groupId = globals.activeGroup.groupid;
+  
+    var from = rowElem.find("#sortorder").text();
+    var to = null;
+    if (dir == "up") {
+      to = rowElem.prev().find("#sortorder").text();
+    } else {
+      to = rowElem.next().find("#sortorder").text();
+    }
+  
+    if(from=="" || to=="") {
+      return;
+    }
+  
+    $.ajax({
+      url: "/swapSortOrder",
+      type: "POST",
+      cache: false,
+      data: { groupId: groupId, from: from, to: to },
+      success: function (data, status, jqxhr) {
+        if (dir == "up") {
+          rowElem.insertBefore(rowElem.prev());
+        } else {
+          rowElem.insertAfter(rowElem.next());
+        }
+  
+      }
+    });
+  
+  }
+
 function configurePayment(surplus) {
     var groupId = globals.activeGroup.groupid;
 

@@ -143,7 +143,7 @@
 
 
 <script id="group-members" type="text/x-handlebars-template">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
         
           <!-- Modal content-->
           <div class="modal-content">
@@ -160,6 +160,11 @@
                       <th scope="col">Email</th>
                       <th scope="col">Telefon</th>
                       <th scope="col">Anv-id</th>
+                      {{#if admin}}
+                      <th scope="col"></th>
+                      <th scope="col"></th>
+                      {{/if}}
+                      <th scope="col"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -169,6 +174,11 @@
                       <td nowrap>{{email}}</td>
                       <td nowrap>{{phonenr}}</td>
                       <td nowrap>{{username}}</td>
+                      {{#if ../admin}}
+                        <td onclick="moveTableRow($(this).parent(),'up')"><span style="color:darkcyan" class="glyphicon glyphicon-arrow-up"></span></td>
+                        <td onclick="moveTableRow($(this).parent(),'down')"><span style="color:darkcyan;" class="glyphicon glyphicon-arrow-down"></span></td>
+                      {{/if}}
+                      <td id="sortorder" style="display: none;">{{sortorder}}</td>
                       {{#if isDeletable}}
                         <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></span></td>
                       {{/if}}
@@ -189,7 +199,7 @@
                 <br/>
                 <h4 class="modal-title">Skickade inbjudningar</h4>
 
-                <div id="invites"  style="overflow-y:auto;height: 200px;">
+                <div id="invites"  style="overflow-y:auto;max-height: 200px;">
                 {{#each invites}}
                 <p style="margin-bottom:0px;">{{email}}<span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeInvite('{{email}}',$(this).parent())"></span></p>
                 {{/each}}

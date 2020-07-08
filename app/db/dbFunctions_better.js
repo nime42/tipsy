@@ -668,7 +668,6 @@ function getUserSurplus(userId,groupId,callback=console.log) {
 
 
 } 
-getUserSurplus(9,4);
 
 function makePayment(userId,groupId,amount,callback=console.log) {
     getUserSurplus(userId,groupId,function(surplus) {
@@ -681,6 +680,26 @@ function makePayment(userId,groupId,amount,callback=console.log) {
         }
     })
 }
+
+
+function swapSortOrder(adminId,from,to,groupId,callback=console.log) {
+    if((isNaN(from)|| from==="") || (isNaN(to) || to==="")) {
+        callback(false,"PARAMETER_ERROR");
+        return;
+    }
+
+    let sql="select * from v_group_members where userId=? and groupid=? and admin=1";
+    let row=db.prepare(sql).get(adminId,groupId);
+    if(row===undefined) {
+        callback(false,"NOT_GROUPADMIN");
+        return;
+    }
+
+    sql="update group_members set sortorder=case when sortorder=? then ? when sortorder=? then ? else sortorder end where groupid=?";
+    db.prepare(sql).run(from,to,to,from,groupId);
+    callback(true);
+}
+
 
 function getDbInstance() {
     return db;
@@ -716,6 +735,7 @@ module.exports = {
     getEvents:getEvents,
     makePayment:makePayment,
     deleteEvent:deleteEvent,
+    swapSortOrder:swapSortOrder,
     getDbInstance:getDbInstance
 }
 

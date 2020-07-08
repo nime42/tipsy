@@ -258,6 +258,26 @@ app.post('/getGroupMembers',(req,res)=> {
 })
 
 
+app.post('/swapSortOrder',(req,res)=> {
+    var userId=sessionHandler.getSession(req).userId;
+    let groupId=req.body.groupId;
+    let from=req.body.from;
+    let to=req.body.to;
+    db.swapSortOrder(userId,from,to,groupId,function(status,err) {
+        if(status) {
+            res.sendStatus(200);
+        } else {
+            if(err==="NOT_GROUPADMIN") {
+                res.sendStatus(403);
+            } else {
+                res.sendStatus(500);
+            }
+        }
+    })
+
+
+})
+
 app.post('/updateUserInfo',(req,res)=> {
     var userId=sessionHandler.getSession(req).userId;
 
