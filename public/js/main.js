@@ -436,7 +436,6 @@ function getUserSurplus(callback) {
         type: "POST",
         cache: false,
         data: { groupId: groupId },
-        cache: false,
         success: function (data, status, jqxhr) {
             callback(data.surplus);
         }
@@ -977,9 +976,9 @@ function parseRows(rows) {
             bet: a[2],
             result: a[3],
             status: a[4],
-            on1: a[2].match("1") != undefined ? "on" : "",
-            onX: a[2].match("X") != undefined ? "on" : "",
-            on2: a[2].match("2") != undefined ? "on" : "",
+            on1: a[2].match("1") != undefined ? "on" : "off",
+            onX: a[2].match("X") != undefined ? "on" : "off",
+            on2: a[2].match("2") != undefined ? "on" : "off",
         };
         var tmp = res.result.split("-");
         var home = parseInt(tmp[0].trim());
