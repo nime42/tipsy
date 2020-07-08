@@ -784,7 +784,7 @@ function getPlayable(product, div) {
             data.regCloseTime = data.regCloseTime.replace("T", " ").replace(/\+.*$/, "");
             $("#basicModal").find("#" + div).prepend(hbsTemplates["main-snippets"]["matches"](data));
             $("#basicModal").find("#" + div).find(".1x2").click(function () {
-                $(this).toggleClass('on');
+                $(this).toggleClass('on off');
                 var nrOfRows = 1;
                 var rows = getDrawBettings(div);
                 rows.forEach(function (e) {
