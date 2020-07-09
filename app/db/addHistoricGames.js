@@ -61,7 +61,7 @@ addHistoricGame(4,'Jesper',"Stryktipset","2020-02-29",256,7,0,256,0);
 addHistoricGame(4,'Henkejonne',"Stryktipset","2020-03-07",256,9,1,256,0);
 addHistoricGame(4,'sejensjo',"Stryktipset","2020-03-07",256,11,0,256,766);
 addHistoricGame(4,'Henkejonne',"Stryktipset","2020-05-16",256,8,1,256,0);
-addHistoricGame(4,'Henkejonne',"Stryktipset","2020-04-12",200,8,1,200,0);
+//addHistoricGame(4,'Henkejonne',"Stryktipset","2020-04-12",200,8,1,200,0);
 addHistoricGame(4,'sejensjo',"Stryktipset","2020-05-16",256,9,1,256,0);
 addHistoricGame(4,'Kenneth',"Stryktipset","2020-05-16",256,7,0,256,0);
 addHistoricGame(4,'Jenz',"Stryktipset","2020-05-23",256,7,0,256,0);
@@ -71,4 +71,4 @@ addHistoricGame(4,'nisse',"Stryktipset","2020-06-13",256,9,0,256,0);
 addHistoricGame(4,'Niclas',"Stryktipset","2020-06-20",256,5,0,256,0);
 addHistoricGame(4,'Henkejonne',"Stryktipset","2020-06-20",256,5,1,256,0);
 
-addPayment(4,'Henkejonne','2020-02-23',9000);
+addPayment(4,'Henkejonne','2020-02-23',9200);
