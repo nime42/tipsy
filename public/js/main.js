@@ -951,7 +951,35 @@ function updateResults(groupId) {
 
 }
 
+function getNextInLine(groupId) {
+    $.ajax({
+        type: "POST",
+        url: "/getNextInLine",
+        cache: false,
+        data: { groupId: groupId},
+        success: function (data, status, jqxhr) {
+            console.log(data);
 
+            var info={};
+            if(data.playedThisWeek.length>0) {
+                info.hasPlayed=data.playedThisWeek.map(function(e) {return e.name});
+            }
+            if(data.extraBets.length>0) {
+                info.extraBets=data.extraBets.map(function(e) {return e.name+"("+e.surplus+" kr)"}).join(", ");
+            }
+            if(data.nextInLine) {
+                info.nextInLine=data.nextInLine;
+            }
+            if(data.runnerUp) {
+                info.runnerUp=data.runnerUp;
+            }
+            $("#who-should-play").empty();
+            console.log(hbsTemplates["main-snippets"]["playing-order"](info));
+            $("#who-should-play").append(hbsTemplates["main-snippets"]["playing-order"](info));
+        }
+    });
+
+}
 
 
 function getResults(groupId,page) {
@@ -992,7 +1020,7 @@ function getResults(groupId,page) {
                 $("#results").append('<input type="button" id="more-results" class="btn btn-info" value="Mer..." onclick="getResults('+groupId+','+(page+1)+')"/>');
 
             }
-
+            getNextInLine(groupId);
         },
         error: function (data, status, jqxhr) {
             popup("#popup", "Hämta resultat", "Tekniskt fel!");
@@ -1087,6 +1115,7 @@ function deleteDraw(drawId) {
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             $("#results").find("#draw-" + drawId).empty();
+            getNextInLine(groupId);
         },
         error: function (data, status, jqxhr) {
             popup("#popup", "Ta bort spel", "Ett Tekniskt fel har inträffat, försök igen senare!");

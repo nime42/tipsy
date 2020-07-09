@@ -668,6 +668,12 @@ app.post('/makePayment',(req,res)=>{
 })
 
 
+app.post('/getNextInLine',(req,res)=> {
+    var groupId=req.body.groupId;
+    db.getNextInLine(groupId,function(data){
+            res.json(data);
+    })
+})
 
 
 process.on('SIGINT', function(e) {

@@ -680,6 +680,61 @@ function swapSortOrder(adminId,from,to,groupId,callback=console.log) {
     callback(true);
 }
 
+function getNextInLine(groupId,callback=console.log) {
+    //Check if someone have played this week.
+    let sql="select distinct u.username,u.name from \
+    (select created_by,groupid from draws where strftime('%W',created)=strftime('%W',date('now')) and coalesce(extra_bet,false)<>true ) p\
+    join v_group_members u on u.userid =p.created_by and u.groupid=p.groupid \
+    where p.groupid=?";
+    let playedThisWeek=db.prepare(sql).all(groupId);
+    playedThisWeek.forEach(e=>{
+        e.name=e.name===""?e.username:e.name;
+    })
+
+
+    //Get the members that should play the following 2 weeks,by sorting on their last play. And by joining  against v_group_members we only get active users
+    sql="select distinct u.username,u.name from\
+    (select  max(regclosetime) as lastplayed,groupid,created_by from draws where coalesce(extra_bet,false)<>true group by groupid,created_by) l\
+    join v_group_members u on u.userid =l.created_by and u.groupid=l.groupid\
+    where l.groupid=?\
+    order by l.lastplayed limit 2";
+    let rows=db.prepare(sql).all(groupId);
+    if(rows.length===0) {
+        //There is no one that played anything. Get next player by sorting on member sortorder
+        rows=db.prepare(sql).all(groupid);  
+    }
+
+    let nextInLine=rows[0].name===""?rows[0].username:rows[0].name;
+    let runnerUp=nextInLine; //if there is just one member, it's the same members turn next week
+    if(rows[1]!==undefined) {
+        runnerUp=rows[1].name===""?rows[1].username:rows[1].name;
+    }
+
+    if(playedThisWeek.length>0) {
+        //If someone already played this week, then will nextInline be the one that plays next week.
+        runnerUp=nextInLine;
+        nextInLine=undefined;
+    }
+
+    sql="select username,name,surplus from\
+    (select userid,groupid,surplus from v_user_surplus where surplus>0 and (userid,groupid) not in (select created_by,groupid from draws where strftime('%W',created)=strftime('%W',date('now')) and extra_bet=true)) s\
+    join v_group_members u on u.userid =s.userid and u.groupid=s.groupid\
+    where s.groupid=?";
+    let extraBets=db.prepare(sql).all(groupId);
+    extraBets.forEach(e=>{
+        e.name=e.name===""?e.username:e.name;
+    })
+
+    let res={
+        playedThisWeek:playedThisWeek,
+        nextInLine:nextInLine,
+        runnerUp:runnerUp,
+        extraBets:extraBets
+    }
+    callback(res);
+       
+}
+
 
 function getDbInstance() {
     return db;
@@ -716,6 +771,7 @@ module.exports = {
     makePayment:makePayment,
     deleteEvent:deleteEvent,
     swapSortOrder:swapSortOrder,
+    getNextInLine:getNextInLine,
     getDbInstance:getDbInstance
 }
 

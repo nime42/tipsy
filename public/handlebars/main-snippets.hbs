@@ -578,6 +578,20 @@
 </script>
 
 
+<script id="playing-order" type="text/x-handlebars-template">
+{{#if hasPlayed }}
+  <p>Denna vecka har <b>{{hasPlayed}}</b> spelat.</p>
+{{else}}
+  <p>Denna vecka skall <b>{{nextInLine}}</b> spela!</p>
+{{/if}}
+
+{{#if extraBets }}
+<p> <b>{{extraBets}}</b> ligger på plus och får gärna lägga ett extra spel!</p>
+{{/if}}
+<p>Nästa vecka spelar <b>{{runnerUp}}</b>.</p>
+</script>
+
+
 
 <script id="forgot-password" type="text/x-handlebars-template">
         <div class="modal-dialog" style="top:15%">
