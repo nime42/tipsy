@@ -644,9 +644,11 @@ function getUserSurplus(userId,groupId,callback=console.log) {
 
     let sql="select surplus from v_user_surplus where userid=? and groupid=?"
     let row=db.prepare(sql).get(userId,groupId);
-    callback(row.surplus);
-
-
+    let surplus=0;
+    if(row!==undefined) {
+        surplus=row.surplus;
+    }
+    callback(surplus);
 } 
 
 function makePayment(userId,groupId,amount,callback=console.log) {
