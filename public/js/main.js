@@ -575,7 +575,7 @@ function makePayment(amount,surplus,sendMail) {
         res.mailTo=globals.userinfo.email;
         res.mailBody=hbsTemplates["main-snippets"]["payment-mail-template"]({amount:amount,tablebody:$("#basicModal").find("#payment-div").html()});
     }
-    console.log(res.mailBody);
+    //console.log(res.mailBody);
 
     $.ajax({
         url: "/makePayment",
@@ -958,7 +958,6 @@ function getNextInLine(groupId) {
         cache: false,
         data: { groupId: groupId},
         success: function (data, status, jqxhr) {
-            console.log(data);
 
             var info={};
             if(data.playedThisWeek.length>0) {

@@ -622,7 +622,6 @@ app.post('/deleteEvent',(req,res)=> {
     var userId=sessionHandler.getSession(req).userId;
     var groupId=req.body.groupId;
     var eventId=req.body.eventId;
-    console.log(userId,groupId,eventId);
     db.deleteEvent(userId,groupId,eventId, function(status,err) {
         if(status) {
             res.sendStatus(200);                    
