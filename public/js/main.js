@@ -886,7 +886,7 @@ function getPlayable(product, div) {
                     });
                 }
                 getUserSurplus(function (surplus) {
-                    if (surplus >= systemsize * drawInfo.rowprice) {
+                    if (surplus>0) {
                         dialog("#yes-no", "Extra spel",
                             "Är detta ett extra eller ett ordinarie spel?",
                             {
