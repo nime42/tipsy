@@ -108,5 +108,6 @@ sslcert/server.key
 package-lock.json
 resources/server.crt
 resources/server.key
-resources/tipsy.db
+resources/*.db
 resources/.rnd
+resources/*.db

@@ -641,30 +641,10 @@ function deleteDraw(drawId,userId,groupId,callback=console.log) {
 
 
 function getUserSurplus(userId,groupId,callback=console.log) {
-    let totalWin=0;
-    let extraBet=0;
-    let futureExtraBet=0;
 
-    let sql="select sum(profit) as totalwin from events where eventtype in ('BET','EXTRA BET','PAYMENT') and  userid=? and groupid=?";
+    let sql="select surplus from v_user_surplus where userid=? and groupid=?"
     let row=db.prepare(sql).get(userId,groupId);
-    if(row!=undefined) {
-        totalWin=row.totalwin;
-    }
-
-    sql="select sum(cost) as extrabet from events where eventtype='EXTRA BET' and  userid=? and groupid=?";
-    row=db.prepare(sql).get(userId,groupId);
-    if(row!=undefined) {
-        extraBet=row.extrabet;
-    }
-
-    sql="select sum(systemsize*rowprice) as future_extrabet,created_by,groupid from draws where extra_bet=true and drawstate<>'Finalized' and created_by=? and groupid=?";
-    row=db.prepare(sql).get(userId,groupId);
-    if(row!=undefined) {
-        futureExtraBet=row.future_extrabet;
-    }
-
-    let surplus=totalWin-extraBet-futureExtraBet;
-    callback(surplus);
+    callback(row.surplus);
 
 
 } 
