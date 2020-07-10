@@ -525,10 +525,13 @@ function moveTableRow(rowElem, dir) {
       cache: false,
       data: { groupId: groupId, from: from, to: to },
       success: function (data, status, jqxhr) {
+        rowElem.find("#sortorder").text(to);
         if (dir == "up") {
-          rowElem.insertBefore(rowElem.prev());
+            rowElem.prev().find("#sortorder").text(from);  
+            rowElem.insertBefore(rowElem.prev());
         } else {
-          rowElem.insertAfter(rowElem.next());
+            rowElem.next().find("#sortorder").text(from);  
+            rowElem.insertAfter(rowElem.next());
         }
   
       }
