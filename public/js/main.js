@@ -976,7 +976,6 @@ function getNextInLine(groupId) {
                 info.runnerUp=data.runnerUp;
             }
             $("#who-should-play").empty();
-            console.log(hbsTemplates["main-snippets"]["playing-order"](info));
             $("#who-should-play").append(hbsTemplates["main-snippets"]["playing-order"](info));
         }
     });
@@ -994,10 +993,9 @@ function getResults(groupId,page) {
         cache: false,
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
+            var week=new Date().getWeek();
             data.results.forEach(function (e) {
                 e.rows = parseRows(e.rows);
-                e.nrOfRows = 1;
-                e.rows.forEach(function (r) { e.nrOfRows *= r.bet.length });
                 if ((e.drawstate != "Finalized" && e.created_by == globals.userinfo.userid)||globals.activeGroup.admin===1) {
                     e.showDelete = true;
                 }
@@ -1014,6 +1012,15 @@ function getResults(groupId,page) {
                 e.created = new Date(e.created.replace(' ', 'T')+"Z").toLocaleString();
 
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
+
+                var w=new Date(e.regclosetime.replace(' ', 'T')+"Z").getWeek();
+                //console.log("spel "+e.regclosetime+" "+w);
+                if(week!=w) {
+                    week=w;
+                    weekNrHeader="Vecka "+week+".";
+                    //console.log(weekNrHeader);
+                }
+
 
 
             })

@@ -21,7 +21,6 @@
     padding-bottom: 0px;
   }
 
-
   table.bettingtable {
 
   }
@@ -118,6 +117,17 @@ div.sticky {
     logout();
     });
 
+
+    $("#instructions").click(function (e) {
+      var isLoggedIn=true;
+      if (!globals.userinfo) {
+        isLoggedIn=false;
+      }
+
+      hbsModal("#basicModal", hbsTemplates["main-snippets"]["getting-started"]);
+
+   });
+
    $("#configure-user").click(function (e) {
     configureUser();
    });
@@ -191,15 +201,17 @@ div.sticky {
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>                        
         </button>
-        <a class="navbar-brand" href="#">Tipsy</a>
+        <a class="navbar-brand" href="#">Tipsy.nu</a>
       </div>
-      <div class="collapse navbar-collapse" id="myNavbar">
+      <div class="collapse navbar-collapse" id="myNavbar" style="max-height: 440px;">
         <ul class="nav navbar-nav" id="menu-items" style="display: none;">
           <li id="play"><a class="clickable-menu" href="#">Spela</a></li>
           <li id="group-members"><a class="clickable-menu" href="#">Medlemmar</a></li>
           <li id="groups"><a class="clickable-menu" href="#">Grupper</a></li>
           <li id="statistics"><a class="clickable-menu" href="#">Statistik</a></li>
           <li id="events"><a class="clickable-menu" href="#">Händelser</a></li>
+          <li id="instructions"><a class="clickable-menu" href="#">Kom-igång</a></li>
+
           <li><a>
             <label>Grupp</label>
             <select id="available-groups" class="selectpicker" style="color:#444;">
@@ -211,10 +223,9 @@ div.sticky {
   
         <ul class="nav navbar-nav navbar-right">
           <li id="configure-user"><a class="clickable-menu" href="#"><span class="glyphicon glyphicon glyphicon-user"></span><span id="logged-in-user">Skapa användare</span></a></li>
-  
           <li id="login"><a class="clickable-menu" href="#"><span class="glyphicon glyphicon-log-in"></span> Logga in</a></li>
           <li id="logout" style="display: none;"><a class="clickable-menu" href="#"><span class="glyphicon glyphicon-log-out"></span> Logga ut</a></li>
-  
+
       </ul>
       </div>
     </div>
@@ -249,10 +260,12 @@ div.sticky {
       </div>
     </div>
     <div id="latest-games" class="row content col-xs-12 text-left" style="display: none;">
-        <div class="row col-xs-12 text-left"> 
-          <h1 id="group-title"></h1>
+        <div class="row col-xs-12 text-left">
+          <br/> 
+          <h3>Grupp:<span id="group-title"></span></h3>
+          <br/>
           <div id="who-should-play" style="border: 1px solid red;padding: 5px;"></div>  
-          <h2>Senaste spelen</h2>
+          <h3>Senaste spelen</h3>
           <div id="results" class="row text-left col-xs-12">
           </div>
         </div>
