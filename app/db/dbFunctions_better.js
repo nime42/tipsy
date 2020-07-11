@@ -455,13 +455,14 @@ function getStatistics(userId,groupId, callback = console.log) {
                 stats[e.userid].games_extra++;
                 stats[e.userid].input_extra += e.cost;
                 stats[e.userid].win_extra += e.profit;
+                /*
                 if (e.product.match(/Topptips/i)) {
                     stats[e.userid].games_topptips++;
                     stats[e.userid].nrOfRights_topptips += e.nrofrights;
                 } else {
                     stats[e.userid].games_stryktips++;
                     stats[e.userid].nrOfRights_stryktips += e.nrofrights;
-                }
+                }*/
                 break;
             case "PAYMENT":
                 stats[e.userid].payment += -e.profit;
