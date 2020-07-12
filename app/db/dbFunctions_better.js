@@ -421,6 +421,9 @@ function getStatistics(userId,groupId, callback = console.log) {
     sql = "select e.*,d.nrofrights,d.product from events e left join draws d on e.drawid = d.id where e.groupid =? order by eventtime desc";
     let stmt = db.prepare(sql);
     let stats = [];
+    let tot_stryktips_ord_games=0;
+    let tot_topptips_ord_games=0;
+
     for (const e of stmt.iterate(groupId)) {
         if (stats[e.userid] === undefined) {
             stats[e.userid] = {};
@@ -444,9 +447,11 @@ function getStatistics(userId,groupId, callback = console.log) {
                 stats[e.userid].input_ord += e.cost;
                 stats[e.userid].win_ord += e.profit;
                 if (e.product.match(/Topptips/i)) {
+                    tot_topptips_ord_games++;
                     stats[e.userid].games_topptips++;
                     stats[e.userid].nrOfRights_topptips += e.nrofrights;
                 } else {
+                    tot_stryktips_ord_games++;
                     stats[e.userid].games_stryktips++;
                     stats[e.userid].nrOfRights_stryktips += e.nrofrights;
                 }
@@ -455,7 +460,7 @@ function getStatistics(userId,groupId, callback = console.log) {
                 stats[e.userid].games_extra++;
                 stats[e.userid].input_extra += e.cost;
                 stats[e.userid].win_extra += e.profit;
-                /*
+                /*//Don't count extra games in average statistics
                 if (e.product.match(/Topptips/i)) {
                     stats[e.userid].games_topptips++;
                     stats[e.userid].nrOfRights_topptips += e.nrofrights;
@@ -507,10 +512,11 @@ function getStatistics(userId,groupId, callback = console.log) {
         r.input_extra=stats[key].input_extra;
         totInput+=r.input_ord+r.input_extra;
         r.average_topptips=stats[key].nrOfRights_topptips/stats[key].games_topptips;
-        r.average_topptips=Number(r.average_topptips).toFixed(1); 
+        r.average_topptips=parseFloat(Number(r.average_topptips).toFixed(1)); 
+        if(isNaN(r.average_topptips)) {r.average_topptips="-"}
         r.average_stryktips=stats[key].nrOfRights_stryktips/stats[key].games_stryktips;
-        r.average_stryktips=Number(r.average_stryktips).toFixed(1); 
-
+        r.average_stryktips=parseFloat(Number(r.average_stryktips).toFixed(1)); 
+        if(isNaN(r.average_stryktips)) {r.average_stryktips="-"}
         r.win_brutto=stats[key].win_ord+stats[key].win_extra;
         totWin+=r.win_brutto;
         r.win_netto=r.win_brutto-(stats[key].input_extra+stats[key].payment);
@@ -522,10 +528,35 @@ function getStatistics(userId,groupId, callback = console.log) {
     sql="select count(*) as cnt from v_group_members where groupid=?";
     let nrOfMembers=db.prepare(sql).get(groupId)["cnt"];
 
+    let sortFun;
+    if(tot_topptips_ord_games>tot_stryktips_ord_games) {
+        sortFun=(a,b)=>{
+            let v1=(a.average_topptips==="-")?0:a.average_topptips;
+            let v2=(b.average_topptips==="-")?0:b.average_topptips;
+            let res=v2-v1;
+            if(res!==0) {
+                return res;
+            } else {
+                return b.games_topptips-a.games_topptips;
+            }
+        }
+    } else {
+        sortFun=(a,b)=>{
+            let v1=(a.average_stryktips==="-")?0:a.average_stryktips;
+            let v2=(b.average_stryktips==="-")?0:b.average_stryktips;
+            let res=v2-v1;
+            if(res!==0) {
+                return res;
+            } else {
+                return b.games_stryktips-a.games_stryktips;
+            }
+        }
 
+    }
 
     let res={};
-    res.userStats=userStats.sort((a,b)=>{return b.games_ord-a.games_ord});
+    res.userStats=userStats.sort(sortFun);
+
     res.totInput=totInput;
     res.totWin=totWin;
     res.balance=totWin-totInput;

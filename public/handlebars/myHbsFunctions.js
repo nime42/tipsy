@@ -82,3 +82,9 @@ Handlebars.registerHelper("match", function(a,b, options)
         return false;
     }
 });
+
+Handlebars.registerHelper("isNaN", function(a, options)
+{
+    console.log(a,isNaN(a));
+    return isNaN(a);
+});

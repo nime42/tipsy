@@ -1011,15 +1011,13 @@ function getResults(groupId,page) {
 
                 e.created = new Date(e.created.replace(' ', 'T')+"Z").toLocaleString();
 
-                $("#results").append(hbsTemplates["main-snippets"]["results"](e));
-
                 var w=new Date(e.regclosetime.replace(' ', 'T')+"Z").getWeek();
-                //console.log("spel "+e.regclosetime+" "+w);
                 if(week!=w) {
                     week=w;
-                    weekNrHeader="Vecka "+week+".";
+                    e.weekNrHeader="Spel från vecka "+week+".";
                     //console.log(weekNrHeader);
                 }
+                $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 
 
 

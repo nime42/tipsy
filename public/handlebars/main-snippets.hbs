@@ -28,7 +28,7 @@
 <p>På så vis finns det en definierad turordning. Dock hanterar Tipsy ett eventuellt avsteg från turordningen i det fall någon annan än den som stod på tur lägger ett spel. Bytet innebär en ny turordning. Dock är det alltid principerna ovan som gäller, vilket innebär total rättvisa inom gruppen.</p>
 
 <h2>Lägga ett spel</h2>
-<p>Den som står på tur lägger ett spel (<a onclick="$('#play').trigger('click')">Spela</a>) enligt gruppens fastställda belopp, frekvens och spelform (Stryktipset, Topptipset eller Eurotipset). Tänk på att det faktiska spelet måste göras på Svenska spels sida. Ett spel som endast registeras på Tipsy är inte ett giltigt spel och eventuella vinster kan ej avkrävas Tipsy.</p>
+<p>Den som står på tur lägger ett (<a onclick="$('#play').trigger('click')">spel</a>) enligt gruppens fastställda belopp, frekvens och spelform (Stryktipset, Topptipset eller Eurotipset). Tänk på att det faktiska spelet måste göras på Svenska spels sida. Ett spel som endast registeras på Tipsy är inte ett giltigt spel och eventuella vinster kan ej avkrävas Tipsy.</p>
 
 <h2>Ordinarie spel och extraspel</h2>
 <p>Tipsy särredovisar ordinarie spel och extraspel. Ordinarie spel är det inom gruppen överenskomna spelet, exempelvis   64 rader Stryktips. </p>
@@ -42,11 +42,11 @@
 <p>I redovisningen framgår storleken på vinsten, antal rätt, vem som vann och hur den ska fördelas om gruppen väljer att plocka ut vinsten. Om gruppen väljer att inte plocka ut vinsten förvaltas vinsten (via spelarkonto hos Svenska spel) alltid av den användare som lade det vinnande spelet.</p>
 
 <h2>Händelser</h2>
-<p>Under fliken händelser (<a onclick="$('#events').trigger('click')">Händelser</a>) kan gruppen se all aktivitet kopplad till spel, vinster och uttag av vinster.</p>
+<p>Under fliken (<a onclick="$('#events').trigger('click')">Händelser</a>) kan gruppen se all aktivitet kopplad till spel, vinster och uttag av vinster.</p>
 <p>En användare som har ett plussaldo kan härifrån också välja att göra en utbetalning till gruppens medlemmar.</p>
 
 <h2>Statistik</h2>
-<p>Under fliken statistik (<a onclick="$('#statistics').trigger('click')">Statistik</a>) har du som användare full koll på ert spelbolags finanser. Vilka intäkter och utgifter ni har haft under året. Vem av er som förvaltar vinster åt spelbolaget (via respektives konto hos Svenska spel). Och hur var och en har presterat.</p>
+<p>Under fliken (<a onclick="$('#statistics').trigger('click')">Statistik</a>) har du som användare full koll på ert spelbolags finanser. Vilka intäkter och utgifter ni har haft under året. Vem av er som förvaltar vinster åt spelbolaget (via respektives konto hos Svenska spel). Och hur var och en har presterat.</p>
          
 
     </div>
@@ -301,8 +301,8 @@
                       <td nowrap style="text-align:center">{{name}}</td>
                       <td nowrap style="text-align:center"><b>{{#if (gt games_ord 0) }} {{games_ord}}</b> (<i>{{input_ord}} kr</i>){{else}}0{{/if}}</td>
                       <td nowrap style="text-align:center"><b>{{#if (gt games_extra 0) }} {{games_extra}}</b> (<i>{{input_extra}} kr</i>){{else}}0{{/if}}</td>
-                      <td nowrap style="text-align:center">{{#if (ne average_stryktips "NaN") }} {{average_stryktips}}</b>{{else}}-{{/if}}</td>
-                      <td nowrap style="text-align:center">{{#if (ne average_topptips "NaN") }} {{average_topptips}}</b>{{else}}-{{/if}}</td>
+                      <td nowrap style="text-align:center"><b> {{average_stryktips}}</b></td>
+                      <td nowrap style="text-align:center"><b> {{average_topptips}}</b></td>
                       <td nowrap style="text-align:center">{{win_brutto}} kr</td>
                       <td nowrap style="text-align:center">{{win_netto}} kr</td>
                     </tr>
@@ -539,6 +539,7 @@
 
 <script id="results" type="text/x-handlebars-template">
   <div id="draw-{{id}}" width="100%">
+  {{#if weekNrHeader}}<hr style="border: 2px solid black;"><h3>{{weekNrHeader}}</h3> {{/if}}
   {{#if (match product "Topptipset") }}  
     <H2><img style="background:#f29400;width:120px;height: 30px;" src='/img/topptipset.svg'></H2>
   {{/if}}
