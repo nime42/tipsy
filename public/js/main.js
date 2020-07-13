@@ -1014,7 +1014,7 @@ function getResults(groupId,page) {
                 var w=new Date(e.regclosetime.replace(' ', 'T')+"Z").getWeek();
                 if(week!=w) {
                     week=w;
-                    e.weekNrHeader="Spel från vecka "+week+".";
+                    e.weekNrHeader="Spel vecka "+week+".";
                     //console.log(weekNrHeader);
                 }
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));

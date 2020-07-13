@@ -637,15 +637,15 @@
 
 <script id="playing-order" type="text/x-handlebars-template">
 {{#if hasPlayed }}
-  <p>Denna vecka har <b>{{hasPlayed}}</b> spelat.</p>
+  <p>Denna vecka har <b>{{hasPlayed}}</b> spelat.
 {{else}}
-  <p>Denna vecka skall <b>{{nextInLine}}</b> spela!</p>
+  Denna vecka skall <b>{{nextInLine}}</b> spela!
 {{/if}}
 
 {{#if extraBets }}
-<p> <b>{{extraBets}}</b> ligger på plus och får gärna lägga ett extra spel!</p>
+ <b>{{extraBets}}</b> ligger på plus och får gärna lägga ett extra spel!
 {{/if}}
-<p>Nästa vecka spelar <b>{{runnerUp}}</b>.</p>
+<br/>Nästa vecka spelar <b>{{runnerUp}}</b>.</p>
 
 <B>OBS!!</B> tänk på att det faktiska spelet måste göras på <a href="https://spela.svenskaspel.se">Svenska spels sida</a>
 </script>
