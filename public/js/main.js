@@ -877,7 +877,7 @@ function getPlayable(product, div) {
                                     "Vill du gå till svenska spel och göra det faktiska spelet där?",
                                     {
                                         text: "Ja", func: function () {
-                                            sendRows(drawInfo,bettings,systemsize);
+                                            //sendRows(drawInfo,bettings,systemsize);
                                             window.open("https://spela.svenskaspel.se/" + drawInfo.product.toLowerCase().split(" ")[0] + "/" + drawInfo.drawnumber);
                                         }
                                     },
@@ -971,7 +971,7 @@ function getNextInLine(groupId) {
             }
 
             if(data.lastPlayed) {
-                var d=new Date(data.lastPlayed);
+                var d=new Date(data.lastPlayed.replace(' ', 'T')+"Z");
                 data.lastPlayed=d.getDate()+"/"+d.getMonth();
             }
 
