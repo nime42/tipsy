@@ -675,6 +675,25 @@ app.post('/getNextInLine',(req,res)=> {
 })
 
 
+app.post('/getToplist',(req,res)=>{
+    var userId=sessionHandler.getSession(req).userId;
+    var groupId=req.body.groupId;
+    db.getToplist(userId,groupId,function(status,data) {
+        if(status) {
+            res.json(data);
+        } else {
+            if(data==="NO_DRAWS"|| data==="NOT_ENOUGH_DRAWS") {
+                res.sendStatus(404);
+            } else if(data===NOT_GROUPMEMBER) { 
+                res.sendStatus(401);                
+            } else {
+                res.sendStatus(500);
+            }
+        }
+
+    })
+})
+
 process.on('SIGINT', function(e) {
     console.log("exit");
     sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
