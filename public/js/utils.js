@@ -166,12 +166,11 @@ function sendRows(drawData,rows,systemSize) {
 
   var fileContent=product+"\n"+betRow;
   console.log(fileContent);
-  return;
-  /*
-  var f=new File([new Blob([fileContent]), "filename.txt");
+
+  var f=new File([new Blob([fileContent])], "filename.txt");
  
   let list = new DataTransfer();
   list.items.add(f);
   form.find("#file")[0].files=list.files;
-  form.submit();*/
+  form.submit();
 }

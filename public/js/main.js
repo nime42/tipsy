@@ -877,8 +877,8 @@ function getPlayable(product, div) {
                                     "Vill du gå till svenska spel och göra det faktiska spelet där?",
                                     {
                                         text: "Ja", func: function () {
-                                            //sendRows(drawInfo,bettings,systemsize);
-                                            window.open("https://spela.svenskaspel.se/" + drawInfo.product.toLowerCase().split(" ")[0] + "/" + drawInfo.drawnumber);
+                                            sendRows(drawInfo,bettings,systemsize);
+                                            //window.open("https://spela.svenskaspel.se/" + drawInfo.product.toLowerCase().split(" ")[0] + "/" + drawInfo.drawnumber);
                                         }
                                     },
                                     { text: "Nej", func: function () { return; } })
