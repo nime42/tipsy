@@ -856,6 +856,7 @@ function getPlayable(product, div) {
                     row.rownr = i + 1;
                     row.teams = data.draws[i].eventDescription;
                     row.bet = bettings[i];
+                    row.matchstart=data.draws[i].match.matchStart;
                     systemsize *= row.bet.length;
                     drawInfo.rows.push(row);
                 }
@@ -876,6 +877,7 @@ function getPlayable(product, div) {
                                     "Vill du gå till svenska spel och göra det faktiska spelet där?",
                                     {
                                         text: "Ja", func: function () {
+                                            sendRows(drawInfo,bettings,systemsize);
                                             window.open("https://spela.svenskaspel.se/" + drawInfo.product.toLowerCase().split(" ")[0] + "/" + drawInfo.drawnumber);
                                         }
                                     },
@@ -944,6 +946,8 @@ function updateResults(groupId) {
         cache: false,
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
+            getNextInLine(groupId);
+            getToplist(groupId);
             getResults(groupId,0);
         },
         error: function (data, status, jqxhr) {
@@ -962,25 +966,41 @@ function getNextInLine(groupId) {
         data: { groupId: groupId},
         success: function (data, status, jqxhr) {
 
-            var info={};
-            if(data.playedThisWeek.length>0) {
-                info.hasPlayed=data.playedThisWeek.map(function(e) {return e.name});
-            }
             if(data.extraBets.length>0) {
-                info.extraBets=data.extraBets.map(function(e) {return e.name+"("+e.surplus+" kr)"}).join(", ");
+                data.extraBets=data.extraBets.map(function(e) {return e.name+"("+e.surplus+" kr)"}).join(", ");
             }
-            if(data.nextInLine) {
-                info.nextInLine=data.nextInLine;
+
+            if(data.lastPlayed) {
+                var d=new Date(data.lastPlayed);
+                data.lastPlayed=d.getDate()+"/"+d.getMonth();
             }
-            if(data.runnerUp) {
-                info.runnerUp=data.runnerUp;
-            }
+
             $("#who-should-play").empty();
-            $("#who-should-play").append(hbsTemplates["main-snippets"]["playing-order"](info));
+            $("#who-should-play").append(hbsTemplates["main-snippets"]["playing-order"](data));
         }
     });
 
 }
+
+function getToplist(groupId) {
+    $("#top-list").hide();
+    $.ajax({
+        type: "POST",
+        url: "/getToplist",
+        cache: false,
+        data: { groupId: groupId},
+        success: function (data, status, jqxhr) {
+            $("#top-list").empty();
+            $("#top-list").append(hbsTemplates["main-snippets"]["top-order"]({list:data}));
+            $("#top-list").show();
+        }
+    });
+
+}
+
+
+
+
 
 
 function getResults(groupId,page) {
@@ -993,7 +1013,7 @@ function getResults(groupId,page) {
         cache: false,
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            var week=new Date().getWeek();
+            var finalizedHeader="";
             data.results.forEach(function (e) {
                 e.rows = parseRows(e.rows);
                 if ((e.drawstate != "Finalized" && e.created_by == globals.userinfo.userid)||globals.activeGroup.admin===1) {
@@ -1011,11 +1031,9 @@ function getResults(groupId,page) {
 
                 e.created = new Date(e.created.replace(' ', 'T')+"Z").toLocaleString();
 
-                var w=new Date(e.regclosetime.replace(' ', 'T')+"Z").getWeek();
-                if(week!=w) {
-                    week=w;
-                    e.weekNrHeader="Spel vecka "+week+".";
-                    //console.log(weekNrHeader);
+                if(e.drawstate=="Finalized" && finalizedHeader=="") {
+                    finalizedHeader="Avgjorda spel"
+                    e.finalizedHeader=finalizedHeader;
                 }
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 
@@ -1027,7 +1045,6 @@ function getResults(groupId,page) {
                 $("#results").append('<input type="button" id="more-results" class="btn btn-info" value="Mer..." onclick="getResults('+groupId+','+(page+1)+')"/>');
 
             }
-            getNextInLine(groupId);
         },
         error: function (data, status, jqxhr) {
             popup("#popup", "Hämta resultat", "Tekniskt fel!");
@@ -1046,6 +1063,7 @@ function parseRows(rows) {
             bet: a[2],
             result: a[3],
             status: a[4],
+            matchstart:a[5],
             on1: a[2].match("1") != undefined ? "on" : "off",
             onX: a[2].match("X") != undefined ? "on" : "off",
             on2: a[2].match("2") != undefined ? "on" : "off",
@@ -1079,7 +1097,19 @@ function parseRows(rows) {
         }
 
         if (res.status == "Inte startat") {
-            res.result = "- -";
+            var matchStart=new Date(res.matchstart);
+            if (isNaN(matchStart.getTime())) {
+                res.result="- -";
+            } else {
+            var today = new Date();
+            
+            var isToday = (today.toDateString() == matchStart.toDateString());
+            if(isToday) {           
+                res.result = matchStart.getHours().toString().padStart(2,"0")+":"+matchStart.getMinutes().toString().padStart(2,"0");
+            } else {
+                res.result=getWeekDay(matchStart);
+            }
+            }
         } else if (res.status != "Avslutad" && res.status != "Slut efter förlängning") {
             res.result = "(" + res.result + ")";
         }
@@ -1123,6 +1153,7 @@ function deleteDraw(drawId) {
             reloadIfLoggedOut(jqxhr);
             $("#results").find("#draw-" + drawId).empty();
             getNextInLine(groupId);
+            getToplist(groupId);
         },
         error: function (data, status, jqxhr) {
             popup("#popup", "Ta bort spel", "Ett Tekniskt fel har inträffat, försök igen senare!");

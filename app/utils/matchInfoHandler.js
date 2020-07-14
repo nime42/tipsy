@@ -42,7 +42,7 @@ function getDrawAndResult(product, draw, callback) {
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/forecast/" + draw);
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw+"/result");
     let httpReq=config.matchInfo.url+"/multifetch?urls="+urls.join("|")+"&_="+ new Date().getTime();
-    //console.log(httpReq);
+    console.log(httpReq);
     fetch(httpReq)
         .then(res => res.json())
         .then(

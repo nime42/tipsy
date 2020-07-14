@@ -539,7 +539,7 @@
 
 <script id="results" type="text/x-handlebars-template">
   <div id="draw-{{id}}" width="100%">
-  {{#if weekNrHeader}}<hr style="border: 2px solid black;"><h3>{{weekNrHeader}}</h3> {{/if}}
+  {{#if finalizedHeader}}<hr style="border: 2px solid black;"><h3>{{finalizedHeader}}</h3> {{/if}}
   {{#if (match product "Topptipset") }}  
     <img style="background:#f29400;width:120px;height: 30px;" src='/img/topptipset.svg'>
   {{/if}}
@@ -547,7 +547,7 @@
     <img style="background:#00427a;width:125px;height: 30px;" src='/img/stryktipset.svg'>
   {{/if}}
   {{#if (match product "Europatipset") }}  
-    <img style="background:#008733;width:130px;height: 30px;" src='/img/europatipset.svg'>
+    <img style="background:#008733;width:140px;height: 30px;" src='/img/europatipset.svg'>
   {{/if}}
 
 
@@ -636,21 +636,28 @@
 
 
 <script id="playing-order" type="text/x-handlebars-template">
-{{#if hasPlayed }}
-  <p>Denna vecka har <b>{{hasPlayed}}</b> spelat.
-{{else}}
-  Denna vecka skall <b>{{nextInLine}}</b> spela!
+{{#if lastPlayer }}
+  <p><b>{{lastPlayer}}</b> spelade den <b>{{lastPlayed}}</b>.<br/>
 {{/if}}
-
+Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{runnerUp}}</b>{{/if}}.
 {{#if extraBets }}
  <b>{{extraBets}}</b> ligger på plus och får gärna lägga ett extra spel!
 {{/if}}
-<br/>Nästa vecka spelar <b>{{runnerUp}}</b>.</p>
+</p>
 
 <B>OBS!!</B> tänk på att det faktiska spelet måste göras på <a href="https://spela.svenskaspel.se">Svenska spels sida</a>
 </script>
 
 
+<script id="top-order" type="text/x-handlebars-template">
+            
+              <table>
+                <caption><b>Topplistan (antal rätt/spel)</b></caption>
+                {{#each list}}
+                <tr><td style="padding-right:5px"><b>{{pos}}.</b></td><td style="padding-right:20px">{{name}}</td><td style="text-align:right"><b>{{average}}</b></td></tr>
+                {{/each}}
+              </table>
+</script>
 
 <script id="forgot-password" type="text/x-handlebars-template">
         <div class="modal-dialog" style="top:15%">

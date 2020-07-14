@@ -130,3 +130,48 @@ Date.prototype.getWeek = function() {
   // Adjust to Thursday in week 1 and count number of weeks from date to week1.
   return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
+
+function getWeekDay(date) {
+  var days = ['sön', 'mån', 'tis', 'ons', 'tor', 'fre', 'lör'];
+  return days[date.getDay()];
+}
+
+
+function sendRows(drawData,rows,systemSize) {
+  var form=$("#send-rows");
+
+  var product="";
+  switch(drawData.product) {
+    case "Stryktipset": 
+        product="Stryktipset"
+        break;
+    case "Europatipset":
+        product="Europatipset";
+        break;
+    case "Topptipset":  
+        product="Topptipset,Omg="+drawData.drawnumber+",Insats=1";
+        break;
+    case "Topptipset Extra":
+        product="Topptipset,Europa,Omg="+drawData.drawnumber+",Insats=1";
+        break;
+    case "Topptipset Stryk":
+        product="Topptipset,Stryk,Omg="+drawData.drawnumber+",Insats=1";
+  }
+  var betRow=rows.join(",");
+  if(systemSize==1) {
+    betRow="E,"+betRow;
+  } else {
+    betRow="M"+systemSize+","+betRow;
+  }
+
+  var fileContent=product+"\n"+betRow;
+  console.log(fileContent);
+  return;
+  /*
+  var f=new File([new Blob([fileContent]), "filename.txt");
+ 
+  let list = new DataTransfer();
+  list.items.add(f);
+  form.find("#file")[0].files=list.files;
+  form.submit();*/
+}

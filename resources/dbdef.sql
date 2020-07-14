@@ -8,8 +8,7 @@ CREATE TABLE draw_results (drawid integer, rights integer, rows integer, worth n
 CREATE TABLE groups (id INTEGER PRIMARY KEY AUTOINCREMENT, groupname TEXT, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 
 
-CREATE TABLE draw_rows (drawid integer, rownr integer, teams text, bet text, result text, status TEXT, PRIMARY KEY (drawid, rownr), FOREIGN KEY (drawid) REFERENCES draws (id) ON DELETE CASCADE ON UPDATE NO ACTION);
-
+CREATE TABLE draw_rows (drawid integer, rownr integer, teams text, bet text, result text, status TEXT, matchstart date, PRIMARY KEY (drawid, rownr), FOREIGN KEY (drawid) REFERENCES draws (id) ON DELETE CASCADE ON UPDATE NO ACTION);
 CREATE TABLE invited_members (
 groupid integer,
 email text,
@@ -68,9 +67,8 @@ CREATE TABLE events (
     FOREIGN KEY (drawid) REFERENCES draws (id) ON DELETE CASCADE
     );
 
-create view v_draws_in_groups as
-select d.*,r.rows from draws d left join (select drawid,group_concat(rownr||';'||teams||';'||bet||';'||coalesce(result,'')||';'||coalesce(status,''),'|') as rows from draw_rows group by drawid) r on d.id=r.drawid; 
-
+CREATE VIEW v_draws_in_groups as
+select d.*,r.rows from draws d left join (select drawid,group_concat(rownr||';'||teams||';'||bet||';'||coalesce(result,'')||';'||coalesce(status,'')||';'||coalesce(matchstart,''),'|') as rows from draw_rows group by drawid) r on d.id=r.drawid;
 
 create view v_draw_results as
 select drawid,group_concat(results,'|') as results from (

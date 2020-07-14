@@ -266,15 +266,8 @@ div.sticky {
 
           <div id="who-should-play" style="padding: 5px;background: #c8cfd4;"></div>
           <br/>
-          <div style="padding: 5px;background: #c8cfd4;">
-            <b>Topplistan (antal rätt/spel)</b>
-              <table>
-                <tr><td>1.</td><td style="padding-right:20px">Henrik Jönne</td><td><b>10</b></td></tr>
-                <tr><td>2.</td><td style="padding-right:20px">Joakim Möllerström</td><td><b>9.4</b></td></tr>
-                <tr><td>3.</td><td style="padding-right:20px">Nils Meinhard</td><td><b>8.7</b></td></tr>
-              </table>
-          </div>  
-          <h3>Aktuella spel</h3>
+          <div id="top-list" style="padding: 5px;background: #c8cfd4;" style="display: none;"></div>  
+          <h3>Pågående spel</h3>
           <div id="results" class="row text-left col-xs-12">
           </div>
         </div>
@@ -325,6 +318,11 @@ div.sticky {
     </div>
   </div>
 </div>
+
+
+<form id="send-rows" action="https://spela.svenskaspel.se/externa-systemspel/upload" method="post" enctype="multipart/form-data" style="display: none;">
+  <input id="file" type="file" name="user-rows" accept="text/plain"><br><br>
+</form>
 
 
 </body>

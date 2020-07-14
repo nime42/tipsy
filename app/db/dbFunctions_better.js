@@ -317,11 +317,11 @@ function addPlay(userId, playdata, callback = console.log) {
                 sql = "INSERT INTO draws(groupid,drawnumber,product,drawstate,regclosetime,rowprice,created_by,created_by_name,systemsize,extra_bet) VALUES(@groupid,@drawnumber,@product,@drawstate,@regclosetime,@rowprice,@created_by,@created_by_name,@systemsize,@extra_bet='true')";
                 const res = db.prepare(sql).run(playdata);
                 let drawId = res.lastInsertRowid;
-                sql = "insert into draw_rows(drawid,rownr,teams,bet) values(?,?,?,?)";
+                sql = "insert into draw_rows(drawid,rownr,teams,bet,matchstart) values(?,?,?,?,?)";
                 let stmt = db.prepare(sql);
                 for (var i = 0; i < playdata.rows.length; i++) {
                     var r = playdata.rows[i];
-                    stmt.run(drawId, r.rownr, r.teams, r.bet);
+                    stmt.run(drawId, r.rownr, r.teams, r.bet,r.matchstart);
                 }
                 callback(true, { drawId: drawId })
 
@@ -343,7 +343,7 @@ function getResults(userId, groupId,page, callback=console.log) {
     if(row===undefined) {
         callback(false, { errno: -1, errmsg: "User is not member in group!" });
     } else {
-        sql = "select d.*,results from v_draws_in_groups d left join v_draw_results r on d.id=r.drawid where groupid=? and d.drawnumber>-1 order by created desc limit ? offset ?";
+        sql = "select d.*,results from v_draws_in_groups d left join v_draw_results r on d.id=r.drawid where groupid=? and d.drawnumber>-1 order by (case when drawstate='Finalized' then 1000 else 0 end),created desc limit ? offset ?";
         let rows=db.prepare(sql).all(groupId,resultPageSize+1,page*resultPageSize);
         let hasMorePages=false;
         if(rows.length>resultPageSize) {
@@ -360,7 +360,6 @@ function getResults(userId, groupId,page, callback=console.log) {
 function updateDrawResult(drawId,drawState,outcome) {
     //console.log("Hej",drawId,outcome);
     rectify(drawId,function(status,data) {
-        //console.log(status,data);
         if(status) {
             let fullpott=data.nrOfRows;
             let res=[];
@@ -715,15 +714,18 @@ function swapSortOrder(adminId,from,to,groupId,callback=console.log) {
 }
 
 function getNextInLine(groupId,callback=console.log) {
-    //Check if someone have played this week.
-    let sql="select distinct u.username,u.name from \
-    (select created_by,groupid from draws where strftime('%W',created)=strftime('%W',date('now')) and coalesce(extra_bet,false)<>true ) p\
-    join v_group_members u on u.userid =p.created_by and u.groupid=p.groupid \
-    where p.groupid=?";
-    let playedThisWeek=db.prepare(sql).all(groupId);
-    playedThisWeek.forEach(e=>{
-        e.name=e.name===""?e.username:e.name;
-    })
+
+    //Get the lasr ordinary player
+    let sql="select u.name,u.username,d.created from draws d\
+            left join v_userinfo u on d.created_by =u.userid\
+            where groupid =? and extra_bet=false order by created desc limit 1";
+    let row=db.prepare(sql).get(groupId);
+    let lastPlayer,lastPlayed;
+    if(row) {
+        lastPlayer=row.name===""?row.username:row.name;
+        lastPlayed=row.created;
+    }
+
 
 
     //Get the members that should play the following 2 weeks,by sorting on their last play. And by joining  against v_group_members we only get active users
@@ -735,38 +737,83 @@ function getNextInLine(groupId,callback=console.log) {
     let rows=db.prepare(sql).all(groupId);
     if(rows.length===0) {
         //There is no one that played anything. Get next player by sorting on member sortorder
-        rows=db.prepare(sql).all(groupid);  
+        sql="select username,name from v_group_members where groupid =? order by sortorder" 
+        rows=db.prepare(sql).all(groupId);  
     }
 
     let nextInLine=rows[0].name===""?rows[0].username:rows[0].name;
-    let runnerUp=nextInLine; //if there is just one member, it's the same members turn next week
+    let runnerUp=undefined;
     if(rows[1]!==undefined) {
         runnerUp=rows[1].name===""?rows[1].username:rows[1].name;
     }
 
-    if(playedThisWeek.length>0) {
-        //If someone already played this week, then will nextInline be the one that plays next week.
-        runnerUp=nextInLine;
-        nextInLine=undefined;
-    }
 
     sql="select username,name,surplus from\
-    (select userid,groupid,surplus from v_user_surplus where surplus>0 and (userid,groupid) not in (select created_by,groupid from draws where strftime('%W',created)=strftime('%W',date('now')) and extra_bet=true)) s\
+    (select userid,groupid,surplus from v_user_surplus us where surplus>0 and not exists (select created_by,groupid from draws where created>? and userid=us.userid and groupid=us.groupid and extra_bet=true)) s\
     join v_group_members u on u.userid =s.userid and u.groupid=s.groupid\
     where s.groupid=?";
-    let extraBets=db.prepare(sql).all(groupId);
+    let extraBets=db.prepare(sql).all(lastPlayed,groupId);
     extraBets.forEach(e=>{
         e.name=e.name===""?e.username:e.name;
     })
 
     let res={
-        playedThisWeek:playedThisWeek,
+        lastPlayer:lastPlayer,
+        lastPlayed:lastPlayed,
         nextInLine:nextInLine,
         runnerUp:runnerUp,
         extraBets:extraBets
     }
     callback(res);
        
+}
+
+
+function getToplist(userId, groupId, callback = console.log) {
+    let sql = "select * from v_group_members where userId=? and groupid=?";
+    let row = db.prepare(sql).get(userId, groupId);
+    if (row === undefined) {
+        callback(false, "NOT_GROUPMEMBER");
+        return;
+    }
+    //Get the mostly played ordinary product, e.g if its topptips (8 games) or Stryk/Europatips (13 games)
+    sql = "select product,count(*) from (\
+        select '!not-topptips' as product,groupid,extra_bet from draws where LOWER(product) not like 'topp%'\
+        union all select 'topptips' as product,groupid,extra_bet from draws where LOWER(product)  like 'topp%')\
+        where extra_bet=FALSE and groupid =?\
+        group by product order by count(*) desc;"
+    row = db.prepare(sql).get(groupId);
+    if (row === undefined) {
+        callback(false, "NO_DRAWS");
+        return;
+    }
+
+
+    if (row.product === "!not-topptips") {
+        sql = "select avg(nrofrights) as average ,username,name from draws d\
+            left join v_userinfo u on d.created_by =u.userid\
+            where LOWER(product) not like 'topp%' and extra_bet=FALSE and drawstate<>'Open' and groupid=? group by username,name\
+            order by avg(nrofrights) desc,count(*) desc,max(regclosetime) desc limit 3"
+    } else {
+        sql = "select avg(nrofrights) as average ,username,name from draws d\
+        left join v_userinfo u on d.created_by =u.userid\
+        where LOWER(product) like 'topp%' and extra_bet=FALSE and drawstate<>'Open' and groupid=? group by username,name\
+        order by avg(nrofrights) desc,count(*) desc,max(regclosetime) desc limit 3";
+    }
+
+    let rows = db.prepare(sql).all(groupId);
+    if (rows.length > 1) {
+        let pos=1;
+        rows.forEach(r => {
+            r.average = Number(r.average).toFixed(2);
+            r.name = (r.name === "") ? r.username : r.name;
+            r.pos=pos++;
+        })
+        callback(true, rows);
+    } else {
+        callback(false, "NOT_ENOUGH_DRAWS");
+    }
+
 }
 
 
@@ -806,6 +853,7 @@ module.exports = {
     deleteEvent:deleteEvent,
     swapSortOrder:swapSortOrder,
     getNextInLine:getNextInLine,
+    getToplist:getToplist,
     getDbInstance:getDbInstance
 }
 
