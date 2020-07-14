@@ -874,7 +874,7 @@ function getPlayable(product, div) {
                             $("#basicModal").modal('hide');
                             var url =
                                 dialog("#yes-no", "Lägg spel hos Svenska spel",
-                                    "Vill du gå till svenska spel och göra det faktiska spelet där?",
+                                    "Vill du gå till svenska spel och göra det faktiska spelet där(funkar bara om du redan är inloggad)?",
                                     {
                                         text: "Ja", func: function () {
                                             sendRows(drawInfo,bettings,systemsize);

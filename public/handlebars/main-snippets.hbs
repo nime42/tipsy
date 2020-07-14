@@ -506,8 +506,8 @@
 
 <script id="matches" type="text/x-handlebars-template">
   <h2>{{productName}}</h2>
-  <p>Spelstopp:{{regCloseTime}}</p>
-
+  <p>Spelstopp:{{regCloseTime}} </p>
+<button id="paste" type="button" class="btn btn-primary btn-sm pull-left" onclick="pasteRows($(this).parent().find('.bettingtable'))">Klistra in</button>
   <table class="bettingtable" style="width:100%;border-collapse: separate;border-spacing: 0 0.5em;" >
     <colgroup>
       <col span="1" style="width: 5%;">
@@ -531,7 +531,8 @@
    </tbody>
   </table>
    <div>
-    <button id="play" type="button" disabled class="btn btn-primary btn-lg pull-left">Spela</button>
+    <button id="play" type="button" disabled class="btn btn-primary btn-sm pull-left">Spela</button>
+    <button id="clear" type="button" class="btn btn-primary btn-sm pull-right" onclick="clearRows($(this).parent().parent().find('.bettingtable'))">Rensa</button>
   </div>
 </script>
 

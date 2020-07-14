@@ -174,3 +174,34 @@ function sendRows(drawData,rows,systemSize) {
   form.find("#file")[0].files=list.files;
   form.submit();
 }
+
+function pasteRows(tableElem) {
+  clearRows(tableElem);
+  navigator.clipboard.readText().then(clipText => {
+    var rows=clipText.trim().split("\n");
+    for(var i=0;i<rows.length;i++) {
+      var rowElem=tableElem.find("#row-"+(i+1));
+      var bets=rowElem.find(".1x2");
+      rows[i].split("").forEach(b=>{
+        switch(b.toLowerCase()) {
+          case "1":
+            bets[0].click();
+            break;
+            case "x":
+              bets[1].click();
+              break;
+            case "2":
+              bets[2].click();
+              break;
+          }
+
+      })
+    }
+    
+
+})
+}
+
+function clearRows(tableElem) {
+  tableElem.find(".1x2").addClass("off").removeClass("on");
+}
