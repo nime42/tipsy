@@ -972,7 +972,7 @@ function getNextInLine(groupId) {
 
             if(data.lastPlayed) {
                 var d=new Date(data.lastPlayed.replace(' ', 'T')+"Z");
-                data.lastPlayed=d.getDate()+"/"+d.getMonth();
+                data.lastPlayed=d.getDate()+"/"+(d.getMonth()+1);
             }
 
             $("#who-should-play").empty();
