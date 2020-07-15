@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
  
 
 async function getRows(url) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({args: ['--no-sandbox']});
   const page = await browser.newPage()	
   await page.goto(url);
   const rows=await page.evaluate(() => {
