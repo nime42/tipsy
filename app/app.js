@@ -5,6 +5,7 @@ var db=require('./db/dbFunctions_better.js');
 var mailsender=require('./utils/mailSender.js');
 var sessionHandler=require('./utils/sessionHandler.js');
 var matchInfoHandler=require('./utils/matchInfoHandler.js');
+var webScraper=require('./utils/webScraper.js')
 
 sessionHandler.resumeSessions(db.getDbInstance());
 
@@ -694,6 +695,14 @@ app.post('/getToplist',(req,res)=>{
     })
 })
 
+app.post("/getRowsFromLink",(req,res)=>{
+    var link=req.body.link;
+    (async () => {
+        var rows=await webScraper.getRows(link);
+        res.json(rows);
+    })()
+
+});
 process.on('SIGINT', function(e) {
     console.log("exit");
     sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});

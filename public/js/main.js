@@ -1000,6 +1000,44 @@ function getToplist(groupId) {
 
 
 
+function getRowsFromLink(link,callback) {
+    $.ajax({
+        type: "POST",
+        url: "/getRowsFromLink",
+        cache: false,
+        data: { link: link},
+        success: function (data, status, jqxhr) {
+            callback(data);
+        },
+        error: function (data, status, jqxhr) {
+            callback(null);
+        }
+    });
+
+}
+
+
+function getRowsFromClipBoard(pasteButton,targetTable) {
+    pasteButton.attr("disabled", true);
+    navigator.clipboard.readText().then(function(clipText) {
+        if(clipText.match(/http.*/i)) {
+            popup("#message-popup", "Klistra in", "Hämtar rader...");
+            getRowsFromLink(clipText,function(rows) {
+                if(!pasteRows(targetTable,rows)) {
+                    popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+                };
+                pasteButton.attr("disabled", false);
+                $("#message-popup").modal('hide');
+            })
+        } else {
+            if(!pasteRows(targetTable,clipText)) {
+                popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+            };
+            pasteButton.attr("disabled", false);
+        }
+
+    });
+}
 
 
 

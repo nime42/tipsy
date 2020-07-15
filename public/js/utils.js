@@ -174,33 +174,44 @@ function sendRows(drawData,rows,systemSize) {
   form.find("#file")[0].files=list.files;
   form.submit();
 }
-
-function pasteRows(tableElem) {
+/**
+ * Takes a multiline string with bets, example:
+ * "12
+ *  2x
+ * "
+ * and instanciates the betting table with this rows.
+ * 
+ * @param {*} tableElem - a table element to put the rows 
+ * @param {*} rowLines - a string with multiple lines each line should match [1Xx2]+
+ */
+function pasteRows(tableElem,rowLines) {
+  if(rowLines==null || rowLines.match(/^([1xX2]+\n?)+$/)==null) {
+    return false;
+  }
   clearRows(tableElem);
-  navigator.clipboard.readText().then(clipText => {
-    var rows=clipText.trim().split("\n");
-    for(var i=0;i<rows.length;i++) {
-      var rowElem=tableElem.find("#row-"+(i+1));
-      var bets=rowElem.find(".1x2");
-      rows[i].split("").forEach(b=>{
-        switch(b.toLowerCase()) {
-          case "1":
-            bets[0].click();
+  var rows=rowLines.trim().split("\n");
+  for(var i=0;i<rows.length;i++) {
+    var rowElem=tableElem.find("#row-"+(i+1));
+    var bets=rowElem.find(".1x2");
+    rows[i].split("").forEach(b=>{
+      switch(b.toLowerCase()) {
+        case "1":
+          bets[0].click();
+          break;
+          case "x":
+            bets[1].click();
             break;
-            case "x":
-              bets[1].click();
-              break;
-            case "2":
-              bets[2].click();
-              break;
-          }
+          case "2":
+            bets[2].click();
+            break;
+        }
 
-      })
-    }
-    
-
-})
+    })
+  }
+  return true;
 }
+
+
 
 function clearRows(tableElem) {
   tableElem.find(".1x2").addClass("off").removeClass("on");
