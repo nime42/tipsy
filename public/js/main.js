@@ -1068,6 +1068,10 @@ function parseRows(rows) {
             onX: a[2].match("X") != undefined ? "on" : "off",
             on2: a[2].match("2") != undefined ? "on" : "off",
         };
+
+        if(res.status=="-1") {
+            res.status="Inte startat";
+        }
         var tmp = res.result.split("-");
         var home = parseInt(tmp[0].trim());
         var away = parseInt(tmp[1].trim());
