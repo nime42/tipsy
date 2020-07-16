@@ -729,12 +729,11 @@ function getNextInLine(groupId,callback=console.log) {
 
 
     //Get the members that should play the following 2 weeks,by sorting on their last play. And by joining  against v_group_members we only get active users
-    sql="select distinct u.username,u.name from\
-    (select  max(regclosetime) as lastplayed,groupid,created_by from draws where coalesce(extra_bet,false)<>true group by groupid,created_by) l\
-    join v_group_members u on u.userid =l.created_by and u.groupid=l.groupid\
-    where l.groupid=?\
-    order by l.lastplayed limit 2";
-    let rows=db.prepare(sql).all(groupId);
+    sql="select u.username,u.name from v_group_members u\
+        left join (select  max(regclosetime) as lastplayed,groupid,created_by from draws where coalesce(extra_bet,false)<>true and groupid=? group by groupid,created_by) l on u.userid =l.created_by and u.groupid=l.groupid\
+        where u.groupid=?\
+        order by l.lastplayed limit 2;"
+    let rows=db.prepare(sql).all(groupId,groupId);
     if(rows.length===0) {
         //There is no one that played anything. Get next player by sorting on member sortorder
         sql="select username,name from v_group_members where groupid =? order by sortorder" 
