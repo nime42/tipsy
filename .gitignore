@@ -111,3 +111,5 @@ resources/server.key
 resources/*.db
 resources/.rnd
 resources/*.db
+tmp/*
+misc/todo.txt
