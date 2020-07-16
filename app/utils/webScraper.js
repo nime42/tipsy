@@ -1,15 +1,18 @@
 const puppeteer = require('puppeteer');
  
+var browser=undefined;
 
 async function getRows(url) {
-  const browser = await puppeteer.launch({args: ['--no-sandbox']});
+    if(browser===undefined) {
+        browser = await puppeteer.launch({args: ['--no-sandbox']});
+    }
   const page = await browser.newPage()	
   await page.goto(url);
   const rows=await page.evaluate(() => {
 	  let rows=""
 	  $(".share-coupon li").each((i,e)=>{
 		  rows+=$(e).find(".btn-bet-selected").find("label").text()+"\n"});
-		return rows;
+        return rows;
   });
 	return rows;
 }
