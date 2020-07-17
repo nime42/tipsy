@@ -48,7 +48,7 @@
 <h3>Statistik</h3>
 <p>Under fliken <a onclick="$('#statistics').trigger('click')">Statistik</a> har du som användare full koll på ert spelbolags finanser. Vilka intäkter och utgifter ni har haft under året. Vem av er som förvaltar vinster åt spelbolaget (via respektives konto hos Svenska spel). Och hur var och en har presterat.</p>
          
-
+<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
     </div>
   </div> 
 </script>
@@ -508,6 +508,7 @@
   <h2>{{productName}}</h2>
   <p>Spelstopp:{{regCloseTime}} </p>
   <button id="paste" type="button" class="btn btn-primary btn-sm pull-left" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'))">Klistra in</button>
+  <span style="color: #3071a9;margin: 7px;font-size: 15px;" class="glyphicon glyphicon-info-sign"  onclick='showPastingRowsInfo()'></span>
   <table class="bettingtable" style="width:100%;border-collapse: separate;border-spacing: 0 0.5em;" >
     <colgroup>
       <col span="1" style="width: 5%;">
@@ -760,3 +761,47 @@ table, td, th {
 </body>
 </html>
 </script>
+
+
+
+<script id="paste-rows" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+    <div class="modal-content" style="padding: 10px;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Kom igång</h4>
+      </div>
+      <div class="modal-body"></div>
+<h3>Att klistra in rader från Svenska spel</h3>
+
+<h4>Gör så här:</h4>
+<ol>
+  <li style="margin: 20px;"><p>Logga in på Svenska spel och gå till <i>Mina Spel</i>.</p>
+  <img src="img/mina-sidor.jpg" alt="Mina Sidor" width="50%" height="auto" style="border:2px solid black">
+  <br/>
+  </li>
+  <li style="margin: 20px;"><p>Klicka på spelet som du vill kopiera raderna från. </p>
+  <img src="img/games.jpg" alt="Mina spel" width="50%" height="auto" style="border:2px solid black">
+  <br/>
+  </li>
+  <li style="margin: 20px;"><p>Scrolla ner och klicka på dela. </p>
+  <img src="img/share-button.jpg" alt="dela" width="50%" height="auto" style="border:2px solid black">
+    <br/>
+  </li>  <li style="margin: 20px;"><p>Klicka på knappen <i>Kopiera länk</i>. </p>
+  <img src="img/copy-link.jpg" alt="dela" width="50%" height="auto" style="border:2px solid black">
+    <br/>
+  </li>
+
+  <li style="margin: 20px;"><p>Klart, gå tillbaks till Tipsy och klicka på <i>Klistra in</i> så kopieras raderna. </p>
+  </li>
+
+
+</ol>
+
+<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+    </div>
+  </div> 
+</script>
+
+
+

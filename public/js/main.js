@@ -1211,3 +1211,7 @@ dialog("#yes-no", "Ta bort Spel",
 
 
 }
+
+function showPastingRowsInfo() {
+    hbsModal("#another-modal", hbsTemplates["main-snippets"]["paste-rows"]);
+}
