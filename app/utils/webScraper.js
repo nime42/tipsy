@@ -5,7 +5,7 @@ var browser=undefined;
 var page=undefined;
 
 async function getRows(url) {
-    console.log("GetRows:"+url);
+    //console.log("GetRows:"+url);
     if(browser===undefined) {
         browser = await puppeteer.launch({args: ['--no-sandbox'],userDataDir: resolve('./tmp/puppeteer-data-dir')});
         page = await browser.newPage();	

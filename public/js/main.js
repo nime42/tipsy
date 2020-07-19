@@ -666,6 +666,7 @@ function configurePlay() {
         return;
     }
 
+    
 
     hbsModal("#basicModal", hbsTemplates["main-snippets"]["play"]);
     getPlayable("stryktipset", "stryk");
@@ -1018,25 +1019,41 @@ function getRowsFromLink(link,callback) {
 
 
 function getRowsFromClipBoard(pasteButton,targetTable) {
-    pasteButton.attr("disabled", true);
-    navigator.clipboard.readText().then(function(clipText) {
-        if(clipText.match(/http.*/i)) {
-            popup("#message-popup", "Klistra in", "Hämtar rader...");
-            getRowsFromLink(clipText,function(rows) {
-                if(!pasteRows(targetTable,rows)) {
-                    popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
-                };
-                pasteButton.attr("disabled", false);
-                $("#message-popup").modal('hide');
-            })
-        } else {
-            if(!pasteRows(targetTable,clipText)) {
-                popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
-            };
-            pasteButton.attr("disabled", false);
-        }
+    navigator.permissions.query({
+        name: 'clipboard-read'
+      }).then(permissionStatus => {
+          if(permissionStatus.state=="denied") {
+            hbsModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]);
 
-    });
+            //popup("#popup", "Klistra in", "Din browser tillåter inte inklistring!");
+          } else {
+            pasteButton.attr("disabled", true);
+            navigator.clipboard.readText().then(function(clipText) {
+                if(clipText.match(/http.*/i)) {
+                    popup("#message-popup", "Klistra in", "Hämtar rader...");
+                    getRowsFromLink(clipText,function(rows) {
+                        if(!pasteRows(targetTable,rows)) {
+                            popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+                        };
+                        pasteButton.attr("disabled", false);
+                        $("#message-popup").modal('hide');
+                    })
+                } else {
+                    if(!pasteRows(targetTable,clipText)) {
+                        popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+                    };
+                    pasteButton.attr("disabled", false);
+                }
+        
+            });
+        
+          }
+      });
+
+
+
+
+
 }
 
 
