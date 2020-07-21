@@ -806,15 +806,25 @@ table, td, th {
 
 <script id="allow-paste-rows" type="text/x-handlebars-template">
   <div class="modal-dialog">
-    <div class="modal-content" style="padding: 10px;">
+    <div class="modal-content" style="padding: 0px;">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Info/h4>
+        <h4 class="modal-title">Klistra in rader</h4>
       </div>
       <div class="modal-body"></div>
-<h3>Din browser tillåter inte inklistring</h3>
-<p>Det verkar som att din browser inte tillåter inklistring.<br/></br>
-Om du har en android-telefon kan du ge Tipsy tillåtelse till inklistring genom att göra så här:</p>
+      <div  style="margin-left: 10px;">
+<p>Det verkar som att din browser inte tillåter automatisk inklistring.<br/><br/>
+Men du kan klistra in länken manuellt här istället:</p>
+<span class="input-group" style="width: 60%;margin-left: 10px;">
+      <input id="link-to-send" type="text" class="form-control group-name">
+      <div class="input-group-btn">
+        <button id="send-link" class="btn btn-link" title="Skicka" style="padding: 0px;padding-left: 5px"><span style="font-size: 30px;" class="glyphicon glyphicon-circle-arrow-right"></span></button>
+      </div>
+</span>
+
+<br/>
+<h3>Tips</h3>
+<p>Om du har en android-telefon kan du ge Tipsy tillåtelse till inklistring genom att göra så här:</p>
 
 <ol>
   <li style="margin: 20px;"><p>Klicka på hänglåset.</p>
@@ -841,9 +851,37 @@ Om du har en android-telefon kan du ge Tipsy tillåtelse till inklistring genom 
 
 <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
     </div>
+    </div>
+
   </div> 
 </script>
 
 
 
+
+
+<script id="send-row-link" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Klistra in länk</h4>
+          </div>
+          <div class="modal-body">
+            <p>Klistra in länken som kopierades från Svenska Spel och tryck på Skicka</p>
+            <form action="#">
+              <div class="form-group">
+                <label for="name">Länk:</label>
+                <input type="text" class="form-control" id="name" value="">
+              </div>
+              <input type="button" id="reg-or-update" class="btn btn-primary" value="Skicka"/>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
+            </form>
+          </div>
+        </div>
+      
+      </div>
+</script>
 

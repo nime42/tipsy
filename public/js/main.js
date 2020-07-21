@@ -1018,42 +1018,81 @@ function getRowsFromLink(link,callback) {
 }
 
 
-function getRowsFromClipBoard(pasteButton,targetTable) {
+function getRowsFromClipBoard(pasteButton, targetTable) {
+
+    var f=function(clipText) {
+        pasteButton.attr("disabled", true);
+        if (clipText.match(/http.*/i)) {
+            popup("#message-popup", "Klistra in", "Hämtar rader...");
+            getRowsFromLink(clipText, function (rows) {
+                if (!pasteRows(targetTable, rows)) {
+                    popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+                };
+                pasteButton.attr("disabled", false);
+                $("#another-modal").modal("hide");
+                $("#message-popup").modal('hide');
+            })
+        } else {
+            if (!pasteRows(targetTable, clipText)) {
+                popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+            };
+            pasteButton.attr("disabled", false);
+            $("#another-modal").modal("hide");
+
+        }
+    }
+
+    navigator.clipboard.readText().then(
+        function(clipText) {f(clipText);},
+        function(rejectReason) {
+            hbsModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]);
+            $("#another-modal").find("#send-link").click(function() {
+                f($("#another-modal").find("#link-to-send").val());
+            });
+        }
+        );
+
+
+
+    return;
+
     navigator.permissions.query({
         name: 'clipboard-read'
-      }).then(permissionStatus => {
-          if(permissionStatus.state=="denied") {
-            hbsModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]);
+    }).then(
+        permissionStatus => {
+            if (permissionStatus.state == "denied") {
+                hbsModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]);
 
-            //popup("#popup", "Klistra in", "Din browser tillåter inte inklistring!");
-          } else {
+                //popup("#popup", "Klistra in", "Din browser tillåter inte inklistring!");
+            } else {
+
+
+            }
+        },
+        rejectedReason=>{
+            //The query failed, try to read the clipboard anyway
             pasteButton.attr("disabled", true);
-            navigator.clipboard.readText().then(function(clipText) {
-                if(clipText.match(/http.*/i)) {
-                    popup("#message-popup", "Klistra in", "Hämtar rader...");
-                    getRowsFromLink(clipText,function(rows) {
-                        if(!pasteRows(targetTable,rows)) {
+                navigator.clipboard.readText().then(function (clipText) {
+                    if (clipText.match(/http.*/i)) {
+                        popup("#message-popup", "Klistra in", "Hämtar rader...");
+                        getRowsFromLink(clipText, function (rows) {
+                            if (!pasteRows(targetTable, rows)) {
+                                popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+                            };
+                            pasteButton.attr("disabled", false);
+                            $("#message-popup").modal('hide');
+                        })
+                    } else {
+                        if (!pasteRows(targetTable, clipText)) {
                             popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
                         };
                         pasteButton.attr("disabled", false);
-                        $("#message-popup").modal('hide');
-                    })
-                } else {
-                    if(!pasteRows(targetTable,clipText)) {
-                        popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
-                    };
-                    pasteButton.attr("disabled", false);
-                }
+                    }
+
+                });
+
+        });
         
-            });
-        
-          }
-      });
-
-
-
-
-
 }
 
 

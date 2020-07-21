@@ -15,7 +15,7 @@ function removeUrlVars() {
 
 function popup(div, title, message) {
   $(div).find("#popup-header").text(title);
-  $(div).find("#popup-message").text(message);
+  $(div).find("#popup-message").html(message);
   $(div).modal('show');
 }
 
