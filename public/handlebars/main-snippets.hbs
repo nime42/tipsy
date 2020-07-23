@@ -540,7 +540,7 @@
 
 
 <script id="results" type="text/x-handlebars-template">
-  <div id="draw-{{id}}" width="100%">
+  <div id="draw-{{id}}" width="100%" style="padding-bottom: 10px;">
   {{#if finalizedHeader}}<h3>{{finalizedHeader}}</h3> {{/if}}
   {{#if (match product "Topptipset") }}  
     <img style="background:#f29400;width:120px;height: 30px;" src='/img/topptipset.svg'>
@@ -632,6 +632,7 @@
     </p>
   </div>
   {{/ifnoteq}}
+  <hr style="border-color:#626262; opacity: 0.2;">
   </div>
   
 </script>
