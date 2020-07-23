@@ -606,19 +606,19 @@
     <table>
       <tr>
         <td style="padding-top: 5px;">
-          <table class="table-condensed" style="border:1px solid">
+          <table class="table-bordered" style="border:1px solid">
             <tr>
-              <th style="background:#626262"></th>
-              <th style="background: #626262">Antal</th>
-              <th style="background: #626262">Utdelning</th>
-              <th style="background: #626262">Totalt</th>
+              <th></th>
+              <th>Antal</th>
+              <th>Utdelning</th>
+              <th>Totalt</th>
             </tr>
             {{#each results}}
             <tr>
               <td style="white-space:nowrap;padding-right: 5px;"><b>{{rights}} rätt</b></td>
               <td style="text-align: center;">{{rows}}</td>
-              <td style="text-align: right;">{{worth}}kr</td>
-              <td style="text-align: right;">{{total}}kr</td>
+              <td style="text-align: center;">{{worth}}kr</td>
+              <td style="text-align: center;">{{total}}kr</td>
             </tr>
             {{/each}}
           </table>
