@@ -1100,6 +1100,7 @@ function getRowsFromClipBoard(pasteButton, targetTable) {
 function getResults(groupId,page) {
     if(page==0) {
         $("#results").empty();
+        $("#no-ongoing-games").hide(); 
     }
     $.ajax({
         type: "GET",
@@ -1108,6 +1109,10 @@ function getResults(groupId,page) {
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             var finalizedHeader="";
+
+            if(data.results[0].drawstate=="Finalized") {
+                $("#no-ongoing-games").show();            
+            }
             data.results.forEach(function (e) {
                 e.rows = parseRows(e.rows);
                 if ((e.drawstate != "Finalized" && e.created_by == globals.userinfo.userid)||globals.activeGroup.admin===1) {
@@ -1161,6 +1166,9 @@ function parseRows(rows) {
             on1: a[2].match("1") != undefined ? "on" : "off",
             onX: a[2].match("X") != undefined ? "on" : "off",
             on2: a[2].match("2") != undefined ? "on" : "off",
+            status1:"missed",
+            statusX:"missed",
+            status2:"missed"
         };
 
         if(res.status=="-1") {
@@ -1174,22 +1182,16 @@ function parseRows(rows) {
                 if (res.on1 == "on") {
                     res.status1 = "correct";
                     res.isCorrect = true;
-                } else {
-                    res.missed1 = "missed";
-                }
+                } 
             } else if (home == away) {
                 if (res.onX == "on") {
                     res.statusX = "correct";
                     res.isCorrect = true;
-                } else {
-                    res.missedX = "missed";
-                }
+                } 
             } else {
                 if (res.on2 == "on") {
                     res.status2 = "correct";
                     res.isCorrect = true;
-                } else {
-                    res.missed2 = "missed";
                 }
             }
         }

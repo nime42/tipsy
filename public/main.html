@@ -21,9 +21,7 @@
     padding-bottom: 0px;
   }
 
-  table.bettingtable {
 
-  }
   table.bettingtable td {
     padding-left: 3px;
     padding-right: 3px;
@@ -34,21 +32,29 @@
   }
 
   .bettingtable .on {
-    background:#c8cfd4;
+    background:#626262;
+    color:white;
   }
 
   .bettingtable .off {
     background:white;
-  }
-  .bettingtable .correct {
-    background:#00CF91;
-  }
-  .bettingtable .missed {
-    background: #00CF91;
+    color:black;
   }
 
-  .bettingtable .c1x2 {
-    background:white;
+  .bettingtable .correct {
+    border-style: solid;
+    border-color: #00CF91;
+  }
+
+  /*
+  .bettingtable .missed {
+    border-style: solid;
+    border-color: red;
+  }
+  */
+
+  .bettingtable  button {
+    border-style: none;
   }
  
 
@@ -77,11 +83,17 @@
    text-align: center;
 }
 
+div.front-page {
+  color:white;
+  background-color: #424242;
+}
+
+div.front-page th {
+  background-color: #424242;
+}
 body {
   font-size: 12px;
 }
-
-
 
 th {
   position: sticky;
@@ -198,7 +210,7 @@ div.sticky {
 
 
 </head>
-<body>
+<body class="front-page">
 
 
   <nav class="navbar-fixed-top navbar-inverse">
@@ -242,7 +254,7 @@ div.sticky {
   <br/>
 
 
-  <div class="container-fluid">  
+  <div class="container-fluid front-page">  
     <div id="info" class="row content" style="max-width: 750px;margin-left: 10px;margin-right: 10px;"
 >
       <div class="col-12 text-left"> 
@@ -267,15 +279,16 @@ div.sticky {
 
       </div>
     </div>
-    <div id="latest-games" class="row content col-xs-12 text-left" style="display: none;">
-        <div class="row col-xs-12 text-left">
+    <div id="latest-games" class="text-left" style="display: none;">
+        <div class=" text-left">
           <br/> 
           <h3>Grupp:<span id="group-title"></span></h3>
 
-          <div id="who-should-play" style="padding: 5px;background: #c8cfd4;"></div>
+          <div id="who-should-play" style="padding: 5px;background: #626262;"></div>
           <br/>
-          <div id="top-list" style="padding: 5px;background: #c8cfd4;" style="display: none;"></div>  
+          <div id="top-list" style="padding: 5px;background: #626262;" style="display: none;"></div>  
           <h3>Pågående spel</h3>
+          <p id="no-ongoing-games" style="padding-left: 30px; display: none;">Inga pågående spel.</p>
           <div id="results" class="row text-left col-xs-12">
           </div>
         </div>

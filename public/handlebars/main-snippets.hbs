@@ -212,15 +212,15 @@
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th scope="col">Namn</th>
-                      <th scope="col">Email</th>
-                      <th scope="col">Telefon</th>
-                      <th scope="col">Anv-id</th>
+                      <th nowrap scope="col">Namn</th>
+                      <th nowrap scope="col">Email</th>
+                      <th nowrap scope="col">Telefon</th>
+                      <th nowrap scope="col">Anv-id</th>
                       {{#if admin}}
-                      <th scope="col"></th>
-                      <th scope="col"></th>
+                      <th nowrap scope="col"></th>
+                      <th nowrap scope="col"></th>
                       {{/if}}
-                      <th scope="col"></th>
+                      <th nowrap scope="col"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -286,10 +286,10 @@
                   <thead>
                     <tr>
                       <th nowrap style="vertical-align:top" scope="col">Namn</th>
-                      <th nowrap style="text-align:center" scope="col">Ordinarie Spel<BR/>(insats)</th>
-                      <th nowrap style="text-align:center" scope="col">Extra spel<BR/>(insats)</th>
                       <th nowrap style="text-align:center" scope="col">Rätt/spel<BR/>(StrykTips)</th>
                       <th nowrap style="text-align:center" scope="col">Rätt/spel<BR/>(ToppTips)</th>
+                      <th nowrap style="text-align:center" scope="col">Ordinarie Spel<BR/>(insats)</th>
+                      <th nowrap style="text-align:center" scope="col">Extra spel<BR/>(insats)</th>
                       <th nowrap style="text-align:center" scope="col">Vinst<BR/>(Totalt)</th>
                       <th nowrap style="text-align:center"scope="col">Vinst<BR/>(Återstående)</th>
 
@@ -299,10 +299,10 @@
                     {{#each userStats}}
                     <tr>
                       <td nowrap style="text-align:center">{{name}}</td>
-                      <td nowrap style="text-align:center"><b>{{#if (gt games_ord 0) }} {{games_ord}}</b> (<i>{{input_ord}} kr</i>){{else}}0{{/if}}</td>
-                      <td nowrap style="text-align:center"><b>{{#if (gt games_extra 0) }} {{games_extra}}</b> (<i>{{input_extra}} kr</i>){{else}}0{{/if}}</td>
                       <td nowrap style="text-align:center"><b> {{average_stryktips}}</b></td>
                       <td nowrap style="text-align:center"><b> {{average_topptips}}</b></td>
+                      <td nowrap style="text-align:center"><b>{{#if (gt games_ord 0) }} {{games_ord}}</b> (<i>{{input_ord}} kr</i>){{else}}0{{/if}}</td>
+                      <td nowrap style="text-align:center"><b>{{#if (gt games_extra 0) }} {{games_extra}}</b> (<i>{{input_extra}} kr</i>){{else}}0{{/if}}</td>
                       <td nowrap style="text-align:center">{{win_brutto}} kr</td>
                       <td nowrap style="text-align:center">{{win_netto}} kr</td>
                     </tr>
@@ -522,9 +522,9 @@
     <tr id="row-{{inc @index}}" class="draw-row">
       <td>{{inc @index}}.</td>
       <td>{{eventDescription}}</td>
-      <td><button class="1x2 off">1</button></td>
-      <td><button class="1x2 off">X</button></td>
-      <td><button class="1x2 off">2</button></td>
+      <td><button class="1x2 off" style="border-style: solid;">1</button></td>
+      <td><button class="1x2 off" style="border-style: solid;">X</button></td>
+      <td><button class="1x2 off" style="border-style: solid;">2</button></td>
     </tr>
     {{/each}}
    
@@ -541,7 +541,7 @@
 
 <script id="results" type="text/x-handlebars-template">
   <div id="draw-{{id}}" width="100%">
-  {{#if finalizedHeader}}<hr style="border: 2px solid black;"><h3>{{finalizedHeader}}</h3> {{/if}}
+  {{#if finalizedHeader}}<h3>{{finalizedHeader}}</h3> {{/if}}
   {{#if (match product "Topptipset") }}  
     <img style="background:#f29400;width:120px;height: 30px;" src='/img/topptipset.svg'>
   {{/if}}
@@ -580,9 +580,9 @@
       <td>{{rownr}}.</td>
       <td nowrap>{{teams}}</td>
       <td nowrap style="text-align:center">{{result}}</td>
-      <td class="{{status1}} {{missed1}}"><button id="col-1" disabled class="1x2 {{on1}}">1</button></td>
-      <td class="{{statusX}} {{missedX}}"><button id="col-X" disabled class="1x2 {{onX}}">X</button></td>
-      <td class="{{status2}} {{missed2}}"><button id="col-2" disabled class="1x2 {{on2}}">2</button></td>
+      <td><button id="col-1" disabled class="1x2 {{status1}} {{on1}}">1</button></td>
+      <td><button id="col-X" disabled class="1x2 {{statusX}} {{onX}}">X</button></td>
+      <td><button id="col-2" disabled class="1x2 {{status2}} {{on2}}">2</button></td>
       {{#if (ne status "Inte startat") }} 
         {{#if isCorrect}}  
         <td style="padding-left: 10px;"><span style="color:#00CF91" class="glyphicon glyphicon-ok"></span></td>
@@ -598,7 +598,7 @@
   </table>
   {{#if showDelete}} 
     <div>
-      <button id="delete" type="button" class="btn" style="margin-top: 5px;" onclick="deleteDraw({{id}})">Ta bort</button>
+      <button id="delete" type="button" class="btn" style="margin-top: 5px;background: #626262;" onclick="deleteDraw({{id}})">Ta bort</button>
     </div>
   {{/if}}
   {{#ifnoteq drawstate "Open" }}
@@ -633,7 +633,7 @@
   </div>
   {{/ifnoteq}}
   </div>
-  <hr>
+  
 </script>
 
 
@@ -654,7 +654,7 @@ Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{
 <script id="top-order" type="text/x-handlebars-template">
             
               <table>
-                <caption><b>Topplistan (antal rätt/spel)</b></caption>
+                <caption style="color:white;padding-top:0"><b>Topplistan (antal rätt/spel)</b></caption>
                 {{#each list}}
                 <tr><td style="padding-right:5px"><b>{{pos}}.</b></td><td style="padding-right:20px">{{name}}</td><td style="text-align:right"><b>{{average}}</b></td></tr>
                 {{/each}}
