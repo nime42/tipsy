@@ -506,6 +506,15 @@
 
 <script id="matches" type="text/x-handlebars-template">
   <h2>{{productName}}</h2>
+  {{#if (match productName "Topptipset") }}  
+    {{setVar "productClass" "topptipset"}}
+  {{/if}}
+  {{#if (match productName "Stryktipset") }}  
+    {{setVar "productClass" "stryktipset"}}
+  {{/if}}
+  {{#if (match productName "Europatipset") }}  
+    {{setVar "productClass" "europatipset"}}
+  {{/if}}
   <p>Spelstopp:{{regCloseTime}} </p>
   <button id="paste" type="button" class="btn btn-primary btn-sm pull-left" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'))">Klistra in</button>
   <span style="color: #3071a9;margin: 7px;font-size: 15px;" class="glyphicon glyphicon-info-sign"  onclick='showPastingRowsInfo()'></span>
@@ -522,9 +531,9 @@
     <tr id="row-{{inc @index}}" class="draw-row">
       <td>{{inc @index}}.</td>
       <td>{{eventDescription}}</td>
-      <td><button class="1x2 off" style="border-style: solid;">1</button></td>
-      <td><button class="1x2 off" style="border-style: solid;">X</button></td>
-      <td><button class="1x2 off" style="border-style: solid;">2</button></td>
+      <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">1</button></td>
+      <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">X</button></td>
+      <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">2</button></td>
     </tr>
     {{/each}}
    
@@ -544,12 +553,15 @@
   {{#if finalizedHeader}}<h3>{{finalizedHeader}}</h3> {{/if}}
   {{#if (match product "Topptipset") }}  
     <img style="background:#f29400;width:120px;height: 30px;" src='/img/topptipset.svg'>
+    {{setVar "productClass" "topptipset"}}
   {{/if}}
   {{#if (match product "Stryktipset") }}  
     <img style="background:#00427a;width:125px;height: 30px;" src='/img/stryktipset.svg'>
+    {{setVar "productClass" "stryktipset"}}
   {{/if}}
   {{#if (match product "Europatipset") }}  
     <img style="background:#008733;width:140px;height: 30px;" src='/img/europatipset.svg'>
+    {{setVar "productClass" "europatipset"}}
   {{/if}}
 
 
@@ -580,9 +592,9 @@
       <td>{{rownr}}.</td>
       <td nowrap>{{teams}}</td>
       <td nowrap style="text-align:center">{{result}}</td>
-      <td><button id="col-1" disabled class="1x2 {{status1}} {{on1}}">1</button></td>
-      <td><button id="col-X" disabled class="1x2 {{statusX}} {{onX}}">X</button></td>
-      <td><button id="col-2" disabled class="1x2 {{status2}} {{on2}}">2</button></td>
+      <td><button id="col-1" disabled class="1x2 {{status1}} {{../productClass}} {{on1}}">1</button></td>
+      <td><button id="col-X" disabled class="1x2 {{statusX}} {{../productClass}} {{onX}}">X</button></td>
+      <td><button id="col-2" disabled class="1x2 {{status2}} {{../productClass}} {{on2}}">2</button></td>
       {{#if (ne status "Inte startat") }} 
         {{#if isCorrect}}  
         <td style="padding-left: 10px;"><span style="color:#00CF91" class="glyphicon glyphicon-ok"></span></td>

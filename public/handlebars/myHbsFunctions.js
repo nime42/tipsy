@@ -88,3 +88,7 @@ Handlebars.registerHelper("isNaN", function(a, options)
     console.log(a,isNaN(a));
     return isNaN(a);
 });
+
+Handlebars.registerHelper("setVar", function(varName, varValue, options) {
+    options.data.root[varName] = varValue;
+  });
