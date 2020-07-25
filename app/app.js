@@ -30,7 +30,6 @@ const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 
-
 app.use((req,res,next)=>{
     if(sessionHandler.getSession(req)) {
         next();
@@ -56,6 +55,14 @@ app.use((req,res,next)=>{
 
     res.redirect('/main.html');
 
+    });
+
+
+    app.use(function (req, res, next) {
+        if ((req.get('X-Forwarded-Proto') !== 'https')) {
+            res.redirect('https://' + req.get('Host') + req.url);
+        } else
+            next();
     });
 
 
