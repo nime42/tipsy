@@ -29,7 +29,12 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
-
+app.use(function (req, res, next) {
+    if ((req.get('X-Forwarded-Proto') !== 'https')) {
+        res.redirect('https://' + req.get('Host') + req.url);
+    } else
+        next();
+});
 
 app.use((req,res,next)=>{
     if(sessionHandler.getSession(req)) {
