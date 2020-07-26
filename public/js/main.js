@@ -1148,9 +1148,9 @@ function parseRows(rows) {
             on1: a[2].match("1") != undefined ? "on" : "off",
             onX: a[2].match("X") != undefined ? "on" : "off",
             on2: a[2].match("2") != undefined ? "on" : "off",
-            status1:"missed",
-            statusX:"missed",
-            status2:"missed"
+            status1:"",
+            statusX:"",
+            status2:""
         };
 
         if(res.status=="-1") {
@@ -1164,16 +1164,22 @@ function parseRows(rows) {
                 if (res.on1 == "on") {
                     res.status1 = "correct";
                     res.isCorrect = true;
-                } 
+                } else {
+                    res.status1 = "missed";
+                }
             } else if (home == away) {
                 if (res.onX == "on") {
                     res.statusX = "correct";
                     res.isCorrect = true;
+                } else {
+                    res.statusX = "missed";
                 } 
             } else {
                 if (res.on2 == "on") {
                     res.status2 = "correct";
                     res.isCorrect = true;
+                } else {
+                    res.status2 = "missed";
                 }
             }
         }
