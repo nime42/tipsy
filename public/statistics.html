@@ -1,0 +1,140 @@
+<head>
+    <!-- Load plotly.js into the DOM -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <script>
+        var map;
+        function init() {
+
+            $.ajax({
+                type: "GET",
+                url: "/systemStatistics",
+                cache: false,
+                success: function (data, status, jqxhr) {
+                    console.log(data, status, jqxhr);
+                    var x = [];
+                    var y = [];
+                    var totalLogins = [];
+                    var totalUniqueVisitors = [];
+                    var totalUniqueUsers = [];
+                    var locations = [];
+                    for (key in data) {
+                        x.push(key);
+                        totalLogins.push(data[key].totalLogins);
+                        totalUniqueVisitors.push(Object.keys(data[key].uniqueIP).length);
+                        totalUniqueUsers.push(Object.keys(data[key].uniqueLogin).length);
+
+                        for (ip in data[key].uniqueIP) {
+                            locations.push(data[key].uniqueIP[ip].ll);
+                        }
+
+                    }
+
+                    Plotly.newPlot('total-logins',
+                        [{
+                            type: 'bar',
+                            x: x,
+                            y: totalLogins,
+                            marker: {
+                                color: '#C8A2C8',
+                                line: {
+                                    width: 1
+                                }
+                            }
+                        }],
+                        {
+                            title: 'Inloggningar per dag',
+                            font: { size: 12 }
+                        },
+                        { responsive: true }
+                    );
+
+
+                    Plotly.newPlot('unique-users',
+                        [{
+                            type: 'bar',
+                            x: x,
+                            y: totalUniqueUsers,
+                            marker: {
+                                color: '#C8A2C8',
+                                line: {
+                                    width: 1
+                                }
+                            }
+                        }],
+                        {
+                            title: 'Unika användare',
+                            font: { size: 12 }
+                        },
+                        { responsive: true }
+                    );
+
+                    Plotly.newPlot('unique-visitors',
+                        [{
+                            type: 'bar',
+                            x: x,
+                            y: totalUniqueVisitors,
+                            marker: {
+                                color: '#C8A2C8',
+                                line: {
+                                    width: 1
+                                }
+                            }
+                        }],
+                        {
+                            title: 'Unika besökare',
+                            font: { size: 12 }
+                        },
+                        { responsive: true }
+                    );
+
+
+
+                    map = L.map('map').setView([63.45, 15.48], 5);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    locations.forEach(function(l) {
+                        L.marker(l).addTo(map)
+                    });
+
+
+                },
+                error: function (data, status, jqxhr) {
+                    console.log(data, status, jqxhr);
+                }
+            });
+
+
+
+        }
+
+    </script>
+</head>
+
+<body onload="init()">
+    <div id="map" style="height:800px;width: 50%;margin: 0 auto;"></div>
+    <br />
+    <div id='total-logins'>
+        <!-- Plotly chart will be drawn inside this DIV -->
+    </div>
+    <br />
+    <div id='unique-users'>
+        <!-- Plotly chart will be drawn inside this DIV -->
+    </div>
+    <div id='unique-visitors'>
+        <!-- Plotly chart will be drawn inside this DIV -->
+    </div>
+    <br />
+
+</body>

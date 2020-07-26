@@ -5,7 +5,8 @@ var db=require('./db/dbFunctions_better.js');
 var mailsender=require('./utils/mailSender.js');
 var sessionHandler=require('./utils/sessionHandler.js');
 var matchInfoHandler=require('./utils/matchInfoHandler.js');
-var webScraper=require('./utils/webScraper.js')
+var webScraper=require('./utils/webScraper.js');
+var statisticsManager=require('./utils/statisticsManager.js');
 
 sessionHandler.resumeSessions(db.getDbInstance());
 
@@ -107,6 +108,12 @@ app.get("/shutdown",(req,res) => {
         sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
     }
 
+})
+
+app.get("/systemStatistics",(req,res) => {
+    statisticsManager.gatherStatistics('./log/access.log',function(stats) {
+        res.json(stats);
+    })
 })
 
  
