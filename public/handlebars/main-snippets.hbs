@@ -102,6 +102,12 @@
               {{/if}}
 
               <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
+               {{#if register}}
+               <br/>
+               <input type="checkbox" id="accept-terms" name="terms" value="accept">
+  <label for="accept-terms"> Jag godkänner <a href="Villkorstxt.pdf">Användarvillkor och integritetspolicy</a></label><br>
+                   
+              {{/if}}
               </div>
             </form>
           </div>

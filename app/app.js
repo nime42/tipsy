@@ -56,6 +56,7 @@ app.use((req,res,next)=>{
         req.url.startsWith("/img") ||  
         req.url.startsWith("/main.html") || 
         req.url.startsWith("/login") ||
+        req.url.startsWith("/Villkorstxt.pdf") ||
         req.url.startsWith("/register") ||
         req.url.startsWith("/forgotPassword") ||
         req.url.startsWith("/resetPassword") ||
