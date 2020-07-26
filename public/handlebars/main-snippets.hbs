@@ -65,7 +65,7 @@
             <h4 class="modal-title">Användaruppgifter</h4>
           </div>
           <div class="modal-body">
-            <form action="#">
+            <form action="">
               <div class="form-group">
                 <label for="username">Användarnamn:</label>
                 <input type="text" class="form-control" id="username" value="{{username}}" {{#ifnoteq register true}} disabled {{/ifnoteq}}>
@@ -105,7 +105,7 @@
                {{#if register}}
                <br/>
                <input type="checkbox" id="accept-terms" name="terms" value="accept">
-  <label for="accept-terms"> Jag godkänner <a href="Villkorstxt.pdf">Användarvillkor och integritetspolicy</a></label><br>
+  <label for="accept-terms"> Jag godkänner <a onclick="showUserTerms()">Användarvillkor och integritetspolicy</a></label><br>
                    
               {{/if}}
               </div>
@@ -130,7 +130,7 @@
       <div class="modal-body">
 
 
-				<form action="#" method="post">
+				<form action="" method="post">
 					<div class="form-group">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -146,7 +146,7 @@
 					<div class="form-group">
 						<button type="button" id="log-in" class="btn btn-primary btn-block btn-lg">Logga in</button>
 					</div>
-					<p class="hint-text"><a id="forgot-password" href="#">Glömt lösenord?</a></p>
+					<p class="hint-text"><a id="forgot-password">Glömt lösenord?</a></p>
 				</form>
 
 
@@ -724,7 +724,7 @@ Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{
       <div class="modal-body">
 
 
-				<form action="#" method="post">
+				<form action="" method="post">
 					<div class="form-group">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -890,7 +890,7 @@ Men du kan klistra in länken manuellt här istället:</p>
           </div>
           <div class="modal-body">
             <p>Klistra in länken som kopierades från Svenska Spel och tryck på Skicka</p>
-            <form action="#">
+            <form action="">
               <div class="form-group">
                 <label for="name">Länk:</label>
                 <input type="text" class="form-control" id="name" value="">
@@ -903,4 +903,56 @@ Men du kan klistra in länken manuellt här istället:</p>
       
       </div>
 </script>
+
+
+<script id="user-terms" type="text/x-handlebars-template">
+  <div class="modal-dialog">
+    <div class="modal-content" style="padding: 10px;">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Villkor</h4>
+      </div>
+      <div class="modal-body"></div>
+
+<h3>Användarvillkor</h3>
+<p>
+När du skapar ett användarkonto godkänner du i sin helhet de villkor som framgår nedan, vilka även inkluderar vår integritetspolicy.<br/> Tjänsterna tillhandahålls kostnadsfritt för dig i sitt standardutförande.<br/> 
+En del av tjänsterna hanteras av tredje part (Svenska spel).<br/> Eventuella fel kopplade till tjänster utförda av tredje part skall inte Tipsy belastas för.<br/>
+Tjänster hos Tipsy; åtkomst till gemensamma spel, realtiduppdateringar, prognoser och fastställd utdelning vid eventuell vinst.<br/> Därutöver funktioner som hanterar spelturordning, utgifter och intäkter, innestående medel och utbetalningar.<br/> Vänligen läs mer om tjänsterna under Kom igång.<br/>
+Ett spel som läggs hos Tipsy är inte ett giltigt spel som vid eventuell vinst ger pengar till tipparen.<br/> För att ett spel ska vara giltigt måste det spelas hos Svenska spel.<br/> Vid en eventuell vinst betalas inga pengar ut via Tipsy.<br/> Som kund kan du heller inte sätta in eller ta ut pengar från Tipsy.<br/> 
+Villkoren för tjänsterna som erbjuds via Tipsy är tillämpliga oavsett från vilken plattform tjänsterna tillhandahålls.<br/> Med tjänsterna avses de funktioner i på tipsy.<br/>nu och som tillgängliggörs för den som har ett användarkonto.<br/>
+Avtal om ingående av tjänsterna så som registrering får inte ingås av personer under 18 år.<br/> 
+Du ansvarar för eventuella trafikavgifter som teleoperatören tar ut för skickande eller mottagande av data och/eller meddelanden vid registrering och vid användande av tjänsterna.<br/> 
+Tipsy ger dig genom godkännande av användarvillkoren en begränsad, icke-exklusiv och icke överlåtbar rätt att använda tjänsterna därinom.<br/> Om du inte följer villkoren kan rätten komma att återkallas.<br/> 
+Om villkoren mellan dig och Tipsy upphör, upphör din rätt att använda tipsy.<br/>nu.<br/>
+Samtliga immateriella rättigheter, som exempelvis tekniska lösningar avseende tjänsterna tillhörande Tipsy, får endast användas inom ramen för tjänsterna.<br/> Du har således inte rätt att förändra tjänsterna på något sätt, kopiera, anpassa, hyra ut, låna ut, sälja, underlicensiera eller på annat sätt distribuera eller överlåta innehållet i tjänsterna.<br/>  
+Tjänsterna är normalt tillgänglig dygnet runt alla dagar i veckan.<br/> Trots att Tipsy strävar efter att tillhandahålla dig tjänsterna utan teknisk störning, kan Tipsy inte garantera att tjänsterna alltid kommer att vara fullt tillgängliga eller fungera felfritt.<br/> Tipsy ansvarar inte heller under några omständigheter för tekniska problem som kan uppstå hos tredje part (Svenska spel), problem med internetåtkomst, tekniska problem med användarens mobila enhet eller liknande.<br/> Tipsy friskriver sig från samtliga uttryckliga, underförstådda eller lagstadgade garantier.<br/>  
+Tipsy förbehåller sig även rätten att helt eller delvis och utan föregående meddelande, spärra tjänsterna för dig om vi misstänker att du; 
+(i) obehörigen nyttjar annan persons inloggningsuppgifter;
+(ii) obehörigen låter annan nyttja persons inloggningsuppgifter; 
+(iii) använder tjänsterna i strid mot användarvillkoren eller använder, eller har för avsikt att använda tjänsterna i strid med gällande lagstiftning (exempelvis bedrägerier, falska köp, falskt angivande av uppgifter eller liknande); eller
+(iv) använder tjänsterna på sådant sätt att Tipsy eller tredje person kan orsakas skada.<br/>
+Tipsy har också rätt att spärra tjänsterna för dig utifrån teknisk säkerhetsmässig grund eller annan grund om Tipsy bedömer att det bör ske för att tjänsten, tredje person eller andra parters intressen.<br/> 
+Tipsy har rätt att utan föregående samtycke från dig, helt eller delvis, överlåta sina rättigheter och skyldigheter enligt användarvillkoren.<br/>
+Tipsy har rätt att omedelbart och utan skriftligt meddelande, säga upp tjänsten om du använder den i strid med vad som stadgas i användarvillkoren.<br/> 
+Tipsy ger inga garantier om tjänsterna och dess innehåll eller funktion.<br/> Tipsy ansvarar inte heller under några omständigheter för tekniska problem som kan uppstå hos tredje part (Svenska spel) exempelvis i anledning av problem med internetåtkomst, tekniska problem hos betaltjänstleverantörer, tekniska problem med användarens mobila enhet eller liknande.<br/> Tipsy friskriver sig från samtliga uttryckliga, underförstådda eller lagstadgade garantier.<br/>  
+</p>
+<h3>Integritetspolicy</h3>
+<p>
+Tipsy är personuppgiftsansvarig för behandling av de personuppgifter som du lämnar till Tipsy i samband med registrering av konto.<br/> All behandling av personuppgifter sker enligt gällande lagstiftning.<br/> Detta innebär bland annat att vi skyddar dina personuppgifter med nödvändiga åtgärder och att du alltid har rätt att kontakta oss för att få reda på vilka personuppgifter som vi har sparade om dig.<br/> 
+Tipsy behandlar de personuppgifter som lämnas till oss.<br/> Det kan vara namn, e-postadress, telefonnummer, spelstatistik, kostnader och intäkter som du lämnat till oss eller i övrigt är nödvändig för att vi ska kunna fullgöra våra åtaganden gentemot dig.<br/>
+Dina personuppgifter används endast av Tipsy.<br/> Vi vidarebefordrar, säljer eller byter aldrig dina personuppgifter för marknadsföringsändamål till tredje part utanför Tipsy.<br/> Och vi lämnar inte ut personuppgifter till andra bolag om vi inte behöver göra detta på grund av lag, förordning eller myndighetsbeslut eller för att skydda våra rättigheter eller tredje parts rättigheter.<br/>
+Begäran om registerutdrag, information eller rättning av felaktiga uppgifter skickas till:
+Kontakt: tipsy@gmail.<br/>com 
+Tipsy.<br/>nu använder små textfiler, så kallade cookies, för att underlätta ditt surfande på sidan.<br/> Vi använder framförallt cookies för att samla in statistik om användarnas besök och för att förbättra upplevelsen.<br/> Det kan exempelvis handla om att val du gör på vår webbplats sparas.<br/> 
+</p>
+
+         
+<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+    </div>
+  </div> 
+</script>
+
+
+
 

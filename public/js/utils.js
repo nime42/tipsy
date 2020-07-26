@@ -76,6 +76,11 @@ function collectUserInfo(div, passwordCantBeEmpty) {
     return null;
   }
 
+  if($("#accept-terms").length>0 && $("#accept-terms").is(":checked")==false) {
+    popup("#popup","Godkänn villkor", "Du måste godkänna villkoren!");
+    return null;
+  }
+
   if (conf.password === "") {
     conf.password = undefined;
   }

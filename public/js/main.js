@@ -245,6 +245,7 @@ function initGroups() {
             for (var i = 0; i < globals.usergroups.length; i++) {
                 if (globals.usergroups[i].groupid == selected) {
                     globals.activeGroup = globals.usergroups[i];
+                    window.history.replaceState(null, null, "?active-group="+selected);
                     break;
                 }
             }
@@ -1083,7 +1084,7 @@ function getResults(groupId,page) {
             reloadIfLoggedOut(jqxhr);
             var finalizedHeader="";
 
-            if(data.results[0].drawstate=="Finalized") {
+            if(data.results[0]==undefined || data.results[0].drawstate=="Finalized") {
                 $("#no-ongoing-games").show();            
             }
             data.results.forEach(function (e) {
@@ -1245,4 +1246,8 @@ dialog("#yes-no", "Ta bort Spel",
 
 function showPastingRowsInfo() {
     hbsModal("#another-modal", hbsTemplates["main-snippets"]["paste-rows"]);
+}
+
+function showUserTerms() {
+    hbsModal("#another-modal", hbsTemplates["main-snippets"]["user-terms"]);
 }

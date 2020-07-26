@@ -201,6 +201,10 @@ div.sticky {
         return;
    }
 
+   if(getUrlVars()["active-group"]) {
+    globals.activeGroup={groupid:getUrlVars()["active-group"]};
+   }
+
    
    if(getCookie("SessId")) {
       initApp();
