@@ -39,7 +39,7 @@ function lookupIP(ip) {
 
 function parseDate(date) {
     let [day, month, year] = date.match(/(.*)\/(.*)\/([^:]*):/).splice(1);
-    return new Date(month + " " + day + ", " + year).toLocaleString("se");
+    return new Date(month + " " + day + ", " + year);
 }
 
 function parseLine(line) {

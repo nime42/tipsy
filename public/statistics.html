@@ -33,7 +33,7 @@
                     var totalUniqueUsers = [];
                     var locations = [];
                     for (key in data.stats) {
-                        x.push(key);
+                        x.push(new Date(key));
                         totalLogins.push(data.stats[key].totalLogins);
                         totalUniqueVisitors.push(Object.keys(data.stats[key].uniqueIP).length);
                         totalUniqueUsers.push(Object.keys(data.stats[key].uniqueLogin).length);
