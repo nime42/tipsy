@@ -258,11 +258,19 @@ function initGroups() {
         $("#group-title").text("");
         $("#latest-games").hide();
 
+        if(globals.lastGroup) {
+            var g=globals.usergroups.find(function(g) {return g.groupid==globals.lastGroup});
+            if(g) {
+                globals.activeGroup=g;    
+            }
+            globals.lastGroup=undefined;
+        }
+
         if (globals.activeGroup.groupid === undefined && globals.usergroups.length > 0) {
             globals.activeGroup = globals.usergroups[0];
         }
 
-        if (globals.activeGroup.groupid) {
+        if (globals.activeGroup.groupid ) {
             $('#available-groups').val(globals.activeGroup.groupid).trigger("change");
         }
 
