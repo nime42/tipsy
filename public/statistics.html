@@ -33,7 +33,9 @@
                         totalUniqueUsers.push(Object.keys(data[key].uniqueLogin).length);
 
                         for (ip in data[key].uniqueIP) {
+                            if(data[key].uniqueIP[ip]!=null) {
                             locations.push(data[key].uniqueIP[ip].ll);
+                            }
                         }
 
                     }
