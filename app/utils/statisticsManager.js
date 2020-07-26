@@ -1,5 +1,6 @@
 var geoip = require('geoip-lite');
 var lineReader = require('line-reader');
+var db=require('../db/dbFunctions_better.js');
 
 var stats = {};
 
@@ -8,12 +9,17 @@ var ipInfo = {};
 function gatherStatistics(file, callback = console.log) {
     stats = {};
     ipInfo = {};
+
+    var general={}
+    general.nrOfGroups=db.getDbInstance().prepare("select count(*) as nrofgroups from groups").get().nrofgroups;
+    general.nrOfUsers=db.getDbInstance().prepare("select count(*) as nrofusers from users").get().nrofusers;
+
     lineReader.eachLine(file, function (line, last) {
         //console.log(line);
         parseLine(line);
         // do whatever you want with line...
         if (last) {
-            callback(stats);
+            callback({stats:stats,general:general});
         }
     });
 
