@@ -364,23 +364,23 @@
                 <table id="event-table" class="table table-bordered table-striped">
                   <thead>
                     <tr>
-                      <th nowrap style="text-align:left" scope="col">Datum</th>
-                      <th nowrap style="text-align:left" scope="col">Händelse</th>
-                      <th nowrap style="text-align:left" scope="col">Användare</th>
-                      <th nowrap style="text-align:left" scope="col">Kostnad</th>
-                      <th nowrap style="text-align:left" scope="col">Antal rätt</th>
-                      <th nowrap style="text-align:left" scope="col">Vinst</th>
+                      <th nowrap style="text-align:center" scope="col">Datum</th>
+                      <th nowrap style="text-align:center" scope="col">Händelse</th>
+                      <th nowrap style="text-align:center" scope="col">Användare</th>
+                      <th nowrap style="text-align:right" scope="col">Kostnad</th>
+                      <th nowrap style="text-align:center" scope="col">Antal rätt</th>
+                      <th nowrap style="text-align:right" scope="col">Vinst</th>
                     </tr>
                   </thead>
                   <tbody>
                     {{#each events}}
                     <tr>
-                      <td nowrap style="text-align:left">{{eventtime}}</td>
-                      <td nowrap style="text-align:left">{{eventtype}}</td>
-                      <td nowrap style="text-align:left">{{username}}</td>
-                      <td nowrap style="text-align:left">{{toLocalNumber cost}} {{#if cost}}kr{{/if}}</td>
-                      <td nowrap style="text-align:left">{{nrofrights}}</td>
-                      <td nowrap style="text-align:left">{{toLocalNumber profit}} kr</td>
+                      <td nowrap style="text-align:center">{{eventtime}}</td>
+                      <td nowrap style="text-align:center">{{eventtype}}</td>
+                      <td nowrap style="text-align:center">{{username}}</td>
+                      <td nowrap style="text-align:right">{{toLocalNumber cost}} {{#if cost}}kr{{/if}}</td>
+                      <td nowrap style="text-align:center">{{nrofrights}}</td>
+                      <td nowrap style="text-align:right">{{toLocalNumber profit}} kr</td>
                       {{#if isDeletable}}
                         <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeEvent({{id}},$(this).parent().parent())"></span></td>
                       {{/if}}
