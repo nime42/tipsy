@@ -307,10 +307,10 @@
                       <td nowrap style="text-align:center">{{name}}</td>
                       <td nowrap style="text-align:center"><b> {{average_stryktips}}</b></td>
                       <td nowrap style="text-align:center"><b> {{average_topptips}}</b></td>
-                      <td nowrap style="text-align:center"><b>{{#if (gt games_ord 0) }} {{games_ord}}</b> (<i>{{input_ord}} kr</i>){{else}}0{{/if}}</td>
-                      <td nowrap style="text-align:center"><b>{{#if (gt games_extra 0) }} {{games_extra}}</b> (<i>{{input_extra}} kr</i>){{else}}0{{/if}}</td>
-                      <td nowrap style="text-align:center">{{win_brutto}} kr</td>
-                      <td nowrap style="text-align:center">{{win_netto}} kr</td>
+                      <td nowrap style="text-align:center"><b>{{#if (gt games_ord 0) }} {{games_ord}}</b> (<i>{{toLocalNumber input_ord}} kr</i>){{else}}0{{/if}}</td>
+                      <td nowrap style="text-align:center"><b>{{#if (gt games_extra 0) }} {{games_extra}}</b> (<i>{{toLocalNumber input_extra}} kr</i>){{else}}0{{/if}}</td>
+                      <td nowrap style="text-align:center">{{toLocalNumber win_brutto}} kr</td>
+                      <td nowrap style="text-align:center">{{toLocalNumber win_netto}} kr</td>
                     </tr>
                     {{/each}}
                   </tbody>
@@ -320,27 +320,27 @@
            <table class="table" style="width:60%">
              <tr>
                <td style="width:1px"><b>Totala insatser:</b></td>
-               <td style="width:1px">{{totInput}} kr</td>
+               <td style="width:1px">{{toLocalNumber totInput}} kr</td>
              </tr>
              <tr>
                <td style="width:1px"><b>Totala vinster:</b></td>
-               <td style="width:1px">{{totWin}} kr</td>
+               <td style="width:1px">{{toLocalNumber totWin}} kr</td>
              </tr>
              <tr>
                <td style="width:1px"><b>Total balans:</b></td>
-               <td style="width:1px">{{balance}} kr</td>
+               <td style="width:1px">{{toLocalNumber balance}} kr</td>
              </tr>
              <tr>
                <td style="width:1px"><b>Utbetalt:</b></td>
-               <td style="width:1px">{{totPayments}} kr</td>
+               <td style="width:1px">{{toLocalNumber totPayments}} kr</td>
              </tr>
              <tr>
                <td style="width:1px"><b>Återstående vinst:</b></td>
-               <td style="width:1px">{{totNettoWin}} kr</td>
+               <td style="width:1px">{{toLocalNumber totNettoWin}} kr</td>
              </tr>
              <tr>
                <td style="width:1px"><b>Återstående vinst per person:</b></td>
-               <td style="width:1px">{{totNettoWinPerMember}} kr</td>
+               <td style="width:1px">{{toLocalNumber totNettoWinPerMember}} kr</td>
              </tr>
            </table>
 
@@ -378,9 +378,9 @@
                       <td nowrap style="text-align:left">{{eventtime}}</td>
                       <td nowrap style="text-align:left">{{eventtype}}</td>
                       <td nowrap style="text-align:left">{{username}}</td>
-                      <td nowrap style="text-align:left">{{cost}} kr</td>
+                      <td nowrap style="text-align:left">{{toLocalNumber cost}} kr</td>
                       <td nowrap style="text-align:left">{{nrofrights}}</td>
-                      <td nowrap style="text-align:left">{{profit}} kr</td>
+                      <td nowrap style="text-align:left">{{toLocalNumber profit}} kr</td>
                       {{#if isDeletable}}
                         <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeEvent({{id}},$(this).parent().parent())"></span></td>
                       {{/if}}
@@ -398,7 +398,7 @@
               {{#if (gt surplus 0) }}
              <div style="margin:10px">
                <h3>Gör utbetalning?</h3>
-             <p>Du ligger just nu på <b>{{surplus}} kr</b> plus.<a onclick="configurePayment({{surplus}})"> Klicka här för att göra en utbetalning</a>!</p> 
+             <p>Du ligger just nu på <b>{{toLocalNumber surplus}} kr</b> plus.<a onclick="configurePayment({{surplus}})"> Klicka här för att göra en utbetalning</a>!</p> 
 
              </div> 
 
@@ -635,8 +635,8 @@
             <tr>
               <td style="white-space:nowrap;padding-right: 5px;"><b>{{rights}} rätt</b></td>
               <td style="text-align: center;">{{rows}}</td>
-              <td style="text-align: center;">{{worth}}kr</td>
-              <td style="text-align: center;">{{total}}kr</td>
+              <td style="text-align: center;">{{toLocalNumber worth}} kr</td>
+              <td style="text-align: center;">{{toLocalNumber total}} kr</td>
             </tr>
             {{/each}}
           </table>
@@ -646,7 +646,7 @@
 
       </tr>
     </table>
-    <p><b>Vinst: {{totalWin}} kr</b></td>
+    <p><b>Vinst: {{toLocalNumber totalWin}} kr</b></td>
     </p>
   </div>
   {{/ifnoteq}}
@@ -771,7 +771,7 @@ table, td, th {
 </style>
 </head>
 <body>
- <p><b>Total summa:</b> {{amount}} kr</p>
+ <p><b>Total summa:</b> {{toLocalNumber amount}} kr</p>
  {{{tablebody}}}
 <br/>
  Mvh

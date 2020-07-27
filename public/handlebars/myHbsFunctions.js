@@ -63,6 +63,17 @@ Handlebars.registerHelper("inc", function(value, options)
     return parseInt(value) + 1;
 });
 
+//e.g. add thousand separators
+Handlebars.registerHelper("toLocalNumber", function(value, options)
+{
+    var n= parseFloat(value);
+    if(isNaN(n)) {
+        return value;
+    } else {
+        return n.toLocaleString();
+    }
+});
+
 
 Handlebars.registerHelper({
     eq: function(v1, v2) {return v1 === v2},
