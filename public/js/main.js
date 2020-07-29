@@ -1198,7 +1198,7 @@ function parseRows(rows) {
                 res.result=getWeekDay(matchStart);
             }
             }
-        } else if (res.status != "Avslutad" && res.status != "Slut efter förlängning") {
+        } else if (res.status != "Avslutad" && res.status != "Slut efter förlängning" && res.status != "Slut efter straffläggning") {
             res.result = "(" + res.result + ")";
         }
 
