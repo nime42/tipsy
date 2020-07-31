@@ -66,11 +66,12 @@
     border-color: #00CF91;
   }
 
-  /*
+  
   .bettingtable .missed {
     border-style: solid;
     border-color: red;
-  }*/
+    border-width: 1px;
+  }
   
 
   .bettingtable  button {
@@ -137,6 +138,16 @@ div.sticky {
 
 }
 
+.round-button {
+  border-radius: 45px;
+    height: 45px;
+    width: 60%;
+    background: #f6d403;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+}
+
 
 </style>
 
@@ -148,7 +159,7 @@ div.sticky {
 
   
 
-    $("#login").click(function (e) {
+    $("#login,#login-button").click(function (e) {
     login();
     });
 
@@ -158,16 +169,15 @@ div.sticky {
 
 
     $("#instructions").click(function (e) {
-      var isLoggedIn=true;
-      if (!globals.userinfo) {
-        isLoggedIn=false;
-      }
-
       hbsModal("#basicModal", hbsTemplates["main-snippets"]["getting-started"]);
-
    });
 
-   $("#configure-user").click(function (e) {
+   $("#more-info").click(function (e) {
+    showMoreInfo();
+   });
+
+
+   $("#configure-user,#create-user").click(function (e) {
     configureUser();
    });
    
@@ -208,11 +218,7 @@ div.sticky {
    
    if(getCookie("SessId")) {
       initApp();
-   } else {
-     if($(".navbar-toggle").is(":visible")) {
-      $('.navbar-collapse').collapse('show');
-     }
-   }
+   } 
    //close navbar after click
    $('.clickable-menu').on('click', function(){
      if($(".navbar-toggle").is(":visible")) {
@@ -288,25 +294,15 @@ div.sticky {
   <div class="container-fluid front-page">  
     <div id="info" class="row content" style="max-width: 750px;margin-left: 10px;margin-right: 10px;"
 >
-      <div class="col-12 text-left"> 
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <h1><b>Tipsy - att spela tillsammans har aldrig varit enklare.</b></h1>
-      
-       <p>Tipsy är en tjänst för er som spelar Svenska Spels Stryktipset, Topptipset eller Europatipset tillsammans. Kompisgänget, kollegorna eller grannarna, oavsett vilka ni är så hjälper Tipsy er med:
-        <ul>
-          <li style="margin-bottom: 5px;">Alla i spelgänget kan ta del av era gemensamma spel i realtid (målservice, antal rätt och utdelningsprognoser).</li>
-          <li>Tipsy håller koll på spelturordning, vinster, innestående medel, utbetalningar och all annan statstik.</li>
-        </ul>
-        Tipsy hjälper er helt enkelt med allt jidder som i regel uppstår när flera spelar tillsammans.<br/>
-        Logga in och skapa er grupp på Tipsy. Börja med att skapa en användare.</p>
+      <div class="col-12 text-center"> 
+        <h1><b>Nu är det <br/>enkelt att tippa tillsammans!</b></h1>
+        
+        <p style="margin: 20px;font-size: 14px;font-weight: bold;">Ni spelar och delar. Tipsy håller koll.</p>
 
-
-
+        <p><button type="button" id="more-info" class="round-button" value="">Så här funkar det</button></p>
+        <p><button type="button" id="create-user" class="round-button" value="">Skapa användare</button></p>
+        <p><button type="button" id="login-button" class="round-button" value="">Logga in</button></p>
+        <p style="font-size: 125px;opacity: 0.2;font-weight: bold;font-style: oblique;padding-top: 30px;padding-bottom: 100%;">Tipsy</p>
 
       </div>
     </div>

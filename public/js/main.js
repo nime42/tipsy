@@ -1265,3 +1265,7 @@ function showPastingRowsInfo() {
 function showUserTerms() {
     hbsModal("#another-modal", hbsTemplates["main-snippets"]["user-terms"]);
 }
+
+function showMoreInfo() {
+    hbsModal("#another-modal", hbsTemplates["main-snippets"]["more-info"]);
+}
