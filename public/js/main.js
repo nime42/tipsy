@@ -1267,5 +1267,5 @@ function showUserTerms() {
 }
 
 function showMoreInfo() {
-    hbsModal("#another-modal", hbsTemplates["main-snippets"]["more-info"]);
+    hbsModal("#basicModal", hbsTemplates["main-snippets"]["more-info"]);
 }

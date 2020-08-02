@@ -335,7 +335,7 @@ function addPlay(userId, playdata, callback = console.log) {
 }
 
 
-var resultPageSize=50;
+var resultPageSize=20;
 function getResults(userId, groupId,page, callback=console.log) {
 
     let sql = "select * from group_members where userid=? and groupid=?";
