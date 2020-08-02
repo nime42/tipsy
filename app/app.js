@@ -530,6 +530,7 @@ function updateResults(groupId,callback) {
 
 function checkDraw(product, drawNr, drawIds, callback = console.log) {
     matchInfoHandler.getDrawAndResult(product.toLowerCase(), drawNr, function (status, data) {
+
         if (status) {
             let matches = [];
             let outcome = null;
@@ -550,6 +551,7 @@ function checkDraw(product, drawNr, drawIds, callback = console.log) {
                 row.status = e.status;
                 row.rownr = e.eventNumber;
                 row.result = e.result;
+                row.matchStart=e.matchStart;
                 rows.push(row);
 
             });
@@ -557,11 +559,11 @@ function checkDraw(product, drawNr, drawIds, callback = console.log) {
             let dbi = db.getDbInstance();
             try {
                 dbi.transaction(() => {
-                    let sql = "update draw_rows set result=?,status=? where drawid=? and rownr=?"
+                    let sql = "update draw_rows set result=?,status=?,matchstart=? where drawid=? and rownr=?"
                     let stmt = dbi.prepare(sql);
                     drawIds.forEach(i => {
                         rows.forEach(r => {
-                            stmt.run(r.result, r.status, i, r.rownr);
+                            stmt.run(r.result, r.status, r.matchStart, i, r.rownr);
                         });
                         if (outcome !== null) {
                             db.updateDrawResult(i, drawState, outcome);
