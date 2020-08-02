@@ -545,6 +545,11 @@ function checkDraw(product, drawNr, drawIds, callback = console.log) {
                     outcome = data.forecast.winresult;
                 }
             }
+            for(let m=0;m<data.draws.draws.length;m++) {
+                let e=data.draws.draws[m];
+                matches[m].matchStart=e.match?e.match.matchStart:undefined;
+            }
+            //console.log(data.draws.draws);
             let rows = [];
             matches.forEach(e => {
                 let row = {}
@@ -559,7 +564,7 @@ function checkDraw(product, drawNr, drawIds, callback = console.log) {
             let dbi = db.getDbInstance();
             try {
                 dbi.transaction(() => {
-                    let sql = "update draw_rows set result=?,status=?,matchstart=? where drawid=? and rownr=?"
+                    let sql = "update draw_rows set result=?,status=?,matchstart=coalesce(?,matchstart) where drawid=? and rownr=?"
                     let stmt = dbi.prepare(sql);
                     drawIds.forEach(i => {
                         rows.forEach(r => {
