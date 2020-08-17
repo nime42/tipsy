@@ -37,7 +37,7 @@
   
   /* The Close Button */
   .close {
-    color: white;
+    color: #f6d403;;
     float: right;
     font-size: 22px;
     font-weight: bold;
@@ -45,7 +45,7 @@
     margin-right: -10px;
     margin-top: -10px;
     border-style: solid;
-    border-color: black;
+    border-color:#f6d403;;
     background: #525252;
   }
   
