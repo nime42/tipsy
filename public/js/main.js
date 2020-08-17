@@ -1,8 +1,26 @@
 
+function logInOut() {
+    if($("#log-in-out").find("span").text()==="Logga in") {
+        login();
+    } else {
+        logout();
+    }   
+}
+
+function toggleLogInOutButton() {
+    if($("#log-in-out").find("span").text()==="Logga in") {
+        $("#log-in-out").find("span").text("Logga ut");      
+    } else {
+        $("#log-in-out").find("span").text("Logga in");       
+    }   
+    $("#log-in-out").find("i").toggleClass("fa-sign-in fa-sign-out");  
+}
+
+
 function login() {
-    hbsModal("#basicModal", hbsTemplates["main-snippets"]["login"]);
-    $("#basicModal").find("#log-in").click(function (e) {
-        var loginInfo = collectLoginInfo("#basicModal");
+    showModal("#basic-modal", hbsTemplates["main-snippets"]["login"]());
+    $("#basic-modal").find("#log-in").click(function (e) {
+        var loginInfo = collectLoginInfo("#basic-modal");
         if (loginInfo !== null) {
             $.ajax({
                 type: "POST",
@@ -10,15 +28,15 @@ function login() {
                 cache: false,
                 data: loginInfo,
                 success: function (data, status, jqxhr) {
-                    $("#basicModal").modal("hide");
+                    hideModal("#basic-modal");
                     initApp();
                 },
                 error: function (data, status, jqxhr) {
                     if (data.status === 401) {
-                        popup("#popup", "Inloggning", "Ogiltigt användarnamn eller lösenord!!!");
+                        modalPopUp("#popup", "Inloggning", "Ogiltigt användarnamn eller lösenord!!!");
 
                     } else {
-                        popup("#popup", "Inloggning", "Just nu går det inte att logga in, försök senare!");
+                        modalPopUp("#popup", "Inloggning", "Just nu går det inte att logga in, försök senare!");
 
                     }
                 }
@@ -27,11 +45,30 @@ function login() {
         }
     });
 
-    $("#basicModal").find('#forgot-password').click(function (e) {
+    $("#basic-modal").find('#forgot-password').click(function (e) {
         forgotPassword(e);
     });
 
 }
+
+function logout() {
+    $.ajax({
+        url: "/logout",
+        cache: false,
+        success: function (data, status, jqxhr) {
+            deleteCookie("SessId");
+            window.location.href = window.location.pathname;
+            toggleLogInOutButton();
+            //window.location.reload();
+        }
+    });
+}
+
+
+
+
+
+
 
 function checkInvites(inviteToken) {
     var inviteToken = getUrlVars()["invite-token"];
@@ -44,7 +81,7 @@ function checkInvites(inviteToken) {
             data: { inviteToken: inviteToken },
             success: function (data, status, jqxhr) {
                 var groupName = data.groupName;
-                popup("#popup", "Ny grupp", "Grattis du är nu medlem i gruppen: " + groupName);
+                modalPopUp("#popup", "Ny grupp", "Grattis du är nu medlem i gruppen: " + groupName);
                 initGroups();
             }
         });
@@ -54,29 +91,28 @@ function checkInvites(inviteToken) {
 
 function forgotPassword(e) {
     data = {};
-    hbsModal("#basicModal", hbsTemplates["main-snippets"]["forgot-password"], data);
-    e.preventDefault();
+    showModal("#basic-modal", hbsTemplates["main-snippets"]["forgot-password"]());
 
-    $("#basicModal").find(".forgot-password").click(function (e) {
+    $("#basic-modal").find(".send-password").click(function (e) {
         var buttonId = $(this).attr('id');
         var identityType;
         var identity;
         if (buttonId === "send-mail-for-mail-adr") {
             identityType = "by-mail-adress";
-            identity = $("#basicModal").find("#email").val().trim();
+            identity = $("#basic-modal").find("#email").val().trim();
             if (identity === "" || !identity.match(/^[^@]+@[^@]+\.[^@]+$/)) {
-                popup("#popup", "Glömt lösenord", "Mailadress saknas eller verkar vara ogiltig!!");
+                modalPopUp("#popup", "Glömt lösenord", "Mailadress saknas eller verkar vara ogiltig!!");
                 return;
             }
         } else if (buttonId === "send-mail-for-userid") {
             identityType = "by-user-id";
-            identity = $("#basicModal").find("#userid").val().trim();
+            identity = $("#basic-modal").find("#userid").val().trim();
             if (identity === "") {
-                popup("#popup", "Glömt lösenord", "Användarnamn saknas!!");
+                modalPopUp("#popup", "Glömt lösenord", "Användarnamn saknas!!");
                 return;
             }
         } else {
-            popup("#popup", "Glömt lösenord", "Ett tekniskt fel har inträffat!");
+            modalPopUp("#popup", "Glömt lösenord", "Ett tekniskt fel har inträffat!");
 
             return;
 
@@ -91,18 +127,18 @@ function forgotPassword(e) {
                 identity: identity
             },
             success: function (data, status, jqxhr) {
-                $("#basicModal").modal("hide");
-                popup("#popup", "Glömt lösenord", "Mail med länk för återställning av lösenord skickat!\nKontrollera din inkorg om en stund.");
+                hideModal("#basic-modal");
+                modalPopUp("#popup", "Glömt lösenord", "Mail med länk för återställning av lösenord skickat!\nKontrollera din inkorg om en stund.");
             },
             error: function (data, status, jqxhr) {
                 if (data.status === 404) {
                     if (identityType === "by-mail-adress") {
-                        popup("#popup", "Glömt lösenord", "Det finns ingen användare med denna mail-adress!!");
+                        modalPopUp("#popup", "Glömt lösenord", "Det finns ingen användare med denna mail-adress!!");
                     } else {
-                        popup("#popup", "Glömt lösenord", "Det finns ingen användare med detta användarnamn!!");
+                        modalPopUp("#popup", "Glömt lösenord", "Det finns ingen användare med detta användarnamn!!");
                     }
                 } else {
-                    popup("#popup", "Glömt lösenord", "Det gick inte att skicka återställnings-mailet!!");
+                    modalPopUp("#popup", "Glömt lösenord", "Det gick inte att skicka återställnings-mailet!!");
                 }
             }
         });
@@ -117,20 +153,19 @@ function forgotPassword(e) {
 }
 
 function resetPassword(resetToken) {
-    data = {};
-    hbsModal("#basicModal", hbsTemplates["main-snippets"]["reset-password"], data);
-    $("#basicModal").find("#reset-passw").click(function (e) {
-        var password = $("#basicModal").find("#password").val().trim();
-        var pwd2 = $("#basicModal").find("#password2").val().trim();
+    showModal("#basic-modal", hbsTemplates["main-snippets"]["reset-password"]());
+    $("#basic-modal").find("#reset-passw").click(function (e) {
+        var password = $("#basic-modal").find("#password").val().trim();
+        var pwd2 = $("#basic-modal").find("#password2").val().trim();
 
         if (password === "") {
-            popup("#popup", "Återställ lösenord", "Lösenord saknas!!!");
+            modalPopUp("#popup", "Återställ lösenord", "Lösenord saknas!!!");
             return false;
         }
 
 
         if (password !== pwd2) {
-            popup("#popup","Återställ lösenord", "Lösenorden stämmer inte överens!!");
+            modalPopUp("#popup","Återställ lösenord", "Lösenorden stämmer inte överens!!");
             return false;
         }
 
@@ -143,17 +178,18 @@ function resetPassword(resetToken) {
                 resetToken: resetToken
             },
             success: function (data, status, jqxhr) {
-                $("#basicModal").modal("hide");
-                popup("#popup", "Återställ lösenord", "Lösenordet är uppdaterat");
+                hideModal("#basic-modal");
+                modalPopUp("#popup", "Återställ lösenord", "Lösenordet är uppdaterat");
                 removeUrlVars();
                 initApp();
+                
 
             },
             error: function (data, status, jqxhr) {
                 if (data.status === 404) {
-                    popup("#popup","Återställ lösenord", "Det gick inte att uppdatera lösenordet");
+                    modalPopUp("#popup","Återställ lösenord", "Det gick inte att uppdatera lösenordet");
                 } else {
-                    popup("#popup", "Återställ lösenord","Ett Tekniskt fel har inträffat, försök igen senare!");
+                    modalPopUp("#popup", "Återställ lösenord","Ett Tekniskt fel har inträffat, försök igen senare!");
                 }
             }
         });
@@ -162,23 +198,14 @@ function resetPassword(resetToken) {
 
 }
 
-function logout() {
-    $.ajax({
-        url: "/logout",
-        cache: false,
-        success: function (data, status, jqxhr) {
-            deleteCookie("SessId");
-            window.location.href = window.location.pathname;
-            //window.location.reload();
-        }
-    });
-}
 
 
 function initApp() {
+    $("#info").hide();
+    toggleLogInOutButton();
     initUser();
     initGroups();
-    $("#login").hide(); $("#menu-items").show(); $("#logout").show();//$('.navbar-collapse').collapse('hide');
+    $("#menu-items").show(); //$('.navbar-collapse').collapse('hide');
     checkInvites();
 }
 
@@ -285,9 +312,9 @@ function initGroups() {
 function configureUser() {
 
     if (!globals.userinfo) {
-        hbsModal("#basicModal", hbsTemplates["main-snippets"]["user-info"], { register: true });
-        $("#basicModal").find("#reg-or-update").click(function (e) {
-            var userInfo = collectUserInfo("#basicModal", true);
+        showModal("#basic-modal", hbsTemplates["main-snippets"]["user-info"]({ register: true }));
+        $("#basic-modal").find("#reg-or-update").click(function (e) {
+            var userInfo = collectUserInfo("#basic-modal", true);
             if (userInfo !== null) {
                 $.ajax({
                     type: "POST",
@@ -296,15 +323,15 @@ function configureUser() {
                     data: userInfo,
                     success: function (data, status, jqxhr) {
                         //reloadIfLoggedOut(jqxhr);
-                        $("#basicModal").modal("hide");
+                        hideModal("#basic-modal");
                         initApp();
                     },
                     error: function (data, status, jqxhr) {
                         console.log(data, status, jqxhr);
                         if (data.status === 403) {
-                            popup("#popup","Användarinfo", "Användarnamnet finns redan!");
+                            modalPopUp("#popup","Användarinfo", "Användarnamnet finns redan!");
                         } else {
-                            popup("#popup","Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                            modalPopUp("#popup","Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
                         }
                     }
                 });
@@ -318,9 +345,9 @@ function configureUser() {
             cache: false,
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
-                hbsModal("#basicModal", hbsTemplates["main-snippets"]["user-info"], data);
-                $("#basicModal").find("#reg-or-update").click(function (e) {
-                    var userInfo = collectUserInfo("#basicModal");
+                showModal("#basic-modal", hbsTemplates["main-snippets"]["user-info"](data));
+                $("#basic-modal").find("#reg-or-update").click(function (e) {
+                    var userInfo = collectUserInfo("#basic-modal");
                     if (userInfo !== null) {
                         $.ajax({
                             type: "POST",
@@ -329,17 +356,15 @@ function configureUser() {
                             data: userInfo,
                             success: function (data, status, jqxhr) {
                                 reloadIfLoggedOut(jqxhr);
-                                $("#basicModal").modal("hide");
+                                hideModal("#basic-modal");
+                                initApp();
                             },
                             error: function (data, status, jqxhr) {
-                                popup("#popup","Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                                modalPopUp("#popup","Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
                             }
                         });
                     }
-
                 });
-
-
 
             }
         });
@@ -351,12 +376,12 @@ function configureGroups() {
     data = globals.usergroups.filter(function (e) { return e.admin == 1; });
 
 
-    hbsModal("#basicModal", hbsTemplates["main-snippets"]["groups"], data);
+    showModal("#basic-modal", hbsTemplates["main-snippets"]["groups"](data));
 
-    $("#basicModal").find("#add-group").click(function (e) {
-        var newGroup = $("#basicModal").find("#new-group").val().trim();
+    $("#basic-modal").find("#add-group").click(function (e) {
+        var newGroup = $("#basic-modal").find("#new-group").val().trim();
         if (newGroup === "") {
-            popup("#popup","Skapa grupp", "Gruppnamn saknas!");
+            modalPopUp("#popup","Skapa grupp", "Gruppnamn saknas!");
             return;
         }
         $.ajax({
@@ -366,17 +391,17 @@ function configureGroups() {
             data: { groupName: newGroup },
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
-                $("#basicModal").find("#new-group").val("");
+                $("#basic-modal").find("#new-group").val("");
                 initGroups();
-                $("#basicModal").modal('hide');
-                popup("#popup", "Skapa grupp", "Grupp skapad!");
+                hideModal("#basic-modal");
+                modalPopUp("#popup", "Skapa grupp", "Grupp skapad!");
             },
             error: function (data, status, jqxhr) {
                 if (data.status === 403) {
-                    popup("#popup","Skapa grupp", "Gruppen finns redan!");
+                    modalPopUp("#popup","Skapa grupp", "Gruppen finns redan!");
 
                 } else {
-                    popup("#popup","Skapa grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                    modalPopUp("#popup","Skapa grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
                 }
             }
         });
@@ -397,9 +422,9 @@ function updateGroup(groupId, name, button) {
         },
         error: function (data, status, jqxhr) {
             if (data.status === 403) {
-                popup("#popup", "Uppdatera grupp", "Gruppen finns redan!");
+                modalPopUp("#popup", "Uppdatera grupp", "Gruppen finns redan!");
             } else {
-                popup("#popup", "Uppdatera grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                modalPopUp("#popup", "Uppdatera grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
             }
         }
     });
@@ -426,12 +451,12 @@ function deleteGroup(groupId, groupName, row) {
                 row.empty();
             },
             error: function (data, status, jqxhr) {
-                popup("#popup", "Ta bort grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                modalPopUp("#popup", "Ta bort grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
             }
         });
     }
 
-    dialog("#yes-no", "Ta bort Grupp",
+    modalDialog("#yes-no", "Ta bort Grupp",
         "Är du säker på att du vill ta bort gruppen '" + groupName + "'?<br>(Tänk på att all om info gruppen då försvinner)",
         { text: "Ja", func: fun },
         { text: "Nej", func: function () { return; } })
@@ -456,7 +481,7 @@ function getUserSurplus(callback) {
 function configureGroupMembers() {
     var groupId = globals.activeGroup.groupid;
     if (groupId === undefined) {
-        popup("#popup", "Visa Medlemmar", "Välj grupp först!");
+        modalPopUp("#popup", "Visa Medlemmar", "Välj grupp först!");
         return;
     }
 
@@ -469,19 +494,19 @@ function configureGroupMembers() {
             reloadIfLoggedOut(jqxhr);
             var isAdmin = globals.activeGroup.admin;
             data.members.map(function (e) {
-                if (isAdmin || e.userid == globals.userinfo.userid ) {
+                if ((isAdmin && e.userid !== globals.userinfo.userid) || (!isAdmin && e.userid == globals.userinfo.userid )) {
                     e.isDeletable = true;
                 }
                 return e;
             })
 
 
-            hbsModal("#basicModal", hbsTemplates["main-snippets"]["group-members"], { members: data.members, admin: globals.activeGroup.admin, invites: data.invites, currentUser: globals.userinfo.userid });
+            showModal("#basic-modal", hbsTemplates["main-snippets"]["group-members"]({ members: data.members, admin: globals.activeGroup.admin, invites: data.invites, currentUser: globals.userinfo.userid }));
 
-            $("#basicModal").find("#invite-member").click(function (e) {
-                var inviteEmail = $("#basicModal").find("#invite-email").val().trim();
+            $("#basic-modal").find("#invite-member").click(function (e) {
+                var inviteEmail = $("#basic-modal").find("#invite-email").val().trim();
                 if (inviteEmail === "" || !inviteEmail.match(/^[^@]+@[^@]+\.[^@]+$/)) {
-                    popup("#popup", "Skicka inbjudan", "Mailadress saknas eller verkar vara ogiltig!!");
+                    modalPopUp("#popup", "Skicka inbjudan", "Mailadress saknas eller verkar vara ogiltig!!");
                     return false;
                 }
 
@@ -493,15 +518,17 @@ function configureGroupMembers() {
                     data: { email: inviteEmail, groupId: globals.activeGroup.groupid },
                     success: function (data, status, jqxhr) {
                         reloadIfLoggedOut(jqxhr);
-                        var row = "<p style='margin-bottom:0px;'>" + inviteEmail + "<span style='color:red;' class='glyphicon glyphicon-remove' onclick='removeInvite(\"" + inviteEmail + "\",$(this).parent());'></span></p>";
-                        $("#basicModal").find("#invites").prepend(row);
-                        $("#basicModal").find("#invite-email").val("");
+                        //var row = "<p style='margin-bottom:0px;'>" + inviteEmail + "<span style='color:red;' class='glyphicon glyphicon-remove' onclick='removeInvite(\"" + inviteEmail + "\",$(this).parent());'></span></p>";
+                        var row = '<tr><td style="padding-left: 5px;">'+inviteEmail+'</td><td><i style="color:red;font-size:14px;" class="fa fa-remove" onclick="removeInvite(\''+inviteEmail+'\',$(this).parent().parent())"></i></td></tr>';
+
+                        $("#basic-modal").find("#invites").prepend(row);
+                        $("#basic-modal").find("#invite-email").val("");
                     },
                     error: function (data, status, jqxhr) {
                         if (data.status === 403) {
-                            popup("#popup", "Skicka inbjudan", "Inbjudan finns redan!");
+                            modalPopUp("#popup", "Skicka inbjudan", "Inbjudan finns redan!");
                         } else {
-                            popup("#popup", "Skicka inbjudan", "Tekniskt fel!");
+                            modalPopUp("#popup", "Skicka inbjudan", "Tekniskt fel!");
                         }
                     }
                 });
@@ -561,7 +588,7 @@ function configurePayment(surplus) {
             data.surplus=surplus;
             data.nrOfMembers=data.members.length;
             data.members.forEach(function(e) {e.name=(e.name!="")?e.name:e.username});
-            hbsModal("#basicModal", hbsTemplates["main-snippets"]["payment"],data);
+            showModal("#basic-modal", hbsTemplates["main-snippets"]["payment"](data));
             $('.amount-per-member').text(Number(data.surplus/data.nrOfMembers).toFixed(2)+' kr')
         }
     });
@@ -572,12 +599,12 @@ function makePayment(amount,surplus,sendMail) {
     var res={};
 
     if(amount<=0) {
-        popup("#popup", "Utbetalning", "Summan måste vara större än noll!");
+        modalPopUp("#popup", "Utbetalning", "Summan måste vara större än noll!");
         return;
     } 
 
     if(amount>surplus) {
-        popup("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
+        modalPopUp("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
         return;
 
     }
@@ -585,7 +612,7 @@ function makePayment(amount,surplus,sendMail) {
     res.groupId=groupId;
     if(sendMail) {
         res.mailTo=globals.userinfo.email;
-        res.mailBody=hbsTemplates["main-snippets"]["payment-mail-template"]({amount:amount,tablebody:$("#basicModal").find("#payment-div").html()});
+        res.mailBody=hbsTemplates["main-snippets"]["payment-mail-template"]({amount:amount,tablebody:$("#basic-modal").find("#payment-div").html()});
     }
     //console.log(res.mailBody);
 
@@ -596,17 +623,17 @@ function makePayment(amount,surplus,sendMail) {
         data: res,
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            $("#basicModal").modal("hide");
-            popup("#popup", "Utbetalning", "Utbetalning registrerad!");
+            hideModal("#basic-modal");
+            modalPopUp("#popup", "Utbetalning", "Utbetalning registrerad!");
         },
         error: function (data, status, jqxhr) {
             if (data.status === 400) {
-                popup("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
+                modalPopUp("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
         
             } if(data.status === 406) { 
-                popup("#popup", "Utbetalning", "Utbetalning registrerad men det gick ej att skicka mail!");
+                modalPopUp("#popup", "Utbetalning", "Utbetalning registrerad men det gick ej att skicka mail!");
             } else {
-                popup("#popup", "Utbetalning", "Tekniskt fel!");
+                modalPopUp("#popup", "Utbetalning", "Tekniskt fel!");
             }
         }
     });
@@ -647,18 +674,18 @@ function removeMember(memberId, groupId, rowElem) {
                 }
             },
             error: function (data, status, jqxhr) {
-                popup("#popup", "Ta bort medlem", "Tekniskt fel!");
+                modalPopUp("#popup", "Ta bort medlem", "Tekniskt fel!");
             }
         });
     }
 
     if (memberId == globals.userinfo.userid) {
-        dialog("#yes-no", "Lämna grupp",
+        modalDialog("#yes-no", "Lämna grupp",
             "Är du säker på att du vill lämna denna gruppen?",
-            { text: "Ja", func: function () { fun(); $("#basicModal").modal('hide'); } },
+            { text: "Ja", func: fun },
             { text: "Nej", func: function () { return; } })
     } else {
-        dialog("#yes-no", "Ta bort medlem",
+        modalDialog("#yes-no", "Ta bort medlem",
             "Är du säker på att du vill ta bort denna medlem?",
             { text: "Ja", func: fun },
             { text: "Nej", func: function () { return; } })
@@ -671,13 +698,14 @@ function configurePlay() {
 
     var groupId = globals.activeGroup.groupid;
     if (groupId === undefined) {
-        popup("#popup", "Spela", "Välj grupp först!");
+        modalPopUp("#popup", "Spela", "Välj grupp först!");
         return;
     }
 
     
 
-    hbsModal("#basicModal", hbsTemplates["main-snippets"]["play"]);
+    showModal("#basic-modal", hbsTemplates["main-snippets"]["play"]());
+
     getPlayable("stryktipset", "stryk");
     getPlayable("europatipset", "euro");
     getPlayable("topptipsetfamily", "topp");
@@ -689,7 +717,7 @@ function configureStatistics() {
 
     var groupId = globals.activeGroup.groupid;
     if (groupId === undefined) {
-        popup("#popup", "Statistik", "Välj grupp först!");
+        modalPopUp("#popup", "Statistik", "Välj grupp först!");
         return;
     }
     $.ajax({
@@ -699,7 +727,7 @@ function configureStatistics() {
         data: { groupId: groupId },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            hbsModal("#basicModal", hbsTemplates["main-snippets"]["statistics"],data);
+            showModal("#basic-modal", hbsTemplates["main-snippets"]["statistics"](data));
         }
     });
 
@@ -711,7 +739,7 @@ function configureEvents() {
 
     var groupId = globals.activeGroup.groupid;
     if (groupId === undefined) {
-        popup("#popup", "Händelser", "Välj grupp först!");
+        modalPopUp("#popup", "Händelser", "Välj grupp först!");
         return;
     }
     getUserSurplus(function(surplus) {
@@ -738,7 +766,7 @@ function configureEvents() {
                     return e;
                 });
                 data.surplus=surplus;
-                hbsModal("#basicModal", hbsTemplates["main-snippets"]["events"],data);
+                showModal("#basic-modal", hbsTemplates["main-snippets"]["events"](data));
             }
         });
     });
@@ -803,12 +831,12 @@ function removeEvent(eventId,rowElem) {
                 rowElem.remove();
             },
             error: function (data, status, jqxhr) {
-                popup("#popup", "Ta bort Händelse", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                modalPopUp("#popup", "Ta bort Händelse", "Ett Tekniskt fel har inträffat, försök igen senare!");
             }
         });
     }
 
-    dialog("#yes-no", "Ta bort Händelse",
+    modalDialog("#yes-no", "Ta bort Händelse",
         "Är du säker på att du vill ta bort händelsen?",
         { text: "Ja", func: fun },
         { text: "Nej", func: function () { return; } })
@@ -827,8 +855,8 @@ function getPlayable(product, div) {
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             data.regCloseTime = data.regCloseTime.replace("T", " ").replace(/\+.*$/, "");
-            $("#basicModal").find("#" + div).prepend(hbsTemplates["main-snippets"]["matches"](data));
-            $("#basicModal").find("#" + div).find(".1x2").click(function () {
+            $("#basic-modal").find("#" + div).prepend(hbsTemplates["main-snippets"]["matches"](data));
+            $("#basic-modal").find("#" + div).find(".1x2").click(function () {
                 $(this).toggleClass('on off');
                 var nrOfRows = 1;
                 var rows = getDrawBettings(div);
@@ -839,16 +867,16 @@ function getPlayable(product, div) {
                     }
 
                 })
-                $("#basicModal").find("#" + div).find("#nr-of-rows").text(nrOfRows);
+                $("#basic-modal").find("#" + div).find("#nr-of-rows").text(nrOfRows);
                 var notChecked = rows.indexOf("");
                 if (notChecked < 0) {
-                    $("#basicModal").find("#" + div).find("#play").attr("disabled", false);
+                    $("#basic-modal").find("#" + div).find("#play").attr("disabled", false);
                 } else {
-                    $("#basicModal").find("#" + div).find("#play").attr("disabled", true);
+                    $("#basic-modal").find("#" + div).find("#play").attr("disabled", true);
                 }
 
             });
-            $("#basicModal").find("#" + div).find("#play").click(function () {
+            $("#basic-modal").find("#" + div).find("#play").click(function () {
                 let drawInfo = {
                     groupid: globals.activeGroup.groupid,
                     drawnumber: data.drawNumber,
@@ -881,9 +909,9 @@ function getPlayable(product, div) {
                         success: function (data, status, jqxhr) {
                             reloadIfLoggedOut(jqxhr);
                             updateResults(globals.activeGroup.groupid);
-                            $("#basicModal").modal('hide');
+                            hideModal("#basic-modal");
                             var url =
-                                dialog("#yes-no", "Lägg spel hos Svenska spel",
+                            modalDialog("#yes-no", "Lägg spel hos Svenska spel",
                                     "Vill du gå till svenska spel och göra det faktiska spelet där(funkar bara om du redan är inloggad)?",
                                     {
                                         text: "Ja", func: function () {
@@ -896,13 +924,13 @@ function getPlayable(product, div) {
                         },
                         error: function (data, status, jqxhr) {
                             console.log(data, status, jqxhr);
-                            popup("#popup", "Spela", "Det gick inte att spela");
+                            modalPopUp("#popup", "Spela", "Det gick inte att spela");
                         }
                     });
                 }
                 getUserSurplus(function (surplus) {
                     if (surplus>0) {
-                        dialog("#yes-no", "Extra spel",
+                        modalDialog("#yes-no", "Extra spel",
                             "Är detta ett extra eller ett ordinarie spel?",
                             {
                                 text: "Extra", func: function () {
@@ -926,9 +954,9 @@ function getPlayable(product, div) {
         },
         error: function (data, status, jqxhr) {
             if (data.status == 403) {
-                $("#basicModal").find("#" + div).prepend("<h2>Inget spel för tillfället!</h2>");
+                $("#basic-modal").find("#" + div).prepend("<h2>Inget spel för tillfället!</h2>");
             } else if (data.status == 404) {
-                $("#basicModal").find("#" + div).prepend("<h2>Information saknas</h2>");
+                $("#basic-modal").find("#" + div).prepend("<h2>Information saknas</h2>");
             }
         }
     });
@@ -936,7 +964,7 @@ function getPlayable(product, div) {
 
 function getDrawBettings(div) {
     var rows = [];
-    $("#basicModal").find("#" + div).find(".draw-row").each(function (i, e) {
+    $("#basic-modal").find("#" + div).find(".draw-row").each(function (i, e) {
         rows.push($(e).find(".on").text());
     })
     return rows;
@@ -961,7 +989,7 @@ function updateResults(groupId) {
             getResults(groupId,0);
         },
         error: function (data, status, jqxhr) {
-            popup("#popup", "Uppdatera resultat", "Tekniskt fel!");
+            modalPopUp("#popup", "Uppdatera resultat", "Tekniskt fel!");
         }
     });
 
@@ -1032,37 +1060,38 @@ function getRowsFromClipBoard(pasteButton, targetTable) {
     var f=function(clipText) {
         pasteButton.attr("disabled", true);
         if (clipText.match(/http.*/i)) {
-            popup("#message-popup", "Klistra in", "Hämtar rader...");
+            modalPopUp("#message-popup", "Klistra in", "Hämtar rader...");
             getRowsFromLink(clipText, function (rows) {
                 if (!pasteRows(targetTable, rows)) {
-                    popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+                    modalPopUp("#popup", "Klistra in", "Det gick inte att klistra in raderna");
                 };
                 pasteButton.attr("disabled", false);
-                $("#another-modal").modal("hide");
-                $("#message-popup").modal('hide');
+                hideModal("#another-modal");
+                hideModal("#message-popup");
             })
         } else {
             if (!pasteRows(targetTable, clipText)) {
-                popup("#popup", "Klistra in", "Det gick inte att klistra in raderna");
+                modalPopUp("#popup", "Klistra in", "Det gick inte att klistra in raderna");
             };
             pasteButton.attr("disabled", false);
-            $("#another-modal").modal("hide");
+            hideModal("#another-modal");
 
         }
     }
+
 
     try {
         navigator.clipboard.readText().then(
             function (clipText) { f(clipText); },
             function (rejectReason) {
-                hbsModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]);
+                showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
                 $("#another-modal").find("#send-link").click(function () {
                     f($("#another-modal").find("#link-to-send").val());
                 });
             }
         );
     } catch (err) {
-        hbsModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]);
+        showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
         $("#another-modal").find("#send-link").click(function () {
             f($("#another-modal").find("#link-to-send").val());
         });
@@ -1128,7 +1157,7 @@ function getResults(groupId,page) {
             }
         },
         error: function (data, status, jqxhr) {
-            popup("#popup", "Hämta resultat", "Tekniskt fel!");
+            modalPopUp("#popup", "Hämta resultat", "Tekniskt fel!");
         }
     });
 
@@ -1231,41 +1260,45 @@ function parseResults(rows) {
 
 function deleteDraw(drawId) {
     var groupId = globals.activeGroup.groupid;
-    var fun=function() {
-    $.ajax({
-        type: "POST",
-        url: "/deleteDraw",
-        cache: false,
-        data: { drawId: drawId,groupId:groupId },
-        success: function (data, status, jqxhr) {
-            reloadIfLoggedOut(jqxhr);
-            $("#results").find("#draw-" + drawId).empty();
-            getNextInLine(groupId);
-            getToplist(groupId);
-        },
-        error: function (data, status, jqxhr) {
-            popup("#popup", "Ta bort spel", "Ett Tekniskt fel har inträffat, försök igen senare!");
-        }
-    });
-}
+    var fun = function () {
+        $.ajax({
+            type: "POST",
+            url: "/deleteDraw",
+            cache: false,
+            data: { drawId: drawId, groupId: groupId },
+            success: function (data, status, jqxhr) {
+                reloadIfLoggedOut(jqxhr);
+                $("#results").find("#draw-" + drawId).empty();
+                getNextInLine(groupId);
+                getToplist(groupId);
+            },
+            error: function (data, status, jqxhr) {
+                modalPopUp("#popup", "Ta bort spel", "Ett Tekniskt fel har inträffat, försök igen senare!");
+            }
+        });
+    }
 
-dialog("#yes-no", "Ta bort Spel",
-"Är du säker på att du vill ta bort spelet?",
-{ text: "Ja", func: fun },
-{ text: "Nej", func: function () { return; } })
+    modalDialog("#yes-no", "Ta bort Spel",
+        "Är du säker på att du vill ta bort spelet?",
+        { text: "Ja", func: fun },
+        { text: "Nej", func: function () { return; } })
 
 
 
 }
 
 function showPastingRowsInfo() {
-    hbsModal("#another-modal", hbsTemplates["main-snippets"]["paste-rows"]);
+    showModal("#another-modal", hbsTemplates["main-snippets"]["paste-rows"]);
 }
 
 function showUserTerms() {
-    hbsModal("#another-modal", hbsTemplates["main-snippets"]["user-terms"]);
+    showModal("#another-modal", hbsTemplates["main-snippets"]["user-terms"]);
 }
 
 function showMoreInfo() {
-    hbsModal("#basicModal", hbsTemplates["main-snippets"]["more-info"]);
+    showModal("#basic-modal", hbsTemplates["main-snippets"]["more-info"]);
+}
+
+function showContact() {
+    showModal("#basic-modal", hbsTemplates["main-snippets"]["contact"]);
 }

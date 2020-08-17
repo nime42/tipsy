@@ -13,28 +13,6 @@ function removeUrlVars() {
   window.location.href = window.location.href.split(/[?#]/)[0]
 }
 
-function popup(div, title, message) {
-  $(div).find("#popup-header").text(title);
-  $(div).find("#popup-message").html(message);
-  $(div).modal('show');
-}
-
-function dialog(div, title, message, button1, button2) {
-  $(div).find("#modal-title").text(title);
-  $(div).find("#modal-message").html(message);
-
-  $(div).find("#button1").html(button1.text);
-  $(div).find("#button1").unbind("click");
-  $(div).find("#button1").click(button1.func);
-
-  $(div).find("#button2").html(button2.text);
-  $(div).find("#button2").unbind("click");
-  $(div).find("#button2").click(button2.func);
-
-
-  $(div).modal('show')
-
-}
 
 
 function reloadIfLoggedOut(jqxhr) {
@@ -56,28 +34,28 @@ function collectUserInfo(div, passwordCantBeEmpty) {
   var pwd2 = $("div").find("#confirm-password").val().trim();
 
   if (conf.username === "") {
-    popup("#popup","Användarinfo", "Användarnamn saknas!!");
+    modalPopUp("#popup","Användarinfo", "Användarnamn saknas!!");
     return null;
   }
 
   if (conf.email === "" || !conf.email.match(/^[^@]+@[^@]+\.[^@]+$/)) {
-    popup("#popup","Användarinfo", "Mailadress saknas eller verkar vara ogiltig!!");
+    modalPopUp("#popup","Användarinfo", "Mailadress saknas eller verkar vara ogiltig!!");
     return null;
   }
   if (passwordCantBeEmpty) {
     if (conf.password === "") {b
-      popup("#popup","Användarinfo", "Lösenord saknas!!");
+      modalPopUp("#popup","Användarinfo", "Lösenord saknas!!");
       return null;
     }
   }
 
   if (conf.password !== pwd2) {
-    popup("#popup","Användarinfo", "Lösenorden stämmer inte överens!!");
+    modalPopUp("#popup","Användarinfo", "Lösenorden stämmer inte överens!!");
     return null;
   }
 
   if($("#accept-terms").length>0 && $("#accept-terms").is(":checked")==false) {
-    popup("#popup","Godkänn villkor", "Du måste godkänna villkoren!");
+    modalPopUp("#popup","Godkänn villkor", "Du måste godkänna villkoren!");
     return null;
   }
 
@@ -94,11 +72,11 @@ function collectLoginInfo(div) {
   conf.password = $("div").find("#password").val().trim();
 
   if (conf.username === "") {
-    popup("#popup","Inloggning", "Användarnamn saknas!!");
+    modalPopUp("#popup","Inloggning", "Användarnamn saknas!!");
     return null;
   }
   if (conf.password === "") {
-    popup("#popup","Inloggning", "Lösenord saknas!!");
+    modalPopUp("#popup","Inloggning", "Lösenord saknas!!");
     return null;
   }
   return conf;

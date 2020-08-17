@@ -53,8 +53,9 @@ app.use((req,res,next)=>{
         req.url.startsWith("/handlebars") || 
         req.url.startsWith("/js") || 
         req.url.startsWith("/css") ||
-        req.url.startsWith("/img") ||  
-        req.url.startsWith("/main.html") || 
+        req.url.startsWith("/img") ||
+        req.url.startsWith("/favicon.ico") ||   
+        req.url.startsWith("/main.html") ||
         req.url.startsWith("/login") ||
         req.url.startsWith("/Villkorstxt.pdf") ||
         req.url.startsWith("/register") ||

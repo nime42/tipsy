@@ -1,230 +1,337 @@
 
 
-<script id="getting-started" type="text/x-handlebars-template">
-  <div class="modal-dialog">
-    <div class="modal-content" style="padding: 10px;">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Kom igång</h4>
-      </div>
-      <div class="modal-body"></div>
-      <h3>Allmänt</h3>
-<p class="extra-margin">Tjänsterna som erbjuds är gratis för alla användare. En del av tjänsterna hanteras av tredje part. Eventuella fel kopplade till tjänster utförda av tredje part (realtidsinformation, matchresultat och preliminär utdelning samt fastställd vinstutdelning) kan inte Tipsy belastas för.</p>
-
-<p>För att kunna åtnjuta Tipsy’s fulla tjänster krävs ett spelkonto hos Svenska spel. Tipsy redovisar endast målservice, antal rätt och utdelningsprognoser från Svenska spel. Därutöver finns ingen koppling mellan Tipsy och Svenska spel. Det innebär att en rad som tippas hos Tipsy även måste spelas hos Svenska spel för att vara giltig. Vid en eventuell vinst betalas inga pengar ut via Tipsy. Som kund kan du heller inte sätta in eller ta ut pengar från Tipsy.</p>
-
-<h3>Skapa en grupp</h3>
-<p>Som användare kan du skapa en <a onclick="$('#groups').trigger('click')">grupp</a>. Till gruppen kan du bjuda in flera användare. Detta gör du genom att ange mejladressen för de personer som ska ingå i ert spelgäng. Den personen får en länk för vidare registrering av användare. En användare kan tillhöra flera grupper. Alla användare kan i sin tur skapa nya grupper.</p>
-
-<p>Som skapare av en grupp kan du när som helst lägga till nya medlemmar. Du kan även ta bort medlemmar. En gruppmedlem som blivit inbjuden till en grupp kan endast ta bort sig själv från en grupp.</p>
-
-<h3>Turordning</h3>
-<p>Tipsy hanterar turordningen för ordinarie spel enligt följande prioritering;</p>
-        <ul>
-          <li style="margin-bottom: 5px;">längst tid sedan senaste ordinarie spel</li>
-        </ul>
-
-
-<p>På så vis finns det en definierad turordning. Dock hanterar Tipsy ett eventuellt avsteg från turordningen i det fall någon annan än den som stod på tur lägger ett spel. Bytet innebär en ny turordning. Dock är det alltid principerna ovan som gäller, vilket innebär total rättvisa inom gruppen.</p>
-
-<h3>Lägga ett spel</h3>
-<p>Den som står på tur lägger ett <a onclick="$('#play').trigger('click')">spel</a> enligt gruppens fastställda belopp, frekvens och spelform (Stryktipset, Topptipset eller Eurotipset). Tänk på att det faktiska spelet måste göras på Svenska spels sida. Ett spel som endast registeras på Tipsy är inte ett giltigt spel och eventuella vinster kan ej avkrävas Tipsy.</p>
-
-<h3>Ordinarie spel och extraspel</h3>
-<p>Tipsy särredovisar ordinarie spel och extraspel. Ordinarie spel är det inom gruppen överenskomna spelet, exempelvis   64 rader Stryktips. </p>
-
-<p>En spelare, som för gruppen förvaltar en vinst via sitt spelkonto hos Svenska spel, lägger ett nytt spel på Tipsy, får alltid frågan om spelet är ett ordinarie spel eller ett extraspel. Ordinarie spel ingår i statistiken medan extraspelen särredovisas. På så vis kan gruppen ha koll på vem som är skarpaste tipparen.</p>
-
-<p>Valet extraspel är endast synligt för den som har ett plussaldo på sitt konto hos Tipsy. Den som inte har ett plussaldo kan endast registreras för ordinarie spel.</p>
-
-<h3>Vinster</h3>
-<p>Alla eventuella vinster utbetalas av Svenska spel till den som lade omgångens spel. Tipsy hanterar endast redovisningen av vinsten för gruppens medlemmar.</p> 
-<p>I redovisningen framgår storleken på vinsten, antal rätt, vem som vann och hur den ska fördelas om gruppen väljer att plocka ut vinsten. Om gruppen väljer att inte plocka ut vinsten förvaltas vinsten (via spelarkonto hos Svenska spel) alltid av den användare som lade det vinnande spelet.</p>
-
-<h3>Händelser</h3>
-<p>Under fliken <a onclick="$('#events').trigger('click')">Händelser</a> kan gruppen se all aktivitet kopplad till spel, vinster och uttag av vinster.</p>
-<p>En användare som har ett plussaldo kan härifrån också välja att göra en utbetalning till gruppens medlemmar.</p>
-
-<h3>Statistik</h3>
-<p>Under fliken <a onclick="$('#statistics').trigger('click')">Statistik</a> har du som användare full koll på ert spelbolags finanser. Vilka intäkter och utgifter ni har haft under året. Vem av er som förvaltar vinster åt spelbolaget (via respektives konto hos Svenska spel). Och hur var och en har presterat.</p>
-
-<p><a onclick="showUserTerms()">Användarvillkor och integritetspolicy</a></p>  
-
- 
-<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-    </div>
-  </div> 
-</script>
-
-
 <script id="user-info" type="text/x-handlebars-template">
+<div class="modal-content" style="height:100%; padding-bottom:100%;max-width:450px">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+.user-info-fields input[type=text],[type=password], select {
+  width: 100%;
+  padding: 5px 0px 5px 10px;
+  margin: 5px 5px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 
-  <div class="modal-dialog">
-      
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Användaruppgifter</h4>
-          </div>
-          <div class="modal-body">
-            <form action="">
-              <div class="form-group">
+.user-info-fields input[type=submit] {
+  width: 100%;
+  background-color: #f6d403;
+  color:  black;
+  padding: 14px 20px;
+  margin: 8px 0px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.user-info-fields input[type=submit]:hover {
+  background-color: #45a049;
+}
+
+.user-info-fields label {
+  color:#f6d403;
+  margin-left: -10px;
+
+}
+
+.user-info-fields a {
+  color:#f6d403;
+}
+
+
+.user-info-fields .sticky {
+  position: sticky;
+  bottom: 45px;
+  background: #525252;
+  width: 100%;
+  text-align: left;
+
+}
+
+.user-info-fields div {
+  border-radius: 5px;
+  padding-left: 10px;
+}
+
+.user-info-fields input[type=button] {
+  border-radius: 45px;
+    height: 45px;
+    width: 80%;
+    background: #f6d403;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-style: none;
+    margin-top: 15px;
+    margin-left:-10px;
+}
+
+</style>
+
+<div class="user-info-fields">
+<form action="">
+
                 <label for="username">Användarnamn:</label>
-                <input type="text" class="form-control" id="username" value="{{username}}" {{#ifnoteq register true}} disabled {{/ifnoteq}}>
-              </div>
+                <input type="text"  id="username" value="{{username}}" {{#ifnoteq register true}} disabled {{/ifnoteq}}>
+            
       
-              <div class="form-group">
+
                 <label for="name">Namn:</label>
-                <input type="text" class="form-control" id="name" value="{{name}}">
-              </div>
+                <input type="text"  id="name" value="{{name}}">
+ 
       
-              <div class="form-group">
+  
                 <label for="email">Email:</label>
-                <input type="text" class="form-control" id="email" value="{{email}}">
-              </div>
-              <div class="form-group">
+                <input type="text"  id="email" value="{{email}}">
+
+
                 <label for="phonenr">Telefon:</label>
-                <input type="text" class="form-control" id="phonenr" value="{{phonenr}}">
-              </div>
+                <input type="text" id="phonenr" value="{{phonenr}}">
+ 
               <br/>
       
-              <div class="form-group">
+     
                 <label for="password">Lösenord:</label>
-                <input type="password" id="password" class="form-control">
-              </div>
-              <div class="form-group">
+                <input type="password" id="password">
+         
+              
                 <label for="confirm-password">Verifiera Lösenord:</label>
-                <input type="password"  id="confirm-password" class="form-control">
+                <input type="password"  id="confirm-password">
+          
+              <div>
+              <input type="checkbox" id="notify-me" name="notify-me" value="notify" style="margin-left: -25px;">
+              <label for="notify-me" style="margin-left: 5px;"> Påminn mig när det är min tur att spela</label>
               </div>
-              <div class="form-group">
-              <label for="notify-me"> Påminn mig när det är min tur att spela</label>
-              <input type="checkbox" id="notify-me" name="notify-me" value="notify" class="checkbox pull-left" style="margin-top: 0px;margin-right: 5px;">
+              {{#if register}}
+              <br/>
+              <div>
+              <input type="checkbox" id="accept-terms" name="accept-terms" value="accept-terms" style="margin-left: -25px;">
+              <label for="accept-terms" style="margin-left: 5px;"> Jag godkänner <a onclick="showUserTerms()" href="javascript:void(0);">Användarvillkor och integritetspolicy</a></label>
               </div>
+
+                   
+              {{/if}}
+
 
               <div class="sticky">
               {{#if register}}
-              <input type="button" id="reg-or-update" class="btn btn-primary" value="Skapa"/>
+              <input type="button" id="reg-or-update" value="Skapa"/>
               {{else}}
-              <input type="button" id="reg-or-update" class="btn btn-primary" value="Uppdatera"/>
-              {{/if}}
-
-              <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
-               {{#if register}}
-               <br/>
-               <br/>
-              <label for="accept-terms"> Jag godkänner <a onclick="showUserTerms()">Användarvillkor och integritetspolicy</a></label>
-              <input type="checkbox" id="accept-terms" name="accept-terms" value="terms" class="checkbox pull-left" style="margin-top: 0px;margin-right: 5px;">
-    
+              <input type="button" id="reg-or-update" value="Uppdatera"/>
               {{/if}}
               </div>
-            </form>
-          </div>
-        </div>
-      
-      </div>
-  
-</script>
+            </form></div>
 
-
-<script id="login" type="text/x-handlebars-template">
-<div class="modal-dialog">
-        
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Logga in</h4>
-      </div>
-      <div class="modal-body">
-
-
-				<form action="" method="post">
-					<div class="form-group">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user"></i></span>
-							<input type="text" class="form-control" id="username" name="username" placeholder="Användarnamn" >
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
-							<input type="password" class="form-control" id="password" name="password" placeholder="Lösenord">
-						</div>
-					</div>
-					<div class="form-group">
-						<button type="button" id="log-in" class="btn btn-primary btn-block btn-lg">Logga in</button>
-					</div>
-					<p class="hint-text"><a id="forgot-password">Glömt lösenord?</a></p>
-				</form>
-
-
-
-
-
-      </div>
-
-  </div>
 </div>
 </script>
 
 
+<script id="login" type="text/x-handlebars-template">
+<div class="modal-content" style="" height:75%;max-width:450px">
+  <div class="modal-header">
+        <button type="button" class="close">&times;</button>
+  </div>
+<style>
 
+ .login-input-container {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+ .login-icon {
+  padding: 10px;
+  background: #f6d403;
+  color: black;
+  min-width: 20px;
+  text-align: center;
+  border-radius: 15px 0 0 15px;
+}
+
+ .login-input-field {
+  width: 100%;
+  padding: 10px;
+  outline: none;
+  border-radius: 0 15px 15px 0;
+  border-style: none;
+}
+
+ .login-input-field:focus {
+  border: 2px solid dodgerblue;
+}
+
+/* Set a style for the submit button */
+.login-btn {
+  border-radius: 45px;
+    height: 45px;
+    width: 100%;
+    background: #f6d403;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-style: none;
+}
+
+ .login-btn:hover {
+  opacity: 1;
+}
+</style>
+
+<form action="" style="max-width:500px;margin:auto">
+  <div class="login-input-container">
+    <i class="fa fa-user login-icon"></i>
+    <input id="username" class="login-input-field" type="text" placeholder="Användarnamn" name="Användarnamn">
+  </div>
+  
+  <div class="login-input-container">
+    <i class="fa fa-key login-icon"></i>
+    <input class="login-input-field" id="password" type="password" placeholder="Lösenord" name="password">
+  </div>
+
+  <button type="button" id="log-in" class="login-btn">Logga in</button>
+  <p><a id="forgot-password" href="javascript:void(0);" style="color:#f6d403">Glömt lösenord?</a></p>
+</form>
+
+</div>
+</script>
 <script id="groups" type="text/x-handlebars-template">
-  <div class="modal-dialog">
-        
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Grupper</h4>
-            </div>
-            <div class="modal-body">
-              <span class="input-group">
-                <input id="new-group" type="text" class="form-control" placeholder="Ny grupp">
-                <div class="input-group-btn">
-                  <button id="add-group" class="btn btn-default">Lägg till</button>
-                </div>
-              </span>
-              <br />
-              <div style="overflow:auto;">
-                <h4>Mina grupper</h4>
-              {{#each this}}
-              <span class="input-group">
-                <input type="text" class="form-control group-name" value="{{groupname}}" onkeyup="$(this).parent().find('.save-button').css('color', 'lightgreen').prop('disabled', false)">
-                <div class="input-group-btn">
-                  <button class="btn btn-link save-button" disabled title="Spara" onclick="updateGroup({{groupid}},$(this).parent().parent().find('.group-name').val(),$(this))"><span  class="glyphicon glyphicon-ok-sign"></span></button>
-                  <button class="btn btn-link" title="Ta bort" onclick="deleteGroup({{groupid}},'{{groupname}}',$(this).parent().parent())"><span style="color:red" class="glyphicon glyphicon-remove"></span></button>
-                </div>
-              </span>
-              {{/each}}
+<div class="modal-content">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+   .groups div {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
 
+.groups i {
+  padding-left: 5px;
+  min-width: 20px;
+  text-align: center;
+  font-size: 15px;
+  
+}
 
+.middle {
+  border-radius:0 0 0 0;
+}
 
+ .groups input[type=text] {
+  width: 50%;
+  padding: 5px 0px 5px 10px;
+  outline: none;
+  border-radius: 15px 0 0 15px;
+  border-style: none;
+}
 
+ 
+.groups button {
+    border-radius:0 15px 15px 0;
+    background: #f6d403;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-style: none;
+}
+</style>
 
+<div class="groups">
+  <div>
+    <input id="new-group" type="text" placeholder="Ny grupp">
+    <button type="button" id="add-group">Lägg till</button>
+  </div>
+</div>
+
+        <div style="overflow:auto;">
+          <h2>Mina grupper</h2>
+          {{#each this}}
+            <div>
+              <div class="groups" style="margin-bottom: 7px;">
+                <input class="group-name" type="text" style="border-radius: 15px 0 0 15px;width:auto;" value="{{groupname}}" onkeyup="$(this).parent().find('.save-button').css('color', 'lightgreen').prop('disabled', false)">
+                <i style="color:#428bca" class="fa fa-check-circle save-button" onclick="updateGroup({{groupid}},$(this).parent().find('.group-name').val(),$(this))"></i>
+                <i style="color:red" class="fa fa-remove" onclick="deleteGroup({{groupid}},'{{groupname}}',$(this).parent())"></i>
               </div>
             </div>
-          </div>
-        
+
+          {{/each}}
         </div>
+
+
+
+</div>
+
+
+
 </script>
 
-
-
-
 <script id="group-members" type="text/x-handlebars-template">
-  <div class="modal-dialog modal-lg">
-        
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Gruppens Medlemmar</h4>
-            </div>
-                <div class="modal-body">
-              <div style="max-height: 180px; overflow:auto">
-                <table class="table table-bordered">
+<div class="modal-content">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+ #invite {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+ #invite i {
+  padding: 10px;
+  background: #f6d403;
+  color: black;
+  min-width: 20px;
+  text-align: center;
+  border-radius: 15px 0 0 15px;
+}
+
+ #invite input[type=text] {
+  width: 40%;
+  padding: 5px 0px 5px 10px;
+  outline: none;
+  border-radius: 0 0 0 0;
+  border-style: none;
+}
+
+ 
+#invite button {
+    border-radius:0 15px 15px 0;
+
+ 
+    background: #f6d403;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-style: none;
+}
+
+#member-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background:#525252;
+
+}
+
+
+</style>
+
+              <div style="max-height: 188px; overflow-y:auto;overflow-x:hidden" class="hor-scroll">
+                <table class="table-bordered" id="member-table">
                   <thead>
                     <tr>
                       <th nowrap scope="col">Namn</th>
@@ -232,10 +339,10 @@
                       <th nowrap scope="col">Telefon</th>
                       <th nowrap scope="col">Anv-id</th>
                       {{#if admin}}
-                      <th nowrap scope="col"></th>
-                      <th nowrap scope="col"></th>
+                      <th nowrap style="border-style:none;" scope="col"></th>
+                      <th nowrap style="border-style:none;" scope="col"></th>
                       {{/if}}
-                      <th nowrap scope="col"></th>
+                      <th nowrap style="border-style:none;" scope="col"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -246,58 +353,75 @@
                       <td nowrap>{{phonenr}}</td>
                       <td nowrap>{{username}}</td>
                       {{#if ../admin}}
-                        <td onclick="moveTableRow($(this).parent(),'up')"><span style="color:darkcyan" class="glyphicon glyphicon-arrow-up"></span></td>
-                        <td onclick="moveTableRow($(this).parent(),'down')"><span style="color:darkcyan;" class="glyphicon glyphicon-arrow-down"></span></td>
+                        <td onclick="moveTableRow($(this).parent(),'up')"><i style="color:darkcyan" class="fa fa-arrow-up"></i></td>
+                        <td onclick="moveTableRow($(this).parent(),'down')"><i style="color:darkcyan" class="fa fa-arrow-down"></i></td>
                       {{/if}}
                       <td id="sortorder" style="display: none;">{{sortorder}}</td>
                       {{#if isDeletable}}
-                        <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></span></td>
+                        <td style="border-style:none;"><i style="color:red;" class="fa fa-remove" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></i></td>
+                        <td style="border-style:none;width:15px"></td>
                       {{/if}}
                     </tr>
                     {{/each}}
                   </tbody>
                 </table>
               </div>
-                {{#if admin}}
+
+              {{#if admin}}
                 <br/>
-                <h4 class="modal-title">Bjud in medlemmar</h4>
-                <span class="input-group">
-                <input id="invite-email" type="text" class="form-control" placeholder="email">
-                <div class="input-group-btn">
-                  <button id="invite-member" class="btn btn-default">Bjud in</button>
+                <h2>Bjud in medlemmar</h2>
+                <div id="invite">
+                  <i class="fa fa-envelope"></i>
+                  <input id="invite-email" type="text" placeholder="Ange mailadress" name="mail">
+                  <button type="button" id="invite-member">Skicka</button>
                 </div>
-                </span>
                 <br/>
-                <h4 class="modal-title">Skickade inbjudningar</h4>
+                <div>
+                  <table id="invites">
+                    <caption style="text-align: left;font-size:18px;white-space: nowrap; overflow: hidden;">Skickade inbjudningar</caption>
+                    {{#each invites}}
+                    <tr>
+                      <td style="padding-left: 5px;">{{email}}</td>
+                      <td><i style="color:red;font-size:14px;" class="fa fa-remove" onclick="removeInvite('{{email}}',$(this).parent().parent())"></i></td>
+                    </tr>
+                   {{/each}}
 
-                <div id="invites"  style="overflow-y:auto;max-height: 200px;">
-                {{#each invites}}
-                <p style="margin-bottom:0px;">{{email}}<span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeInvite('{{email}}',$(this).parent())"></span></p>
-                {{/each}}
+                  </table>
+                  <br/>
+                  <br/>
+                  <br/>
                 </div>
-
-                
-
                 {{/if}}
-              </div>
-            </div>
-          </div>
-        
-        </div>
+
+
+</div>
 </script>
 
 
-<script id="statistics" type="text/x-handlebars-template">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Statistik</h4>
-      </div>
 
-      <div class="modal-body"></div>
-              <div id="stat-table" style="max-height: 200px; overflow:auto; margin:10px">
-                <table class="table table-bordered table-striped">
+
+
+
+<script id="statistics" type="text/x-handlebars-template">
+<div class="modal-content">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+
+#stat-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background:#525252;
+
+}
+</style>
+
+              <div id="stat-table" style="max-height: 200px; overflow:auto; margin:10px" class="hor-scroll">
+                <table class="table-bordered" id="stat-table">
                   <thead>
                     <tr>
                       <th nowrap style="vertical-align:top" scope="col">Namn</th>
@@ -352,25 +476,44 @@
                <td style="width:1px">{{toLocalNumber totNettoWinPerMember}} kr</td>
              </tr>
            </table>
+      <br/>
+      <br/>
+      <br/>
 
 
-    </div>
-  </div> 
+
+
+
+</div>
 </script>
 
 
-
 <script id="events" type="text/x-handlebars-template">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Händelser</h4>
-      </div>
+<div class="modal-content">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
 
-      <div class="modal-body"></div>
-              <div  style="max-height: 180px; overflow:auto; margin:10px;font-size: 11px;">
-                <table id="event-table" class="table table-bordered table-striped">
+#event-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background:#525252;
+
+}
+
+  #payments a {
+  color:#f6d403;
+  }
+</style>
+
+
+
+              <div  style="max-height: 200px; overflow:auto;margin:10px" class="hor-scroll">
+                <table id="event-table" class="table-bordered">
                   <thead>
                     <tr>
                       <th nowrap style="text-align:center" scope="col">Datum</th>
@@ -391,136 +534,258 @@
                       <td nowrap style="text-align:center">{{nrofrights}}</td>
                       <td nowrap style="text-align:right">{{toLocalNumber profit}} kr</td>
                       {{#if isDeletable}}
-                        <td><span style="color:red;" class="glyphicon glyphicon-remove" onclick="removeEvent({{id}},$(this).parent().parent())"></span></td>
+                        <td><i style="color:red;" class="fa fa-remove" onclick="removeEvent({{id}},$(this).parent().parent())"></i></td>
                       {{/if}}
 
                     </tr>
                     {{/each}}
                     {{#if hasMorePages}} 
                     <tr>
-                      <td colspan="5"><input type="button" id="more" class="btn btn-info" value="Mer..." onclick="getMoreEvents($(this),1)"/></td>
+                      <td colspan="5" style="border-style: none;"><input type="button" id="more" class="round-button" value="Mer..." onclick="getMoreEvents($(this),1)"/></td>
                     </tr>
                     {{/if}}
                   </tbody>
                 </table>
               </div>
-              {{#if (gt surplus 0) }}
-             <div style="margin:10px">
-               <h3>Gör utbetalning?</h3>
-             <p>Du ligger just nu på <b>{{toLocalNumber surplus}} kr</b> plus.<a onclick="configurePayment({{surplus}})"> Klicka här för att göra en utbetalning</a>!</p> 
 
+            {{#if (gt surplus 0) }}
+            <br/>
+             <div id="payments">
+               <h2 style="margin:5px;">Gör utbetalning?</h2>
+             <p style="margin:5px;">Du ligger just nu på <b>{{toLocalNumber surplus}} kr</b> plus.<a onclick="configurePayment({{surplus}})" href="javascript:void(0);"> Klicka här för att göra en utbetalning</a>!</p> 
+            <br/>
+            <br/>
+            <br/>
+            <br/>
              </div> 
 
               {{/if}}
 
-    </div>
-  </div> 
-</script>
+          
 
+
+</script>
 
 <script id="payment" type="text/x-handlebars-template">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Utbetalning</h4>
-      </div>
+<div class="modal-content">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+#payment-sum {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
 
+ #payment-sum label {
+  padding: 10px;
+  background: #f6d403;
+  color: black;
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 15px 0 0 15px;
+}
 
+ #payment-sum input[type=text] {
+  width: 20%;
+  padding: 5px 0px 5px 10px;
+  outline: none;
+  border-radius: 0 0 0 0;
+  border-style: none;
+}
 
+#payment-sum span {
+  padding: 10px;
+  background: #f6d403;
+  color: black;
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 0 15px  15px 0;
+}
 
+#payment-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background:#525252;
 
+}
 
-      <div class="modal-body">
+</style>
        <p>Skriv totalsumman som skall utbetalas och tryck på <i>Utför</i>!<br/>(Tänk på att själva utbetalningen måste du sedan göra själv, t.ex via Swish) </p>
 
-        <div class="input-group" style="width:70%">
-        <span class="input-group-addon">Summa:</span>	
-        <input id="payment-amount" type="number" class="form-control" value="{{surplus}}" onkeyup="$('.amount-per-member').text(($(this).val()/{{nrOfMembers}})+' kr')">
-        <span class="input-group-addon">Kr</span>
+        <div id="payment-sum">
+          <label for="payment-amount">Summa:</label>
+          <input id="payment-amount" type="text" value="{{surplus}}" onkeyup="$('.amount-per-member').text(($(this).val()/{{nrOfMembers}}).toFixed(2)+' kr')">
+          <span>Kr</span>
         </div>
 
-              <div  id="payment-div" style="max-height: 160px; overflow:auto; margin:10px;font-size: 11px;">
-                <table id="payment-table" class="table table-bordered table-striped">
-                  <thead>
-                    <tr>
-                      <th nowrap style="text-align:left" scope="col">Användare</th>
-                      <th nowrap style="text-align:left" scope="col">Mobil</th>
-                      <th nowrap style="text-align:left" scope="col">Utbetalning</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {{#each members}}
-                    <tr>
-                      <td nowrap style="text-align:left">{{name}}</td>
-                      <td nowrap style="text-align:left">{{phonenr}}</td>
-                      <td nowrap style="text-align:left" class="amount-per-member"></td>
-                    </tr>
-                    {{/each}}
-                  </tbody>
-                </table>
-              </div>
-              <div class="container">
-                <div class="form-check">
-                  <button type="button" class="btn btn-primary" onclick="makePayment($('#payment-amount').val(),{{surplus}},$('#mail-list').val())">Utför</button>
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Avbryt</button>
-                  &nbsp;&nbsp;
-                  <input type="checkbox" class="form-check-input" id="mail-list" value="true" checked>
-                  <label class="form-check-label" for="mail-list">Maila listan till mig</label>
-                    
-                </div>
+        <div  id="payment-div" style="max-height: 205px; overflow:auto; margin:10px" class="hor-scroll">
+        <table id="payment-table" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th nowrap style="text-align:left" scope="col">Användare</th>
+              <th nowrap style="text-align:left" scope="col">Mobil</th>
+              <th nowrap style="text-align:left" scope="col">Utbetalning</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each members}}
+            <tr>
+              <td nowrap style="text-align:left">{{name}}</td>
+              <td nowrap style="text-align:left">{{phonenr}}</td>
+              <td nowrap style="text-align:left" class="amount-per-member"></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        </div>
+        <div class="form-check">
+          <button type="button" class="round-button" onclick="makePayment($('#payment-amount').val(),{{surplus}},$('#mail-list').val())">Utför</button>
+          <button type="button" class="round-button close-modal">Avbryt</button>
+          &nbsp;&nbsp;
+          <input type="checkbox"  id="mail-list" value="true" checked>
+          <label class="form-check-label" for="mail-list">Maila listan till mig</label>
+            
+        </div>
 
 
-                
-              
 
-    </div>
-      </div>
-    </div>
-  </div> 
+
+</div>
 </script>
+
+
 
 
 
 <script id="play" type="text/x-handlebars-template">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Spela</h4>
-      </div>
-
-      <div class="modal-body">
-
-        <div class="panel with-nav-tabs panel-primary">
-          <div class="panel-heading">
-                  <ul class="nav nav-tabs">
-                    
-                      <li title="Stryktipset" class="active"><a href="#stryk" data-toggle="tab"><img style="background:#00427a;width:60px;height: 30px;" src='/img/stryktipset.svg'></a></li>
-                      <li title="Europatipset"><a href="#euro" data-toggle="tab"><img style="background:#008733;width:50px;height: 30px;" src='/img/europatipset.svg'></a></li>
-                      <li title="Topptipset"><a href="#topp" data-toggle="tab"><img style="background:#f29400;width:50px;height: 30px;" src='/img/topptipset.svg'></a></li>
-                    
-
-          </div>
-          <div class="panel-body">
-              <div class="tab-content">
-                  <div class="tab-pane fade in active" id="stryk"></div>
-                  <div class="tab-pane fade" id="euro"></div>
-                  <div class="tab-pane fade" id="topp"></div>
-              </div>
-          </div>
-          </div>
-          
-      </div>
-
-      </div>
-    </div>
+<div class="modal-content" style="height: 100%;">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
   </div>
+<style>
+
+.tabbed{
+  float : left;
+  width : 100%;
+}
+
+.tabbed > input{
+  display : none;
+}
+
+.tabbed > section > h1{
+  float       : left;
+  box-sizing  : border-box;
+  margin      : 0;
+  padding     : 0.5em 0.5em 0;
+  overflow    : hidden;
+  font-size   : 1em;
+  font-weight : normal;
+}
+
+.tabbed > input:first-child + section > h1{
+  padding-left : 1em;
+}
+
+.tabbed > section > h1 > label{
+  display                 : block;
+  padding                 : 0.25em 0.75em;
+  
+  border-bottom           : none;
+  border-top-left-radius  : 4px;
+  border-top-right-radius : 4px;
+  box-shadow              : 0 0 0.5em rgba(0,0,0,0.0625);
+  background              : #525252;
+  cursor                  : pointer;
+     -moz-user-select     : none;
+      -ms-user-select     : none;
+  -webkit-user-select     : none;
+}
+
+.tabbed > section > div{
+  position      : relative;
+  z-index       : 1;
+  float         : right;
+  box-sizing    : border-box;
+  width         : 100%;
+  margin        : 2.5em 0 0 -100%;
+  padding       : 0.5em 0.75em;
+  border        : 1px solid #ddd;
+  border-radius : 4px;
+  background    : #525252;
+  box-shadow    : 0 0 0.5em rgba(0,0,0,0.0625);
+}
+
+.tabbed > input:checked + section > h1{
+  position : relative;
+  z-index  : 2;
+}
+
+.tabbed > input:not(:checked) + section > div{
+  display : none;
+}
+
+.tabbed > input:checked + section > h1 > label{
+    background:#525252;
+
+}
+
+@media screen and (min-width: 1100px) {
+  .tabbed > section > div {
+    min-width:420px;
+  }
+}
+
+
+</style>
+
+    <div class="tabbed">
+      <input name="tabbed" id="tabbed1" type="radio" checked>
+      <section>
+        <h1>
+          <label for="tabbed1"><img style="background:#00427a;width:60px;height: 30px;" src='img/stryktipset.svg'></label>
+        </h1>
+        <div id="stryk">
+        </div>
+      </section>
+      <input name="tabbed" id="tabbed2" type="radio">
+      <section>
+        <h1>
+          <label for="tabbed2"><img style="background:#008733;width:50px;height: 30px;" src='img/europatipset.svg'></label>
+        </h1>
+        <div id="euro">
+
+        </div>
+      </section>
+      <input name="tabbed" id="tabbed3" type="radio">
+      <section>
+        <h1>
+          <label for="tabbed3"><img style="background:#f29400;width:50px;height: 30px;" src='img/topptipset.svg'></label>
+        </h1>
+        <div id="topp">
+        </div>
+      </section>
+    </div>
+
+
+</div>
 </script>
 
 
+
+
+
+
 <script id="matches" type="text/x-handlebars-template">
-  <h2>{{productName}}</h2>
+  <h2 style="margin-bottom: 0;">{{productName}}</h2>
   {{#if (match productName "Topptipset") }}  
     {{setVar "productClass" "topptipset"}}
   {{/if}}
@@ -530,12 +795,12 @@
   {{#if (match productName "Europatipset") }}  
     {{setVar "productClass" "europatipset"}}
   {{/if}}
-  <p>Spelstopp:{{regCloseTime}} </p>
-  <p><B>OBS!!</B> tänk på att det faktiska spelet måste göras på <a href="https://spela.svenskaspel.se">Svenska spels sida</a></p>
+  <p style="margin-top: 0;">Spelstopp:{{regCloseTime}} </p>
+  <p style="margin-bottom: 0;"><B>OBS!!</B> tänk på att det faktiska spelet måste göras på <a style="color:#f6d403;" href="https://spela.svenskaspel.se">Svenska spels sida</a></p>
 
-  <button id="paste" type="button" class="btn btn-primary btn-sm pull-left" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'))">Klistra in</button>
-  <span style="color: #3071a9;margin: 7px;font-size: 15px;" class="glyphicon glyphicon-info-sign"  onclick='showPastingRowsInfo()'></span>
-  <table class="bettingtable" style="width:100%;border-collapse: separate;border-spacing: 0 0.5em;" >
+  <button id="paste" type="button" class="round-button" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'))">Klistra in</button>
+  <span style="color: #f6d403;margin: 7px;font-size: 15px;" class="fa fa-info-circle"  onclick='showPastingRowsInfo()'></span>
+  <table class="bettingtable" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;" >
     <colgroup>
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 80%;">
@@ -558,8 +823,8 @@
    </tbody>
   </table>
    <div>
-    <button id="play" type="button" disabled class="btn btn-primary btn-sm">Spela</button>
-    <button id="clear" type="button" class="btn btn-primary btn-sm" onclick="clearRows($(this).parent().parent().find('.bettingtable'))">Rensa</button>
+    <button id="play" type="button" disabled class="round-button">Spela</button>
+    <button id="clear" type="button" class="round-button" onclick="clearRows($(this).parent().parent().find('.bettingtable'))">Rensa</button>
   </div>
 </script>
 
@@ -593,7 +858,7 @@
     </tr>
   </table>
  
-  <table class="bettingtable" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;" >
+  <table class="bettingtable" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;" >
     <colgroup>
       <col span="1" style="width: 1%;">
       <col span="1" style="width: 94%;">
@@ -614,9 +879,9 @@
       <td><button id="col-2" disabled class="1x2 {{status2}} {{../productClass}} {{on2}}">2</button></td>
       {{#if (ne status "Inte startat") }} 
         {{#if isCorrect}}  
-        <td style="padding-left: 10px;"><span style="color:#00CF91" class="glyphicon glyphicon-ok"></span></td>
+        <td style="padding-left: 10px;"><i style="color:#00CF91" class="fa fa-check"></i></td>
         {{else}}
-        <td style="padding-left: 10px;"><span style="color:red;" class="glyphicon glyphicon-remove"></span></td>
+        <td style="padding-left: 10px;"><i style="color:red;" class="fa fa-remove"></i></td>
         {{/if}}
       {{/if}}
     </tr>
@@ -627,7 +892,7 @@
   </table>
   {{#if showDelete}} 
     <div>
-      <button id="delete" type="button" class="btn" style="margin-top: 5px;background: #626262;" onclick="deleteDraw({{id}})">Ta bort</button>
+      <button id="delete" type="button" class="round-button" style="margin-top: 5px;height:20px;width:fit-content" onclick="deleteDraw({{id}})">Ta bort</button>
     </div>
   {{/if}}
   {{#ifnoteq drawstate "Open" }}
@@ -635,7 +900,7 @@
     <table>
       <tr>
         <td style="padding-top: 5px;">
-          <table class="table-bordered" style="border:1px solid">
+          <table class="table-bordered" style="border-collapse: collapse;">
             <tr>
               <th></th>
               <th>Antal</th>
@@ -657,7 +922,7 @@
 
       </tr>
     </table>
-    <p><b>Vinst: {{toLocalNumber totalWin}} kr</b></td>
+    <p style="margin-top: 0px;"><b>Vinst: {{toLocalNumber totalWin}} kr</b></td>
     </p>
   </div>
   {{/ifnoteq}}
@@ -685,7 +950,7 @@ Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{
 <script id="top-order" type="text/x-handlebars-template">
             
               <table>
-                <caption style="color:white;padding-top:0"><b>Topplistan (antal rätt/spel)</b></caption>
+                <caption style="color:white;padding-top:0;padding-bottom: 3px;text-align: left"><b>Topplistan (antal rätt/spel)</b></caption>
                 {{#each list}}
                 <tr><td style="padding-right:5px"><b>{{pos}}.</b></td><td style="padding-right:20px">{{name}}</td><td style="text-align:right"><b>{{average}}</b></td></tr>
                 {{/each}}
@@ -693,75 +958,144 @@ Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{
 </script>
 
 <script id="forgot-password" type="text/x-handlebars-template">
-        <div class="modal-dialog" style="top:15%">
-        
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Glömt lösenord</h4>
-            </div>
-            <div class="modal-body">
-              <p id="info">Ange användarnamn eller mail-adress så skickar vi en återställnings-länk!</p>
-              <span class="input-group">
-                <input id="userid" type="text" class="form-control" placeholder="användarnamn">
-                <div class="input-group-btn">
-                  <button id="send-mail-for-userid" class="btn btn-default forgot-password">Skicka</button>      
-                </div>
-              </span>
-             <br/>
-              <span class="input-group">
-                <input id="email" type="text" class="form-control" placeholder="email">
-                <div class="input-group-btn">
-                  <button id="send-mail-for-mail-adr" class="btn btn-default forgot-password">Skicka</button>      
-                </div>
-              </span>
+<div class="modal-content" style="width:50%; height:75%;;min-width:250px;max-width:450px">
+  <div class="modal-header">
+        <button type="button" class="close">&times;</button>
+  </div>
+<style>
+
+ .forgot-password div {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+ .forgot-password i {
+  padding: 10px;
+  background: #f6d403;
+  color: black;
+  min-width: 20px;
+  text-align: center;
+  border-radius: 15px 0 0 15px;
+}
+
+ .forgot-password input[type=text] {
+  width: 100%;
+  padding: 5px 0px 5px 10px;
+  outline: none;
+  border-radius: 0 0 0 0;
+  border-style: none;
+}
+
  
-            </div>
-          </div>
-        
-        </div>
+.forgot-password button {
+    border-radius:0 15px 15px 0;
+    height: 45px;
+ 
+    background: #f6d403;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-style: none;
+}
+
+
+</style>
+<br/>
+<h2 style="color:#f6d403;">Glömt lösenord?</h2>
+<p style="color:#f6d403;">Ange användarnamn eller mail-adress så skickar vi en återställnings-länk!</p>
+
+<form action="" style="max-width:500px;margin:auto" class="forgot-password">
+  <div>
+    <i class="fa fa-user"></i>
+    <input id="userid" type="text" placeholder="Användarnamn" name="Användarnamn">
+    <button type="button" id="send-mail-for-userid" class="send-password">Skicka</button>
+  </div>
+  
+  <div>
+    <i class="fa fa-envelope"></i>
+    <input id="email" type="text" placeholder="Mailaddress" name="mail">
+    <button type="button" id="send-mail-for-mail-adr" class="send-password">Skicka</button>
+  </div>
+
+</form>
+
+</div>
 </script>
 
 
 <script id="reset-password" type="text/x-handlebars-template">
-<div class="modal-dialog">
-        
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Återställ lösenord</h4>
-      </div>
-      <div class="modal-body">
-
-
-				<form action="" method="post">
-					<div class="form-group">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-user"></i></span>
-							<input type="password" class="form-control" id="password" name="password" placeholder="Nytt lösenord" >
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="input-group">
-							<span class="input-group-addon"><i class="fa fa-lock"></i></span>
-							<input type="password" class="form-control" id="password2" name="password2" placeholder="Bekräfta lösenord">
-						</div>
-					</div>
-					<div class="form-group">
-						<button type="button" id="reset-passw" class="btn btn-primary btn-block btn-lg">Uppdatera</button>
-					</div>
-				</form>
-
-
-
-
-
-      </div>
-
+<div class="modal-content" style="width:50%; height:100%; padding-bottom:100%;min-width:250px;max-width:450px">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
   </div>
+  <br/>
+  <br/>
+<style>
+.user-info-fields input[type=text],[type=password], select {
+  width: 100%;
+  padding: 5px 0px 5px 10px;
+  margin: 5px 5px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.user-info-fields input[type=submit] {
+  width: 100%;
+  background-color: #f6d403;
+  color:  black;
+  padding: 14px 20px;
+  margin: 8px 0px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+.user-info-fields label {
+  color:#f6d403;
+  margin-left: -10px;
+
+}
+
+
+
+.user-info-fields input[type=button] {
+  border-radius: 45px;
+    height: 45px;
+    width: 80%;
+    background: #f6d403;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-style: none;
+    margin-top: 15px;
+    width:100%
+
+    
+}
+
+</style>
+
+<h2 style="color:white">Återställ lösenord!</h2>
+<div class="user-info-fields">
+<form action="">
+                <label for="password">Lösenord:</label>
+                <input type="password" id="password">
+
+                <label for="confirm-password">Verifiera Lösenord:</label>
+                <input type="password"  id="password2">
+
+                
+                <input type="button" id="reset-passw" value="Uppdatera"/>
+</form>
 </div>
+
+</div>
+
 </script>
 
 <script id="payment-mail-template" type="text/x-handlebars-template">
@@ -796,17 +1130,25 @@ table, td, th {
 
 
 <script id="paste-rows" type="text/x-handlebars-template">
-  <div class="modal-dialog">
-    <div class="modal-content" style="padding: 10px;">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Info</h4>
-      </div>
-      <div class="modal-body"></div>
+<div class="modal-content" style="width: 60%;">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+  <style>
+  @media screen and (min-width: 1100px) {
+  
+    #paste-info img {
+      width:30%;
+    }
+  }
+  </style>
+
 <h3>Att klistra in rader från Svenska spel</h3>
 
 <h4>Gör så här:</h4>
-<ol>
+<ol id="paste-info">
   <li style="margin: 20px;"><p>Logga in på Svenska spel och gå till <i>Mina Spel</i>.</p>
   <img src="img/mina-sidor.jpg" alt="Mina Sidor" width="50%" height="auto" style="border:2px solid black">
   <br/>
@@ -829,35 +1171,80 @@ table, td, th {
 
 </ol>
 
-<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-    </div>
-  </div> 
+<button type="button" class="round-button close-modal">Ok</button>
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+</div>
+
 </script>
 
 
 <script id="allow-paste-rows" type="text/x-handlebars-template">
-  <div class="modal-dialog">
-    <div class="modal-content" style="padding: 0px;">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Klistra in rader</h4>
-      </div>
-      <div class="modal-body"></div>
-      <div  style="margin-left: 10px;">
+<div class="modal-content">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+<style>
+   .paste-rows div {
+  display: -ms-flexbox; /* IE10 */
+  display: flex;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.paste-rows i {
+  padding-left: 5px;
+  min-width: 20px;
+  text-align: center;
+  font-size: 15px;
+  
+}
+
+ .paste-rows input[type=text] {
+  width: 80%;
+  padding: 5px 0px 5px 10px;
+  outline: none;
+  border-radius: 15px 0 0 15px;
+  border-style: none;
+}
+
+.paste-rows button {
+    border-radius:0 15px 15px 0;
+    background: #f6d403;
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-style: none;
+}
+
+
+  @media screen and (min-width: 1100px) {
+  
+    #allow-info img {
+      width:30%;
+    }
+  }
+
+</style>
+
+<h3 class="modal-title">Klistra in rader</h3>
 <p>Det verkar som att din browser inte tillåter automatisk inklistring.<br/><br/>
 Men du kan klistra in länken manuellt här istället:</p>
-<span class="input-group" style="width: 60%;margin-left: 10px;">
-      <input id="link-to-send" type="text" class="form-control group-name">
-      <div class="input-group-btn">
-        <button id="send-link" class="btn btn-link" title="Skicka" style="padding: 0px;padding-left: 5px"><span style="font-size: 30px;" class="glyphicon glyphicon-circle-arrow-right"></span></button>
-      </div>
-</span>
 
-<br/>
+<div class="paste-rows">
+  <div>
+    <input id="link-to-send" type="text" placeholder="Klistra in länk">
+    <button type="button" id="send-link">Hämta</button>
+  </div>
+</div>
+
 <h3>Tips</h3>
 <p>Om du har en android-telefon kan du ge Tipsy tillåtelse till inklistring genom att göra så här:</p>
 
-<ol>
+<ol id="allow-info">
   <li style="margin: 20px;"><p>Klicka på hänglåset.</p>
   <img src="img/padlock.jpg" alt="Hänglåset" width="50%" height="auto" style="border:2px solid black">
   <br/>
@@ -880,11 +1267,12 @@ Men du kan klistra in länken manuellt här istället:</p>
 
 </ol>
 
-<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-    </div>
-    </div>
-
-  </div> 
+<button type="button" class="round-button" data-dismiss="modal">Ok</button>
+<br/>
+<br/>
+<br/>
+<br/>
+</div>
 </script>
 
 
@@ -918,63 +1306,147 @@ Men du kan klistra in länken manuellt här istället:</p>
 
 
 <script id="user-terms" type="text/x-handlebars-template">
-  <div class="modal-dialog">
-    <div class="modal-content" style="padding: 10px;">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Villkor</h4>
-      </div>
-      <div class="modal-body"></div>
+<div class="modal-content" style="width:80%;">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+</style>
 
-<h3>Användarvillkor</h3>
-<p>
-När du skapar ett användarkonto godkänner du i sin helhet de villkor som framgår nedan, vilka även inkluderar vår integritetspolicy.<br/> Tjänsterna tillhandahålls kostnadsfritt för dig i sitt standardutförande.<br/> 
-En del av tjänsterna hanteras av tredje part (Svenska spel).<br/> Eventuella fel kopplade till tjänster utförda av tredje part skall inte Tipsy belastas för.<br/>
-Tjänster hos Tipsy; åtkomst till gemensamma spel, realtiduppdateringar, prognoser och fastställd utdelning vid eventuell vinst.<br/> Därutöver funktioner som hanterar spelturordning, utgifter och intäkter, innestående medel och utbetalningar.<br/> Vänligen läs mer om tjänsterna under Kom igång.<br/>
-Ett spel som läggs hos Tipsy är inte ett giltigt spel som vid eventuell vinst ger pengar till tipparen.<br/> För att ett spel ska vara giltigt måste det spelas hos Svenska spel.<br/> Vid en eventuell vinst betalas inga pengar ut via Tipsy.<br/> Som kund kan du heller inte sätta in eller ta ut pengar från Tipsy.<br/> 
-Villkoren för tjänsterna som erbjuds via Tipsy är tillämpliga oavsett från vilken plattform tjänsterna tillhandahålls.<br/> Med tjänsterna avses de funktioner i på tipsy.<br/>nu och som tillgängliggörs för den som har ett användarkonto.<br/>
-Avtal om ingående av tjänsterna så som registrering får inte ingås av personer under 18 år.<br/> 
-Du ansvarar för eventuella trafikavgifter som teleoperatören tar ut för skickande eller mottagande av data och/eller meddelanden vid registrering och vid användande av tjänsterna.<br/> 
-Tipsy ger dig genom godkännande av användarvillkoren en begränsad, icke-exklusiv och icke överlåtbar rätt att använda tjänsterna därinom.<br/> Om du inte följer villkoren kan rätten komma att återkallas.<br/> 
-Om villkoren mellan dig och Tipsy upphör, upphör din rätt att använda tipsy.<br/>nu.<br/>
-Samtliga immateriella rättigheter, som exempelvis tekniska lösningar avseende tjänsterna tillhörande Tipsy, får endast användas inom ramen för tjänsterna.<br/> Du har således inte rätt att förändra tjänsterna på något sätt, kopiera, anpassa, hyra ut, låna ut, sälja, underlicensiera eller på annat sätt distribuera eller överlåta innehållet i tjänsterna.<br/>  
-Tjänsterna är normalt tillgänglig dygnet runt alla dagar i veckan.<br/> Trots att Tipsy strävar efter att tillhandahålla dig tjänsterna utan teknisk störning, kan Tipsy inte garantera att tjänsterna alltid kommer att vara fullt tillgängliga eller fungera felfritt.<br/> Tipsy ansvarar inte heller under några omständigheter för tekniska problem som kan uppstå hos tredje part (Svenska spel), problem med internetåtkomst, tekniska problem med användarens mobila enhet eller liknande.<br/> Tipsy friskriver sig från samtliga uttryckliga, underförstådda eller lagstadgade garantier.<br/>  
+
+<div style="overflow: auto;height:100%;">
+<h1>Användarvillkor</h1>
+
+<p>När du skapar ett användarkonto godkänner du i sin helhet de villkor som framgår nedan, vilka även inkluderar vår integritetspolicy. Tjänsterna tillhandahålls kostnadsfritt för dig i sitt standardutförande. </p>
+<p>Villkoren för tjänsterna som erbjuds via Tipsy är tillämpliga oavsett från vilken plattform tjänsterna tillhandahålls. Med tjänsterna avses de funktioner i på tipsy.nu och som tillgängliggörs för den som har ett användarkonto. Avtal om ingående av tjänsterna så som registrering får inte ingås av personer under 18 år. </p>
+<p>Tjänster hos Tipsy; åtkomst till gemensamma spel, realtiduppdateringar, prognoser och fastställd utdelning vid eventuell vinst. Därutöver funktioner som hanterar spelturordning, utgifter och intäkter, innestående medel och utbetalningar. Vänligen läs mer om tjänsterna under Kom igång.</p>
+<p>Ett spel som läggs hos Tipsy är inte ett giltigt spel som vid eventuell vinst ger pengar till tipparen. För att ett spel ska vara giltigt måste det spelas hos Svenska spel. Vid en eventuell vinst betalas inga pengar ut via Tipsy. Som kund kan du heller inte sätta in eller ta ut pengar från Tipsy. </p>
+<p>Du ansvarar för eventuella trafikavgifter som teleoperatören tar ut för skickande eller mottagande av data och/eller meddelanden vid registrering och vid användande av tjänsterna. </p>
+<p>Tipsy ger dig genom godkännande av användarvillkoren en begränsad, icke-exklusiv och icke överlåtbar rätt att använda tjänsterna därinom. Om du inte följer villkoren kan rätten komma att återkallas. Om villkoren mellan dig och Tipsy upphör, upphör din rätt att använda tipsy.nu.</p>
 Tipsy förbehåller sig även rätten att helt eller delvis och utan föregående meddelande, spärra tjänsterna för dig om vi misstänker att du; 
-(i) obehörigen nyttjar annan persons inloggningsuppgifter;
-(ii) obehörigen låter annan nyttja persons inloggningsuppgifter; 
-(iii) använder tjänsterna i strid mot användarvillkoren eller använder, eller har för avsikt att använda tjänsterna i strid med gällande lagstiftning (exempelvis bedrägerier, falska köp, falskt angivande av uppgifter eller liknande); eller
-(iv) använder tjänsterna på sådant sätt att Tipsy eller tredje person kan orsakas skada.<br/>
-Tipsy har också rätt att spärra tjänsterna för dig utifrån teknisk säkerhetsmässig grund eller annan grund om Tipsy bedömer att det bör ske för att tjänsten, tredje person eller andra parters intressen.<br/> 
-Tipsy har rätt att utan föregående samtycke från dig, helt eller delvis, överlåta sina rättigheter och skyldigheter enligt användarvillkoren.<br/>
-Tipsy har rätt att omedelbart och utan skriftligt meddelande, säga upp tjänsten om du använder den i strid med vad som stadgas i användarvillkoren.<br/> 
-Tipsy ger inga garantier om tjänsterna och dess innehåll eller funktion.<br/> Tipsy ansvarar inte heller under några omständigheter för tekniska problem som kan uppstå hos tredje part (Svenska spel) exempelvis i anledning av problem med internetåtkomst, tekniska problem hos betaltjänstleverantörer, tekniska problem med användarens mobila enhet eller liknande.<br/> Tipsy friskriver sig från samtliga uttryckliga, underförstådda eller lagstadgade garantier.<br/>  
-</p>
-<h3>Integritetspolicy</h3>
-<p>
-Tipsy är personuppgiftsansvarig för behandling av de personuppgifter som du lämnar till Tipsy i samband med registrering av konto.<br/> All behandling av personuppgifter sker enligt gällande lagstiftning.<br/> Detta innebär bland annat att vi skyddar dina personuppgifter med nödvändiga åtgärder och att du alltid har rätt att kontakta oss för att få reda på vilka personuppgifter som vi har sparade om dig.<br/> 
-Tipsy behandlar de personuppgifter som lämnas till oss.<br/> Det kan vara namn, e-postadress, telefonnummer, spelstatistik, kostnader och intäkter som du lämnat till oss eller i övrigt är nödvändig för att vi ska kunna fullgöra våra åtaganden gentemot dig.<br/>
-Dina personuppgifter används endast av Tipsy.<br/> Vi vidarebefordrar, säljer eller byter aldrig dina personuppgifter för marknadsföringsändamål till tredje part utanför Tipsy.<br/> Och vi lämnar inte ut personuppgifter till andra bolag om vi inte behöver göra detta på grund av lag, förordning eller myndighetsbeslut eller för att skydda våra rättigheter eller tredje parts rättigheter.<br/>
-Begäran om registerutdrag, information eller rättning av felaktiga uppgifter skickas till:
-Kontakt: tipsy@gmail.<br/>com 
-Tipsy.<br/>nu använder små textfiler, så kallade cookies, för att underlätta ditt surfande på sidan.<br/> Vi använder framförallt cookies för att samla in statistik om användarnas besök och för att förbättra upplevelsen.<br/> Det kan exempelvis handla om att val du gör på vår webbplats sparas.<br/> 
-</p>
+<ul>
+  <li>obehörigen nyttjar annan persons inloggningsuppgifter;</li>
+  <li>obehörigen låter annan nyttja persons inloggningsuppgifter; </li>
+  <li>använder tjänsterna i strid mot användarvillkoren eller använder, eller har för avsikt att använda tjänsterna i strid med gällande lagstiftning (exempelvis bedrägerier, falska köp, falskt angivande av uppgifter eller liknande); eller</li>
+  <li>använder tjänsterna på sådant sätt att Tipsy eller tredje person kan orsakas skada.</li>
+</ul> 
 
-         
-<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-    </div>
-  </div> 
+<p>Tipsy har också rätt att spärra tjänsterna för dig utifrån teknisk säkerhetsmässig grund eller annan grund om Tipsy bedömer att det bör ske för att tjänsten, tredje person eller andra parters intressen. </p>
+<p>Tipsy har rätt att utan föregående samtycke från dig, helt eller delvis, överlåta sina rättigheter och skyldigheter enligt användarvillkoren.</p>
+<p>Tipsy ger inga garantier om tjänsterna och dess innehåll eller funktion. Tipsy ansvarar inte heller under några omständigheter för tekniska problem som kan uppstå hos tredje part (Svenska spel) exempelvis i anledning av problem med internetåtkomst, tekniska problem hos betaltjänstleverantörer, tekniska problem med användarens mobila enhet eller liknande. Tipsy friskriver sig från samtliga uttryckliga, underförstådda eller lagstadgade garantier.  </p>
+<p>Tjänsterna är normalt tillgänglig dygnet runt alla dagar i veckan. Trots att Tipsy strävar efter att tillhandahålla dig tjänsterna utan teknisk störning, kan Tipsy inte garantera att tjänsterna alltid kommer att vara fullt tillgängliga eller fungera felfritt. Tipsy ansvarar inte heller under några omständigheter för tekniska problem som kan uppstå hos tredje part (Svenska spel), problem med internetåtkomst, tekniska problem med användarens mobila enhet eller liknande. Tipsy friskriver sig från samtliga uttryckliga, underförstådda eller lagstadgade garantier.  </p>
+<p>Samtliga immateriella rättigheter, som exempelvis tekniska lösningar avseende tjänsterna tillhörande Tipsy, får endast användas inom ramen för tjänsterna. Du har således inte rätt att förändra tjänsterna på något sätt, kopiera, anpassa, hyra ut, låna ut, sälja, underlicensiera eller på annat sätt distribuera eller överlåta innehållet i tjänsterna.  </p>
+
+<h1>Integritetspolicy</h1>
+<p>Tipsy är personuppgiftsansvarig för behandling av de personuppgifter som du lämnar till Tipsy i samband med registrering av konto. All behandling av personuppgifter sker enligt gällande lagstiftning. Detta innebär bland annat att vi skyddar dina personuppgifter med nödvändiga åtgärder och att du alltid har rätt att kontakta oss för att få reda på vilka personuppgifter som vi har sparade om dig. </p>
+<p>Tipsy behandlar de personuppgifter som lämnas till oss. Det kan vara namn, e-postadress, telefonnummer, spelstatistik, kostnader och intäkter som du lämnat till oss eller i övrigt är nödvändig för att vi ska kunna fullgöra våra åtaganden gentemot dig.</p>
+<p>Dina personuppgifter används endast av Tipsy. Vi vidarebefordrar, säljer eller byter aldrig dina personuppgifter för marknadsföringsändamål till tredje part utanför Tipsy. Och vi lämnar inte ut personuppgifter till andra bolag om vi inte behöver göra detta på grund av lag, förordning eller myndighetsbeslut eller för att skydda våra rättigheter eller tredje parts rättigheter.</p>
+<p>Begäran om registerutdrag, information eller rättning av felaktiga uppgifter skickas till:</p>
+<p>Kontakt: tipsy@gmail.com </p>
+<p>Tipsy.nu använder små textfiler, så kallade cookies, för att underlätta ditt surfande på sidan. Vi använder framförallt cookies för att samla in statistik om användarnas besök och för att förbättra upplevelsen. Det kan exempelvis handla om att val du gör på vår webbplats sparas. </p>
+
+<div><button type="button" class="round-button close-modal">Ok</button></div>
+<br/>
+<br/>
+<br/>
+
+</div>
+</div>
+
 </script>
+
+
+<script id="getting-started" type="text/x-handlebars-template">
+<div class="modal-content" style="width:80%;">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+</style>
+<h1>Allmänt</h1>
+<p>För att kunna ta del av Tipsy’s alla tjänster krävs ett spelkonto hos Svenska spel. Tipsy redovisar endast målservice, antal rätt och utdelningsprognoser från Svenska spel. Därutöver finns ingen koppling mellan Tipsy och Svenska spel. Det innebär bland annat att en rad som tippas hos Tipsy även måste spelas hos Svenska spel för att vara giltig. Vid en eventuell vinst betalas inga pengar ut via Tipsy. Som användare kan du heller inte sätta in eller ta ut pengar från Tipsy.</p>
+
+<h1>Skapa en grupp</h1>
+<p>Som användare kan du skapa en grupp. Till gruppen kan du bjuda in flera användare. Detta gör du genom att ange mejladressen för de personer som ska ingå i ert spelgäng. Den personen får en länk för vidare registrering av användare. </p>
+Alla användare kan i sin tur skapa nya grupper och kan då tillhöra flera grupper.
+
+Bild skapa grupp
+
+<p>Som skapare av en grupp kan du när som helst lägga till eller ta bort medlemmar, utan problem. Adderas en person kommer den automatiskt först i spelturordningen (läs mer under Turordning). </p>
+En gruppmedlem som blivit inbjuden till en grupp kan endast ta bort sig själv från en grupp. 
+
+<h1>Turordning</h1>
+<p>Tipsy hanterar turordningen för ordinarie spel enligt följande prioritering;</p>
+<p>•	längst tid sedan senaste ordinarie spel</p>
+<p>På så vis finns det en definierad turordning. Dock hanterar Tipsy ett eventuellt avsteg från turordningen i det fall någon annan än den som stod på tur lägger ett spel. Bytet innebär en ny turordning. Använd de gröna pilarna vid varje användare i gruppen för att ändra turordningen.</p>
+
+<h1>Lägga ett spel</h1>
+<p>Den som står på tur lägger ett spel hos Svenska spel enligt gruppens överenskomna belopp, frekvens och spelform (Stryktipset, Topptipset eller Europatipset). För att exportera spelet till Tipsy använder du funktionen Dela och Kopiera spel som du hittar längst ner vid ditt spel hos Svenska spel. Öppna Tispy och välj Spela och därefter Klistra in. </p>
+
+Bilder på dela
+Bild på kopiera
+Bild på klistra in
+Bild på spel lagt hos Tipsy
+
+<p>Ett spel som endast registreras hos Tipsy är inte ett giltigt spel och eventuella vinster kan ej avkrävas Tipsy.</p>
+
+<h1>Ordinarie spel och extraspel</h1>
+<p>Tipsy särredovisar ordinarie spel och extraspel. Ordinarie spel är det inom gruppen överenskomna spelet, exempelvis 64 rader Stryktips.</p>
+<p>En spelare, som för gruppen förvaltar en vinst via sitt spelkonto hos Svenska spel, lägger ett nytt spel på Tipsy, får alltid frågan om spelet är ett ordinarie spel eller ett extraspel. Ordinarie spel ingår i statistiken medan extraspelen särredovisas. På så vis kan gruppen ha koll på vem som är skarpaste tipparen utifrån lika villkor.</p>
+
+<p>Valet extraspel är endast synligt för den som har ett plussaldo på sitt konto hos Tipsy. Den som inte har ett plussaldo kan endast registreras för ordinarie spel.</p>
+
+<h1>Vinster</h1>
+<p>Alla eventuella vinster utbetalas av Svenska spel till den som lade omgångens spel. Tipsy hanterar endast redovisningen av vinsten för gruppens medlemmar. I redovisningen framgår storleken på vinsten, antal rätt, vem som vann och hur den ska fördelas om gruppen väljer att plocka ut vinsten. </p>
+
+Bild på vinst
+Bild på uttag av vinst
+
+<p>Om gruppen väljer att inte plocka ut vinsten förvaltas vinsten (via spelarkonto hos Svenska spel) alltid av den användare som lade det vinnande spelet.</p>
+
+<h1>Händelser</h1>
+<p>Under fliken Händelser kan gruppen se all aktivitet kopplad till spel, vinster och uttag av vinster.</p>
+<p>En användare som har ett plussaldo kan härifrån också välja att göra en utbetalning till gruppens medlemmar.</p>
+
+Bild händelser
+
+<h1>Statistik</h1>
+
+<p>Under fliken Statistik har du som användare full koll på ert spelbolags finanser. Vilka intäkter och utgifter ni har haft under året. Vem av er som förvaltar vinster åt spelbolaget (via respektives konto hos Svenska spel). Och hur var och en har presterat.</p>
+
+<p>Spel som innehåller 13 matcher (Stryktipset och Europatipset) samredovisas. </p>
+
+
+<div><button type="button" class="round-button close-modal">Ok</button></div>
+<br/>
+<br/>
+<br/>
+</div>
+
+</script>
+
+
+
 
 <script id="more-info" type="text/x-handlebars-template">
   <div class="modal-dialog">
-    <div class="modal-content" style="padding: 10px;">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title"></h4>
-      </div>
-      <div class="modal-body"></div>
+<div class="modal-content" style="width:80%;">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+  .more-info a {
+  color:#f6d403;
+}
+</style>
 
-
+<div class="more-info">
 <h2>Tipsy - vad är det?</h2>
 <p>Tipsy är en gratistjänst för er som spelar Stryktipset, Topptipset eller Europatipset tillsammans. Oavsett vilka ni är, hur många ni är eller hur frekvent ni spelar så blir det enklare med Tipsy.</p>
 
@@ -987,9 +1459,47 @@ Tipsy.<br/>nu använder små textfiler, så kallade cookies, för att underlätt
 <p>Mer information finner du på <a href="https://instagram.com/tipsy.nu?igshid=1rxeis9l1zhil" target="_blank">@tipsy.nu</a> eller som inloggad under fliken Kom-igång.</p>      
 
 
-<button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-    </div>
+<div><button type="button" class="round-button close-modal">Ok</button></div>
+<br/>
+<br/>
+<br/>
+</div>
+
   </div> 
+</script>
+
+
+<script id="contact" type="text/x-handlebars-template">
+<div class="modal-content" style="width:50%;">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+</style>
+      <div class="contact"></div>
+      <br/>
+             <table class="" style="width:60%">
+             <tr>
+               <td style="width:32px"><img src="img/Mail-icon.png" alt="mail" ></td>
+               <td style="padding-left: 10px;"><a style="color:#f6d403;" href="mailto:tipsy.nu@gmail.com">tipsy.nu@gmail.com</a></td>
+             </tr>
+             <tr>
+               <td style="width:32px"><img src="img/icons8-instagram-48.png" alt="Instagram" ></td>
+               <td style="padding-left: 10px;"><a style="color:#f6d403;" href="https://instagram.com/tipsy.nu?igshid=1rxeis9l1zhil" target="_blank">@tipsy.nu</a> </td>
+             </tr>
+             </table>
+             <br/>
+             <br/>
+
+
+
+          <button type="button" class="round-button close-modal" data-dismiss="modal">Ok</button>
+  
+  </div> 
+
+
 </script>
 
 
