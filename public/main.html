@@ -259,6 +259,8 @@ table.bettingtable td {
 
       if (getCookie("SessId")) {
         initApp();
+      } else {
+        $("#info").show();
       }
 
     });
@@ -277,7 +279,7 @@ table.bettingtable td {
 </head>
 <body>
 <div class="topnav fixed" id="myTopnav">
-  <a href="javascript:void(0);" class="logo"><img src="img/tipsy_logo.png" style="height: 18px;vertical-align: middle;margin-bottom: 2px"> Tipsy.nu</a>
+  <a href="javascript:void(0);" class="logo"><img src="img/tipsy_logo.png" style="height: 22px;vertical-align: middle;margin-bottom: 2px"> Tipsy.nu</a>
 
   <div id="menu-items" style="display: none;">
   <a id="play" class="clickable-menu" href="javascript:void(0);">Spela</a>
@@ -285,7 +287,7 @@ table.bettingtable td {
   <a id="groups" class="clickable-menu" href="javascript:void(0);">Grupper</a>
   <a id="statistics" class="clickable-menu" href="javascript:void(0);">Statistik</a>
   <a id="events" class="clickable-menu" href="javascript:void(0);">Händelser</a>
-  <a id="instructions"class="clickable-menu" href="javascript:void(0);">Kom-igång</a>
+  <a id="instructions" class="clickable-menu" href="javascript:void(0);">Kom-igång</a>
   <a><select id="available-groups" style="color:#444;"><option value="." disabled>Välj spelgrupp...</option></select></a>
   </div>
 
@@ -300,7 +302,7 @@ table.bettingtable td {
 
 
 <div id="front-page">
-<div id="info" style="height: auto; min-height: 800px;">
+<div id="info" style="height: auto; min-height: 800px;display:none">
   <h1 style="margin-top: 0px;"><b><br/>Nu är det enkelt<br/> att tippa tillsammans.</b></h1>
         
   <h2><i>Spela & dela. Tipsy håller koll.</i></h2>

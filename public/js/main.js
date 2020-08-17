@@ -268,6 +268,11 @@ function initGroups() {
         $('#available-groups').change(function () {
             var selected = $(this).find("option:selected").val();
 
+            if( $("#myTopnav").hasClass("responsive")) {
+                toggleMenu();
+            }
+
+
             globals.activeGroup = {};
             for (var i = 0; i < globals.usergroups.length; i++) {
                 if (globals.usergroups[i].groupid == selected) {
@@ -279,6 +284,7 @@ function initGroups() {
             $("#latest-games").show();
             $("#info").hide();
             $("#group-title").text(globals.activeGroup.groupname ? globals.activeGroup.groupname : "");
+
             updateResults(globals.activeGroup.groupid);
         })
 
