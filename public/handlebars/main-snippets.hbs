@@ -59,14 +59,9 @@
 }
 
 .user-info-fields input[type=button] {
-  border-radius: 45px;
+  
     height: 45px;
     width: 80%;
-    background: #f6d403;
-    color: black;
-    font-size: 14px;
-    font-weight: bold;
-    border-style: none;
     margin-top: 15px;
     margin-left:-10px;
 }
@@ -120,12 +115,12 @@
 
               <div class="sticky">
               {{#if register}}
-              <input type="button" id="reg-or-update" value="Skapa"/>
+              <input type="button" id="reg-or-update" class="round-button" value="Skapa"/>
               {{else}}
-              <input type="button" id="reg-or-update" value="Uppdatera"/>
+              <input type="button" id="reg-or-update" class="round-button" value="Uppdatera"/>
               {{/if}}
               </div>
-            </form></div>
+            </form>
 
 </div>
 </script>
@@ -823,7 +818,7 @@
    </tbody>
   </table>
    <div>
-    <button id="play" type="button" disabled class="round-button">Spela</button>
+    <button id="play" type="button" disabled class="round-button" style="margin-right:12px;">Spela</button>
     <button id="clear" type="button" class="round-button" onclick="clearRows($(this).parent().parent().find('.bettingtable'))">Rensa</button>
   </div>
 </script>
