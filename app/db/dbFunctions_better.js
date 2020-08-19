@@ -362,7 +362,6 @@ function updateMatchResults(drawId,matchRows) {
     let sql = "update draw_rows set result=?,status=?,matchstart=coalesce(?,matchstart) where drawid=? and rownr=?"
     let stmt = db.prepare(sql);
     matchRows.forEach(r => {
-        console.log(r);
         stmt.run(r.result, r.status, r.matchStart, drawId, r.rownr);
     });
 }
@@ -725,7 +724,7 @@ function swapSortOrder(adminId,from,to,groupId,callback=console.log) {
 
 function getNextInLine(groupId,callback=console.log) {
 
-    //Get the lasr ordinary player
+    //Get the last ordinary player
     let sql="select u.name,u.username,d.created from draws d\
             left join v_userinfo u on d.created_by =u.userid\
             where groupid =? and extra_bet=false order by created desc limit 1";

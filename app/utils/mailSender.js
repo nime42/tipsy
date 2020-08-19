@@ -30,7 +30,7 @@ function sendMail(from,to,cc,subject,text,html, callback) {
         text: text,
         html:html
       };
-      console.log(mailOptions);
+      //console.log(mailOptions);
       transporter.sendMail(mailOptions, callback);      
 }
 
@@ -74,7 +74,7 @@ function inviteMember(groupAdmin,groupInfo,mailadress,req,res,callback) {
             
             sendMail(from,to,undefined,subject,message,undefined, function(err) {
                 if(err!==null) {
-                    console.log(err);
+                    console.log("sendMail",err);
                     res.sendStatus(500);
                 } else {
                     res.sendStatus(200);          

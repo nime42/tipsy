@@ -170,7 +170,7 @@ app.post('/register',(req,res)=> {
         })();
     } catch (err) {
         if (err !== "rollback") {
-            console.log(err);
+            console.log("register",err);
         }
     }
 
@@ -229,7 +229,7 @@ app.get('/getUserInfo',(req,res)=> {
         if(status) { 
             res.json(userInfo); 
         } else {
-            console.log(userInfo);
+            console.log('getUserInfo',userInfo);
             res.sendStatus(404);  
 
         }
@@ -243,7 +243,7 @@ app.get('/getGroups',(req,res)=> {
         if(status) { 
             res.json(groups); 
         } else {
-            console.log(groups);
+            console.log("getGroups",groups);
             res.sendStatus(404);  
 
         }
@@ -308,7 +308,7 @@ app.post('/updateUserInfo',(req,res)=> {
         if(status) {
             res.sendStatus(200);                    
         } else {
-            console.log(err);
+            console.log("updateUserInfo",err);
             res.sendStatus(500);
         }
     })
@@ -433,7 +433,7 @@ app.post('/removeMember',(req,res)=> {
         if(status) {
             res.sendStatus(200);                    
         } else {
-            console.log(err);
+            console.log("removeMember",err);
             res.sendStatus(500);
         }
     })
@@ -462,7 +462,7 @@ app.post('/play',(req,res)=> {
         if(status) {
             res.sendStatus(200);                    
         } else {
-            console.log(data);
+            console.log("play",data);
             res.sendStatus(500);
         }
     })
@@ -477,7 +477,7 @@ app.get('/getResults',(req,res)=> {
         if(status) {
             res.json(data);
         } else {
-            //console.log(data);
+            console.log("getResults",data);
             res.sendStatus(500);
         }
 
@@ -536,9 +536,6 @@ function checkDraw(drawId,SvSpResponse) {
         }
     }
 
-    console.log(matches);
-
-
     if (SvSpResponse.draws) {
         for (let m = 0; m < SvSpResponse.draws.draws.length; m++) {
             let e = SvSpResponse.draws.draws[m];
@@ -586,7 +583,7 @@ app.post('/deleteDraw',(req,res)=> {
         if(status) {
             res.sendStatus(200);                    
         } else {
-            console.log(err);
+            console.log("deleteDraw",err);
             res.sendStatus(500);
         }
     })
