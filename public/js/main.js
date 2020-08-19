@@ -1179,17 +1179,17 @@ function parseRows(rows) {
             bet: a[2],
             result: a[3],
             status: a[4],
-            matchstart:a[5],
+            matchstart: a[5],
             on1: a[2].match("1") != undefined ? "on" : "off",
             onX: a[2].match("X") != undefined ? "on" : "off",
             on2: a[2].match("2") != undefined ? "on" : "off",
-            status1:"",
-            statusX:"",
-            status2:""
+            status1: "",
+            statusX: "",
+            status2: ""
         };
 
-        if(res.status=="-1") {
-            res.status="Inte startat";
+        if (res.status == "-1" || res.status=="Uppskjuten") {
+            res.status = "Inte startat";
         }
         var tmp = res.result.split("-");
         var home = parseInt(tmp[0].trim());
@@ -1208,7 +1208,7 @@ function parseRows(rows) {
                     res.isCorrect = true;
                 } else {
                     res.statusX = "missed";
-                } 
+                }
             } else {
                 if (res.on2 == "on") {
                     res.status2 = "correct";
@@ -1220,20 +1220,21 @@ function parseRows(rows) {
         }
 
         if (res.status == "Inte startat") {
-            var matchStart=new Date(res.matchstart);
+            var matchStart = new Date(res.matchstart);
             if (isNaN(matchStart.getTime())) {
-                res.result="- -";
+                res.result = "- -";
             } else {
-            var today = new Date();
+                var today = new Date();
+
+                var isToday = (today.toDateString() == matchStart.toDateString());
+                if (isToday) {
+                    res.result = matchStart.getHours().toString().padStart(2, "0") + ":" + matchStart.getMinutes().toString().padStart(2, "0");
+                } else {
+                    res.result = getWeekDay(matchStart);
+                }
+            }
             
-            var isToday = (today.toDateString() == matchStart.toDateString());
-            if(isToday) {           
-                res.result = matchStart.getHours().toString().padStart(2,"0")+":"+matchStart.getMinutes().toString().padStart(2,"0");
-            } else {
-                res.result=getWeekDay(matchStart);
-            }
-            }
-        } else if (res.status != "Avslutad" && res.status != "Slut efter förlängning" && res.status != "Slut efter straffläggning") {
+        } else if (res.status.match(/.*slut.*/i)===null) {//om status inte är Avslutad","Slut efter förlängning","Slut efter straffläggning" etc
             res.result = "(" + res.result + ")";
         }
 
