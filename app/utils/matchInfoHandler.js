@@ -58,8 +58,39 @@ function getDrawAndResult(product, draw, callback) {
         );
 }
 
-//getDraw2("europatipset",1966,function(status,data) {console.log(status,data)});
 
+function getDrawAndResultCache(draws, callback=console.log) {
+    let nrofCalls=draws.length;
+    let cache={};
+    if(nrofCalls===0) {
+        callback(cache);
+        return;
+    };
+    draws.forEach(d=>{
+        let product=d.product;
+        let drawNumber=d.drawnumber;
+        getDrawAndResult(product,drawNumber, function(status,response) {
+            nrofCalls--;
+            cache[product+";"+drawNumber]={status:status,response:response};
+            if(nrofCalls===0) {
+                callback(cache);
+            }
+            
+        });
+
+
+    });
+
+}
+
+/*
+var draws=[
+{drawnr:4648,product:"Stryktipset"},
+{drawnr:4651,product:"Stryktipset"}
+];
+getDrawAndResultCache(draws);
+//getDraw2("europatipset",1966,function(status,data) {console.log(status,data)});
+*/
 
 function getPlayable(product,callback) {
     let date = new Date();
@@ -183,7 +214,8 @@ function parseDraw(data) {
 
 module.exports={
     getPlayable:getPlayable,
-    getDrawAndResult:getDrawAndResult
+    getDrawAndResult:getDrawAndResult,
+    getDrawAndResultCache:getDrawAndResultCache
 }
 
 

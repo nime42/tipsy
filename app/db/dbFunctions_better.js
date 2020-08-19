@@ -357,8 +357,18 @@ function getResults(userId, groupId,page, callback=console.log) {
     }
 }
 
+
+function updateMatchResults(drawId,matchRows) {
+    let sql = "update draw_rows set result=?,status=?,matchstart=coalesce(?,matchstart) where drawid=? and rownr=?"
+    let stmt = db.prepare(sql);
+    matchRows.forEach(r => {
+        console.log(r);
+        stmt.run(r.result, r.status, r.matchStart, drawId, r.rownr);
+    });
+}
+
 function updateDrawResult(drawId,drawState,outcome) {
-    //console.log("Hej",drawId,outcome);
+    //console.log("updateDrawResult",drawState,outcome);
     rectify(drawId,function(status,data) {
         if(status) {
             let fullpott=data.nrOfRows;
@@ -843,6 +853,7 @@ module.exports = {
     addPlay:addPlay,
     getResults:getResults,
     updateDrawResult:updateDrawResult,
+    updateMatchResults:updateMatchResults,
     deleteDraw:deleteDraw,
     getGroupInfo:getGroupInfo,
     getUserSurplus:getUserSurplus,

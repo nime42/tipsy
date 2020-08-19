@@ -494,96 +494,88 @@ app.get('/updateResults',(req,res)=> {
     
 });
 
-function updateResults(groupId,callback) {
-    let sql="select id,drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
+
+function updateResults(groupId,callback=console.log) {
+    let sql="select distinct drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
     let dbi=db.getDbInstance();
-    const rows=dbi.prepare(sql).all(groupId);
-    if(rows.length>0) {
-        let drawToCheck=[];
-        rows.forEach(r=>{
-            let key=r.drawnumber+";"+r.product;
-            if(drawToCheck[key]) {
-                drawToCheck[key].push(r.id);
-            } else {
-                drawToCheck[key]=[r.id];
+    const notFinalizedDraws=dbi.prepare(sql).all(groupId);
+    matchInfoHandler.getDrawAndResultCache(notFinalizedDraws,function(cache) {
+        sql="select id,drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
+        let drawsToUpdate=dbi.prepare(sql).all(groupId);
+        drawsToUpdate.forEach(function(r) {
+            let drawId=r.id;
+            let drawNumber=r.drawnumber;
+            let product=r.product;
+            let drawResult=cache[product+";"+drawNumber];
+
+
+            if(drawResult.status) {
+                checkDraw(drawId,drawResult.response);
+
             }
-        })
 
-        let nrOfChecks=Object.keys(drawToCheck).length;
+        });
+        callback(true);
+    });
 
-        for(key in drawToCheck) {
-            let tmp=key.split(";");
-            let drawNumber=tmp[0];
-            let product=tmp[1];
-            let drawIds=drawToCheck[key];
-            checkDraw(product,drawNumber,drawIds,function(status) {
-                nrOfChecks--;
-                if(nrOfChecks===0) {
-                    callback();
-                }
-            });
-        }
+}
+
+function checkDraw(drawId,SvSpResponse) {
+    //console.log("checkDraw",drawId,SvSpResponse);
+    let matches = [];
+    let outcome = null;
+    if (SvSpResponse.result !== null) {
+        matches = SvSpResponse.result.results;
+        outcome = SvSpResponse.result.distribution;
     } else {
-        callback();
-    }
-}
-
-
-function checkDraw(product, drawNr, drawIds, callback = console.log) {
-    matchInfoHandler.getDrawAndResult(product.toLowerCase(), drawNr, function (status, data) {
-
-        if (status) {
-            let matches = [];
-            let outcome = null;
-            if (data.result !== null) {
-                matches = data.result.results;
-                if (data.result) {
-                    outcome = data.result.distribution;
-                }
-            } else {
-                matches = data.draws.draws;
-                if (data.forecast) {
-                    outcome = data.forecast.winresult;
-                }
-            }
-            for(let m=0;m<data.draws.draws.length;m++) {
-                let e=data.draws.draws[m];
-                matches[m].matchStart=e.match?e.match.matchStart:undefined;
-            }
-            //console.log(data.draws.draws);
-            let rows = [];
-            matches.forEach(e => {
-                let row = {}
-                row.status = e.status;
-                row.rownr = e.eventNumber;
-                row.result = e.result;
-                row.matchStart=e.matchStart;
-                rows.push(row);
-
-            });
-            let drawState = data.draws.drawState;
-            let dbi = db.getDbInstance();
-            try {
-                dbi.transaction(() => {
-                    let sql = "update draw_rows set result=?,status=?,matchstart=coalesce(?,matchstart) where drawid=? and rownr=?"
-                    let stmt = dbi.prepare(sql);
-                    drawIds.forEach(i => {
-                        rows.forEach(r => {
-                            stmt.run(r.result, r.status, r.matchStart, i, r.rownr);
-                        });
-                        if (outcome !== null) {
-                            db.updateDrawResult(i, drawState, outcome);
-                        }
-                    });
-                })();
-                callback(true);
-            } catch (err) {
-                callback(false, err);
-            }
-
+        if(SvSpResponse.draws) {
+            matches = SvSpResponse.draws.draws;
         }
-    })
+        if (SvSpResponse.forecast) {
+            outcome = SvSpResponse.forecast.winresult;
+        }
+    }
+
+    console.log(matches);
+
+
+    if (SvSpResponse.draws) {
+        for (let m = 0; m < SvSpResponse.draws.draws.length; m++) {
+            let e = SvSpResponse.draws.draws[m];
+            matches[m].matchStart = e.match ? e.match.matchStart : undefined;
+        }
+    }
+
+
+    let matchRows = [];
+    matches.forEach(e => {
+        let row = {}
+        row.status = e.status;
+        row.rownr = e.eventNumber;
+        row.result = e.result;
+        row.matchStart=e.matchStart;
+        matchRows.push(row);
+
+    });
+
+    let drawState = SvSpResponse.draws.drawState;
+
+    let dbi = db.getDbInstance();
+    try {
+        dbi.transaction(() => {
+            db.updateMatchResults(drawId,matchRows);
+            if (outcome !== null) {
+                db.updateDrawResult(drawId, drawState, outcome);
+            }
+        })();
+        return true;
+    } catch (err) {
+        console.log("Error in checkDraw:", err);
+        return false;
+    }
+
 }
+
 
 app.post('/deleteDraw',(req,res)=> {
     var userId=sessionHandler.getSession(req).userId;
