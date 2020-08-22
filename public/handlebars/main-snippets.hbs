@@ -755,7 +755,6 @@
 
 
 </style>
-
     <div class="tabbed">
       <input name="tabbed" id="tabbed1" type="radio" checked>
       <section>
@@ -794,7 +793,20 @@
 
 
 <script id="matches" type="text/x-handlebars-template">
-  <h2 style="margin-bottom: 0;">{{productName}}</h2>
+<style>
+
+  @media screen and (max-width: 1100px) {
+  .play-table td {
+    font-size: 12px !important;
+    padding-top: 0px !important;
+    padding-bottom: 1px !important;
+    
+  }
+  }
+
+</style>
+<div style="overflow: auto;max-height: calc(100vh - 110px);">  
+<h2 style="margin-bottom: 0;">{{productName}}</h2>
   {{#if (match productName "Topptipset") }}  
     {{setVar "productClass" "topptipset"}}
   {{/if}}
@@ -807,9 +819,11 @@
   <p style="margin-top: 0;">Spelstopp:{{regCloseTime}} </p>
   <p style="margin-bottom: 10;"><B>OBS!!</B> tänk på att det faktiska spelet måste göras på <a style="color:#f6d403;" href="https://spela.svenskaspel.se">Svenska spels sida</a></p>
 
+
   <button id="paste" type="button" class="round-button" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'))">Klistra in</button>
   <span style="color: #f6d403;margin: 7px;font-size: 15px;" class="fa fa-info-circle"  onclick='showPastingRowsInfo()'></span>
-  <table class="bettingtable" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;min-width:300px;" >
+
+  <table class="bettingtable play-table" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;min-width:300px;" >
     <colgroup>
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 80%;">
@@ -822,18 +836,20 @@
     <tr id="row-{{inc @index}}" class="draw-row">
       <td>{{inc @index}}.</td>
       <td>{{eventDescription}}</td>
-      <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">1</button></td>
-      <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">X</button></td>
+      <td><button class="1x2 {{../productClass}} off" style="border-style: solid; margin-right:3px;">1</button></td>
+      <td><button class="1x2 {{../productClass}} off" style="border-style: solid;margin-right:3px;">X</button></td>
       <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">2</button></td>
     </tr>
     {{/each}}
    
-    <tr> <td colspan="5" style="text-align: right;"><b>Antal rader:</b><b id="nr-of-rows">1</b></td></tr>
+    <tr> <td colspan="5" style="text-align: right;padding-top:4px"><b>Antal rader:</b><b id="nr-of-rows">1</b></td></tr>
    </tbody>
   </table>
+  
    <div>
     <button id="play" type="button" disabled class="round-button" style="margin-right:12px;">Spela</button>
     <button id="clear" type="button" class="round-button" onclick="clearRows($(this).parent().parent().find('.bettingtable'))">Rensa</button>
+  </div>
   </div>
 </script>
 
@@ -928,7 +944,7 @@
           <td style="padding-left: 10px;padding-top:5px">
           <div class="circle {{#if (gt totalWin 0)}} correct-color {{/if}}">
           <div style="padding-top: 3px;">{{nrofrights}}</div>
-          <div style="font-size: 12px;">Rätt</div></div>
+          <div style="font-size: 12px;">rätt</div></div>
         </td>
 
       </tr>
