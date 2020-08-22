@@ -926,7 +926,9 @@
             {{/each}}
           </table>
           <td style="padding-left: 10px;padding-top:5px">
-          <div class="circle">{{nrofrights}}</div>
+          <div class="circle {{#if (gt totalWin 0)}} correct-color {{/if}}">
+          <div style="padding-top: 5px;">{{nrofrights}}</div>
+          <div style="font-size: 14px;">Rätt</div></div>
         </td>
 
       </tr>
