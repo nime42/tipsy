@@ -47,8 +47,8 @@ function updateUserInfo(userid, userprops, callback=console.log) {
         userprops.password=null;
     }
 
-    let sql = "INSERT INTO userinfo(userid,password,email,phonenr,name) VALUES(@userid,@password,@email,@phonenr,@name)\
-        ON CONFLICT(userid) DO UPDATE SET password=coalesce(excluded.password,password),email=excluded.email,phonenr=excluded.phonenr,name=excluded.name";
+    let sql = "INSERT INTO userinfo(userid,password,email,phonenr,name,sendremainder) VALUES(@userid,@password,@email,@phonenr,@name,@sendremainder)\
+        ON CONFLICT(userid) DO UPDATE SET password=coalesce(excluded.password,password),email=excluded.email,phonenr=excluded.phonenr,name=excluded.name,sendremainder=excluded.sendremainder";
 
     try {
         const res = db.prepare(sql).run(userprops);
@@ -738,18 +738,22 @@ function getNextInLine(groupId,callback=console.log) {
 
 
     //Get the members that should play the following 2 weeks,by sorting on their last play. And by joining  against v_group_members we only get active users
-    sql="select u.username,u.name from v_group_members u\
+    sql="select u.username,u.name,userid,groupname,sendremainder,email from v_group_members u\
         left join (select  max(regclosetime) as lastplayed,groupid,created_by from draws where coalesce(extra_bet,false)<>true and groupid=? group by groupid,created_by) l on u.userid =l.created_by and u.groupid=l.groupid\
         where u.groupid=?\
         order by l.lastplayed limit 2;"
     let rows=db.prepare(sql).all(groupId,groupId);
     if(rows.length===0) {
         //There is no one that played anything. Get next player by sorting on member sortorder
-        sql="select username,name from v_group_members where groupid =? order by sortorder" 
+        sql="select username,name,userid,groupname,sendremainder,email from v_group_members where groupid =? order by sortorder" 
         rows=db.prepare(sql).all(groupId);  
     }
 
     let nextInLine=rows[0].name===""?rows[0].username:rows[0].name;
+    let nexInLine_userid=rows[0].userid;
+    let groupName=rows[0].groupname;
+    let sendRemainder=rows[0].sendremainder;
+    let remainderMail=rows[0].email;
     let runnerUp=undefined;
     if(rows[1]!==undefined) {
         runnerUp=rows[1].name===""?rows[1].username:rows[1].name;
@@ -766,9 +770,13 @@ function getNextInLine(groupId,callback=console.log) {
     })
 
     let res={
+        groupName:groupName,
         lastPlayer:lastPlayer,
         lastPlayed:lastPlayed,
         nextInLine:nextInLine,
+        nexInLine_userid:nexInLine_userid,
+        sendRemainder:sendRemainder,
+        remainderMail:remainderMail,
         runnerUp:runnerUp,
         extraBets:extraBets
     }

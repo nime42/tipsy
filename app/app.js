@@ -495,26 +495,33 @@ app.get('/updateResults',(req,res)=> {
 });
 
 
-function updateResults(groupId,callback=console.log) {
-    let sql="select distinct drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
-    let dbi=db.getDbInstance();
-    const notFinalizedDraws=dbi.prepare(sql).all(groupId);
-    matchInfoHandler.getDrawAndResultCache(notFinalizedDraws,function(cache) {
-        sql="select id,drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
-        let drawsToUpdate=dbi.prepare(sql).all(groupId);
-        drawsToUpdate.forEach(function(r) {
-            let drawId=r.id;
-            let drawNumber=r.drawnumber;
-            let product=r.product;
-            let drawResult=cache[product+";"+drawNumber];
+function updateResults(groupId, callback = console.log) {
+    let sql = "select distinct drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
+    let dbi = db.getDbInstance();
+    const notFinalizedDraws = dbi.prepare(sql).all(groupId);
+    matchInfoHandler.getDrawAndResultCache(notFinalizedDraws, function (cache) {
+        sql = "select id,drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
+        let drawsToUpdate = dbi.prepare(sql).all(groupId);
+        let nrOfFinalized = 0;
+        drawsToUpdate.forEach(function (r) {
+            let drawId = r.id;
+            let drawNumber = r.drawnumber;
+            let product = r.product;
+            let drawResult = cache[product + ";" + drawNumber];
 
-
-            if(drawResult.status) {
-                checkDraw(drawId,drawResult.response);
-
+            if (drawResult.status) {
+                checkDraw(drawId, drawResult.response);
+                if (drawResult.response.draws && drawResult.response.draws.drawState === "Finalized") {
+                    nrOfFinalized++;
+                }
             }
 
         });
+
+        if(drawsToUpdate.length>0 && nrOfFinalized===drawsToUpdate.length) {
+            sendRemainder(groupId);
+        }
+
         callback(true);
     });
 
@@ -692,6 +699,19 @@ app.post('/getNextInLine',(req,res)=> {
             res.json(data);
     })
 })
+
+function sendRemainder(groupId) {
+    db.getNextInLine(groupId,function(next) {
+        if(next && next.sendRemainder && next.remainderMail!==null) {
+            mailsender.sendRemainder(next.groupName,next.nextInLine,next.remainderMail,function(status,res) {
+                if(status===false) {
+                    console.log("sendRemainder("+groupId+"):"+res);
+                }
+            });
+        }
+    
+    });
+}
 
 
 app.post('/getToplist',(req,res)=>{

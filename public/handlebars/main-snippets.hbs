@@ -55,6 +55,31 @@
     margin-left:-10px;
 }
 
+
+
+
+
+.yellow-checkbox:after {
+  content: " ";
+  background-color: #f6d403;
+  display: inline-block;
+  visibility: visible;
+}
+
+.yellow-checkbox:checked:after {
+  content: "\2714";
+  box-shadow: 0px 2px 4px rgba(155, 155, 155, 0.15);
+  border-radius: 3px;
+  height: 14px;
+  display: block;
+  width: 14px;
+  text-align: center;
+  font-size: 11px;
+  color: black;
+}
+
+
+
 </style>
 
 <div class="user-info-fields">
@@ -88,7 +113,7 @@
                 <input type="password"  id="confirm-password">
           
               <div>
-              <input type="checkbox" id="notify-me" name="notify-me" value="notify" style="margin-left: -25px;">
+              <input class="yellow-checkbox" type="checkbox" id="notify-me" name="notify-me" value="notify" style="margin-left: -25px;" {{#if sendremainder}} checked {{/if}} >
               <label for="notify-me" style="margin-left: 5px;"> Påminn mig när det är min tur att spela</label>
               </div>
               {{#if register}}

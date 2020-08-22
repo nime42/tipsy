@@ -105,8 +105,20 @@ function sendPaymentList(to,mailBody,callback) {
         }
     });
 
+}
 
-
+function sendRemainder(group,user,to,callback) {
+    var from="tipsy.nu@gmail.com";
+    var subject="Det är dags att spela!";
+    var text="Hej "+user+"\nNu är det din tur att spela en rad för "+group+".\n";
+    text+="\nSpela tillsammans!\n\nHälsar\nTipsy";
+    sendMail(from,to,undefined,subject,text,undefined, function(err) {
+        if(err) {
+            callback(false,err);
+        } else {
+            callback(true);
+        }
+    });
 }
 
 
@@ -114,5 +126,6 @@ module.exports = {
     sendMail:sendMail,
     sendPasswordReset:sendPasswordReset,
     inviteMember:inviteMember,
-    sendPaymentList:sendPaymentList
+    sendPaymentList:sendPaymentList,
+    sendRemainder:sendRemainder
 }

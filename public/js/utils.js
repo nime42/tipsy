@@ -29,6 +29,7 @@ function collectUserInfo(div, passwordCantBeEmpty) {
   conf.name = $("div").find("#name").val().trim();
   conf.email = $("div").find("#email").val().trim();
   conf.phonenr = $("div").find("#phonenr").val().trim();
+  conf.sendremainder =  $("div").find("#notify-me").prop("checked")?1:0;
 
   conf.password = $("div").find("#password").val().trim();
   var pwd2 = $("div").find("#confirm-password").val().trim();
