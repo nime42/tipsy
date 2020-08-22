@@ -29,6 +29,7 @@ function login() {
                 data: loginInfo,
                 success: function (data, status, jqxhr) {
                     hideModal("#basic-modal");
+                    toggleLogInOutButton();
                     initApp();
                 },
                 error: function (data, status, jqxhr) {
@@ -202,7 +203,6 @@ function resetPassword(resetToken) {
 
 function initApp() {
     $("#info").hide();
-    toggleLogInOutButton();
     initUser();
     initGroups();
     $("#menu-items").show(); //$('.navbar-collapse').collapse('hide');
@@ -330,6 +330,7 @@ function configureUser() {
                     success: function (data, status, jqxhr) {
                         //reloadIfLoggedOut(jqxhr);
                         hideModal("#basic-modal");
+                        toggleLogInOutButton();
                         initApp();
                     },
                     error: function (data, status, jqxhr) {
