@@ -200,3 +200,12 @@ function pasteRows(tableElem,rowLines) {
 function clearRows(tableElem) {
   tableElem.find(".1x2").addClass("off").removeClass("on");
 }
+
+
+function isDemo() {
+  if(globals.userinfo.userid<0 && !globals.activeGroup.admin) {
+    return true;
+  } else {
+    return false;
+  }
+}

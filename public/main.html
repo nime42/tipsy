@@ -39,12 +39,37 @@ h3 {
   font-size: 14px;
   font-weight: bold;
   border-style: none;
+  cursor: pointer;
 }
 
 .round-button:disabled,
 .round-button[disabled]{
   opacity: 0.75;
+  cursor: default;
 }
+
+
+
+.yellow-checkbox:after {
+  content: " ";
+  background-color: #f6d403;
+  display: inline-block;
+  visibility: visible;
+}
+
+.yellow-checkbox:checked:after {
+  content: "\2714";
+  box-shadow: 0px 2px 4px rgba(155, 155, 155, 0.15);
+  border-radius: 3px;
+  height: 14px;
+  display: block;
+  width: 14px;
+  text-align: center;
+  font-size: 11px;
+  color: black;
+}
+
+
 
 
 .fixed {
@@ -52,7 +77,9 @@ h3 {
   top:0px;
 }
 
-
+.clickable {
+  cursor:pointer;
+}
 
 table.bettingtable td {
     padding-left: 3px;

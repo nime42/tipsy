@@ -57,6 +57,7 @@ app.use((req,res,next)=>{
         req.url.startsWith("/favicon.ico") ||   
         req.url.startsWith("/main.html") ||
         req.url.startsWith("/login") ||
+        req.url.startsWith("/demoLogin") ||
         req.url.startsWith("/Villkorstxt.pdf") ||
         req.url.startsWith("/register") ||
         req.url.startsWith("/forgotPassword") ||
@@ -135,6 +136,13 @@ app.post('/login',(req,res)=> {
             res.sendStatus(401);
         }
     });
+})
+
+app.get('/demoLogin', (req, res) => {
+    let userId=-13;
+    sessionHandler.addSession(req,res,userId);
+    res.sendStatus(200);
+       
 })
 
 app.get('/logout',(req,res)=> {

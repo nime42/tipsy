@@ -66,7 +66,21 @@ function logout() {
 }
 
 
-
+function demoLogin() {
+    $.ajax({
+        type: "GET",
+        url: "/demoLogin",
+        cache: false,
+        success: function (data, status, jqxhr) {
+            hideModal("#basic-modal");
+            toggleLogInOutButton();
+            initApp();
+        },
+        error: function (data, status, jqxhr) {
+                modalPopUp("#popup", "Inloggning", "Just nu går det inte att logga in, försök senare!");
+            }
+    });
+}
 
 
 
@@ -347,6 +361,7 @@ function configureUser() {
         });
     } else {
 
+
         $.ajax({
             url: "/getUserInfo",
             cache: false,
@@ -354,6 +369,11 @@ function configureUser() {
                 reloadIfLoggedOut(jqxhr);
                 showModal("#basic-modal", hbsTemplates["main-snippets"]["user-info"](data));
                 $("#basic-modal").find("#reg-or-update").click(function (e) {
+                    if(isDemo()) {
+                        modalPopUp("#popup","Demo", "Detta går inte att uppdatera användarinfo när man är i demo-läge!");
+                        return;
+                    }
+
                     var userInfo = collectUserInfo("#basic-modal");
                     if (userInfo !== null) {
                         $.ajax({
@@ -391,6 +411,11 @@ function configureGroups() {
             modalPopUp("#popup","Skapa grupp", "Gruppnamn saknas!");
             return;
         }
+
+        if(isDemo()) {
+            modalPopUp("#popup","Demo", "Detta går inte att skapa grupper när man är i demo-läge!");
+            return;
+        }        
         $.ajax({
             type: "POST",
             url: "/createGroup",
@@ -668,6 +693,12 @@ function removeInvite(email, rowElem) {
 
 function removeMember(memberId, groupId, rowElem) {
     var fun = function () {
+
+        if(isDemo()) {
+            modalPopUp("#popup","Demo", "det går inte att lämna en grupp när man är i demo-läge!");
+            return;
+        }
+
         $.ajax({
             type: "POST",
             url: "/removeMember",

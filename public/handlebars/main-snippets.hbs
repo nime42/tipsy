@@ -55,31 +55,6 @@
     margin-left:-10px;
 }
 
-
-
-
-
-.yellow-checkbox:after {
-  content: " ";
-  background-color: #f6d403;
-  display: inline-block;
-  visibility: visible;
-}
-
-.yellow-checkbox:checked:after {
-  content: "\2714";
-  box-shadow: 0px 2px 4px rgba(155, 155, 155, 0.15);
-  border-radius: 3px;
-  height: 14px;
-  display: block;
-  width: 14px;
-  text-align: center;
-  font-size: 11px;
-  color: black;
-}
-
-
-
 </style>
 
 <div class="user-info-fields">
@@ -185,6 +160,7 @@
     font-size: 14px;
     font-weight: bold;
     border-style: none;
+    cursor: pointer;
 }
 
  .login-btn:hover {
@@ -252,6 +228,7 @@
     font-size: 14px;
     font-weight: bold;
     border-style: none;
+    cursor:pointer;
 }
 </style>
 
@@ -268,8 +245,8 @@
             <div>
               <div class="groups" style="margin-bottom: 7px;">
                 <input class="group-name" type="text" style="border-radius: 15px 0 0 15px;width:auto;" value="{{groupname}}" onkeyup="$(this).parent().find('.save-button').css('color', 'lightgreen').prop('disabled', false)">
-                <i style="color:#428bca" class="fa fa-check-circle save-button" onclick="updateGroup({{groupid}},$(this).parent().find('.group-name').val(),$(this))"></i>
-                <i style="color:red" class="fa fa-remove" onclick="deleteGroup({{groupid}},'{{groupname}}',$(this).parent())"></i>
+                <i style="color:#428bca;" class="fa fa-check-circle save-button clickable" onclick="updateGroup({{groupid}},$(this).parent().find('.group-name').val(),$(this))"></i>
+                <i style="color:red;" class="fa fa-remove clickable" onclick="deleteGroup({{groupid}},'{{groupname}}',$(this).parent())"></i>
               </div>
             </div>
 
@@ -319,13 +296,12 @@
  
 #invite button {
     border-radius:0 15px 15px 0;
-
- 
     background: #f6d403;
     color: black;
     font-size: 14px;
     font-weight: bold;
     border-style: none;
+    cursor: pointer;
 }
 
 #member-table th {
@@ -362,12 +338,12 @@
                       <td nowrap>{{phonenr}}</td>
                       <td nowrap>{{username}}</td>
                       {{#if ../admin}}
-                        <td onclick="moveTableRow($(this).parent(),'up')"><i style="color:darkcyan" class="fa fa-arrow-up"></i></td>
-                        <td onclick="moveTableRow($(this).parent(),'down')"><i style="color:darkcyan" class="fa fa-arrow-down"></i></td>
+                        <td onclick="moveTableRow($(this).parent(),'up')"><i style="color:darkcyan;" class="fa fa-arrow-up clickable"></i></td>
+                        <td onclick="moveTableRow($(this).parent(),'down')"><i style="color:darkcyan;" class="fa fa-arrow-down clickable"></i></td>
                       {{/if}}
                       <td id="sortorder" style="display: none;">{{sortorder}}</td>
                       {{#if isDeletable}}
-                        <td style="border-style:none;"><i style="color:red;" class="fa fa-remove" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></i></td>
+                        <td style="border-style:none;"><i style="color:red;" class="fa fa-remove clickable" onclick="removeMember('{{userid}}','{{groupid}}',$(this).parent().parent())"></i></td>
                         <td style="border-style:none;width:15px"></td>
                       {{/if}}
                     </tr>
@@ -391,7 +367,7 @@
                     {{#each invites}}
                     <tr>
                       <td style="padding-left: 5px;">{{email}}</td>
-                      <td><i style="color:red;font-size:14px;" class="fa fa-remove" onclick="removeInvite('{{email}}',$(this).parent().parent())"></i></td>
+                      <td><i style="color:red;font-size:14px;" class="fa fa-remove clickable" onclick="removeInvite('{{email}}',$(this).parent().parent())"></i></td>
                     </tr>
                    {{/each}}
 
@@ -543,7 +519,7 @@
                       <td nowrap style="text-align:center">{{nrofrights}}</td>
                       <td nowrap style="text-align:right">{{toLocalNumber profit}} kr</td>
                       {{#if isDeletable}}
-                        <td><i style="color:red;" class="fa fa-remove" onclick="removeEvent({{id}},$(this).parent().parent())"></i></td>
+                        <td><i style="color:red;" class="fa fa-remove clickable" onclick="removeEvent({{id}},$(this).parent().parent())"></i></td>
                       {{/if}}
 
                     </tr>
@@ -659,7 +635,7 @@
           <button type="button" class="round-button" onclick="makePayment($('#payment-amount').val(),{{surplus}},$('#mail-list').val())">Utför</button>
           <button type="button" class="round-button close-modal">Avbryt</button>
           &nbsp;&nbsp;
-          <input type="checkbox"  id="mail-list" value="true" checked>
+          <input type="checkbox" class="yellow-checkbox"  id="mail-list" value="true" checked>
           <label class="form-check-label" for="mail-list">Maila listan till mig</label>
             
         </div>
@@ -821,7 +797,7 @@
 
 
   <button id="paste" type="button" class="round-button" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'))">Klistra in</button>
-  <span style="color: #f6d403;margin: 7px;font-size: 15px;" class="fa fa-info-circle"  onclick='showPastingRowsInfo()'></span>
+  <span style="color: #f6d403;margin: 7px;font-size: 15px;" class="fa fa-info-circle clickable"  onclick='showPastingRowsInfo()'></span>
 
   <table class="bettingtable play-table" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;min-width:300px;" >
     <colgroup>
@@ -965,6 +941,8 @@
 {{/if}}
 Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{runnerUp}}</b>{{/if}}.
 {{#if extraBets }}
+ <br/>
+ <br/>
  <b>{{extraBets}}</b> ligger på plus och får gärna lägga ett extra spel!
 {{/if}}
 </p>
@@ -1019,12 +997,12 @@ Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{
 .forgot-password button {
     border-radius:0 15px 15px 0;
     height: 45px;
- 
     background: #f6d403;
     color: black;
     font-size: 14px;
     font-weight: bold;
     border-style: none;
+    cursor: pointer;
 }
 
 
@@ -1401,7 +1379,6 @@ Tipsy förbehåller sig även rätten att helt eller delvis och utan föregåend
 <p>Som användare kan du skapa en grupp. Till gruppen kan du bjuda in flera användare. Detta gör du genom att ange mejladressen för de personer som ska ingå i ert spelgäng. Den personen får en länk för vidare registrering av användare. </p>
 Alla användare kan i sin tur skapa nya grupper och kan då tillhöra flera grupper.
 
-Bild skapa grupp
 
 <p>Som skapare av en grupp kan du när som helst lägga till eller ta bort medlemmar, utan problem. Adderas en person kommer den automatiskt först i spelturordningen (läs mer under Turordning). </p>
 En gruppmedlem som blivit inbjuden till en grupp kan endast ta bort sig själv från en grupp. 
@@ -1412,12 +1389,8 @@ En gruppmedlem som blivit inbjuden till en grupp kan endast ta bort sig själv f
 <p>På så vis finns det en definierad turordning. Dock hanterar Tipsy ett eventuellt avsteg från turordningen i det fall någon annan än den som stod på tur lägger ett spel. Bytet innebär en ny turordning. Använd de gröna pilarna vid varje användare i gruppen för att ändra turordningen.</p>
 
 <h1>Lägga ett spel</h1>
-<p>Den som står på tur lägger ett spel hos Svenska spel enligt gruppens överenskomna belopp, frekvens och spelform (Stryktipset, Topptipset eller Europatipset). För att exportera spelet till Tipsy använder du funktionen Dela och Kopiera spel som du hittar längst ner vid ditt spel hos Svenska spel. Öppna Tispy och välj Spela och därefter Klistra in. </p>
+<p>Den som står på tur lägger ett spel hos Svenska spel enligt gruppens överenskomna belopp, frekvens och spelform (Stryktipset, Topptipset eller Europatipset). För att exportera spelet till Tipsy använder du funktionen Dela och Kopiera spel som du hittar längst ner vid ditt spel hos Svenska spel. Öppna Tipsy och välj Spela och därefter Klistra in. </p>
 
-Bilder på dela
-Bild på kopiera
-Bild på klistra in
-Bild på spel lagt hos Tipsy
 
 <p>Ett spel som endast registreras hos Tipsy är inte ett giltigt spel och eventuella vinster kan ej avkrävas Tipsy.</p>
 
@@ -1430,8 +1403,6 @@ Bild på spel lagt hos Tipsy
 <h1>Vinster</h1>
 <p>Alla eventuella vinster utbetalas av Svenska spel till den som lade omgångens spel. Tipsy hanterar endast redovisningen av vinsten för gruppens medlemmar. I redovisningen framgår storleken på vinsten, antal rätt, vem som vann och hur den ska fördelas om gruppen väljer att plocka ut vinsten. </p>
 
-Bild på vinst
-Bild på uttag av vinst
 
 <p>Om gruppen väljer att inte plocka ut vinsten förvaltas vinsten (via spelarkonto hos Svenska spel) alltid av den användare som lade det vinnande spelet.</p>
 
@@ -1439,7 +1410,6 @@ Bild på uttag av vinst
 <p>Under fliken Händelser kan gruppen se all aktivitet kopplad till spel, vinster och uttag av vinster.</p>
 <p>En användare som har ett plussaldo kan härifrån också välja att göra en utbetalning till gruppens medlemmar.</p>
 
-Bild händelser
 
 <h1>Statistik</h1>
 
@@ -1484,6 +1454,9 @@ Bild händelser
 <p>Börja med att skapa en användare och logga in. Som inloggad skapar du en grupp - ert spelgängs grupp. Därefter skickar du ut inbjudningar via mejl till de som ska ingå i ert spelgäng. Sedan är ni igång!</p>
 
 <p>Mer information finner du på <a href="https://instagram.com/tipsy.nu?igshid=1rxeis9l1zhil" target="_blank">@tipsy.nu</a> eller som inloggad under fliken Kom-igång.</p>      
+
+<p>Vill du veta lite mer om hur det ser ut innan du skapar en egen användare och grupp så kan du logga in i <a href="javascript:demoLogin();" onclick="">Tipsy Demo</a></p>
+
 
 
 <div><button type="button" class="round-button close-modal">Ok</button></div>
