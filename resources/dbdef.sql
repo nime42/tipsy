@@ -21,7 +21,7 @@ CREATE TABLE draws (id integer PRIMARY KEY AUTOINCREMENT, groupid INTEGER REFERE
 CREATE TABLE "users" ( "id" INTEGER PRIMARY KEY AUTOINCREMENT, "username" TEXT);
 
 
-CREATE TABLE "userinfo" ( "userid" integer PRIMARY KEY, "password" TEXT, "email" TEXT, "phonenr" TEXT, "name" TEXT, FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE ON UPDATE NO ACTION);
+CREATE TABLE "userinfo" ( "userid" integer PRIMARY KEY, "password" TEXT, "email" TEXT, "phonenr" TEXT, "name" TEXT,sendremainder boolean, FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE ON UPDATE NO ACTION);
 
 
 CREATE TABLE group_members (userid integer NOT NULL, groupid integer NOT NULL, sortorder INTEGER, admin BOOLEAN DEFAULT false, FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE NO ACTION, FOREIGN KEY (groupid) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION);
