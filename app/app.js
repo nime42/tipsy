@@ -62,7 +62,8 @@ app.use((req,res,next)=>{
         req.url.startsWith("/register") ||
         req.url.startsWith("/forgotPassword") ||
         req.url.startsWith("/resetPassword") ||
-        req.url.startsWith("/shutdown")
+        req.url.startsWith("/shutdown") ||
+        req.url.startsWith("/updateAllResults")
     ) {
         next();
         return;
@@ -112,6 +113,16 @@ app.get("/shutdown",(req,res) => {
     }
 
 })
+
+app.get("/updateAllResults",(req,res) => {
+    var isLocal = (req.connection.localAddress === req.connection.remoteAddress);
+    if(isLocal) {
+        res.sendStatus(200);
+        updateAllResults();
+    }
+
+})
+
 
 app.get("/systemStatistics",(req,res) => {
     statisticsManager.gatherStatistics('./log/access.log',function(stats) {
@@ -534,6 +545,45 @@ function updateResults(groupId, callback = console.log) {
     });
 
 }
+
+function updateAllResults() {
+    let sql = "select distinct drawnumber,product from draws where drawstate<>'Finalized'";
+    let dbi = db.getDbInstance();
+    const notFinalizedDraws = dbi.prepare(sql).all();
+    matchInfoHandler.getDrawAndResultCache(notFinalizedDraws, function (cache) {
+        sql = "select distinct groupid from draws where drawstate<>'Finalized'";
+        const rows = dbi.prepare(sql).all();
+        for (let i=0;i<rows.length;i++) {
+            let groupId=rows[i].groupid;
+            console.log("updating all results in group "+groupId);
+            sql = "select id,drawnumber,product from draws where drawstate<>'Finalized' and groupid=?";
+            let drawsToUpdate = dbi.prepare(sql).all(groupId);
+            let nrOfFinalized = 0;
+            drawsToUpdate.forEach(function (r) {
+                let drawId = r.id;
+                let drawNumber = r.drawnumber;
+                let product = r.product;
+                let drawResult = cache[product + ";" + drawNumber];
+    
+                if (drawResult.status) {
+                    checkDraw(drawId, drawResult.response);
+                    if (drawResult.response.draws && drawResult.response.draws.drawState === "Finalized") {
+                        nrOfFinalized++;
+                    }
+                }
+    
+            });
+    
+            if(drawsToUpdate.length>0 && nrOfFinalized===drawsToUpdate.length) {
+                sendRemainder(groupId);
+            }
+        }
+
+    })
+   
+}
+
+
 
 function checkDraw(drawId,SvSpResponse) {
     //console.log("checkDraw",drawId,SvSpResponse);

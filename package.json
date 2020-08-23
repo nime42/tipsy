@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "initDB": "node app/db/createDB.js resources/tipsy.db resources/dbdef.sql",
     "start": "node app/app.js",
-    "shutdown": "curl --silent --output /dev/null 'http://localhost:8080/shutdown'; echo shutting down eventual running instance",
+    "updateAllResults": "curl --silent --fail --show-error \"http://localhost:8080/updateAllResults\"",
+    "shutdown": "curl --silent --fail --show-error \"http://localhost:8080/shutdown\"",
     "createDemoGroup": "node app/db/createDemoGroup.js"
   },
   "author": "Nils Meinhard",
