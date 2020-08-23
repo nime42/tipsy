@@ -9,7 +9,6 @@ delete from users where id<0;
 
 delete from groups where id<0;
 
-
 INSERT INTO users (id,username) VALUES (
 -10,'Lars-Gunnar');
 INSERT INTO users (id,username) VALUES (
