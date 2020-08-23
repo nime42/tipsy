@@ -4,5 +4,5 @@ fs = require('fs');
 var db = new sqlite3('./resources/tipsy.db');
 db.pragma("foreign_keys = ON");
 
-const demogroup = fs.readFileSync('misc/create_demo.sql', 'utf8');
+const demogroup = fs.readFileSync('resources/create_demo.sql', 'utf8');
 db.exec(demogroup);
