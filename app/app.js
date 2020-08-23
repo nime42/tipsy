@@ -547,11 +547,12 @@ function updateResults(groupId, callback = console.log) {
 }
 
 function updateAllResults() {
-    let sql = "select distinct drawnumber,product from draws where drawstate<>'Finalized'";
+    //Skip demo-groups e.g groupid< 0
+    let sql = "select distinct drawnumber,product from draws where drawstate<>'Finalized' and groupid>=0";
     let dbi = db.getDbInstance();
     const notFinalizedDraws = dbi.prepare(sql).all();
     matchInfoHandler.getDrawAndResultCache(notFinalizedDraws, function (cache) {
-        sql = "select distinct groupid from draws where drawstate<>'Finalized'";
+        sql = "select distinct groupid from draws where drawstate<>'Finalized' and groupid>=0";
         const rows = dbi.prepare(sql).all();
         for (let i=0;i<rows.length;i++) {
             let groupId=rows[i].groupid;
