@@ -1,5 +1,5 @@
 /*
-creates a demogroup
+creates a demogroup 
 */
 pragma foreign_keys = ON;
 delete from draws where id<0;
