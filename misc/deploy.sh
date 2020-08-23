@@ -8,6 +8,7 @@ rm -rf $REPO_DIR
 git clone $REPO_URL $REPO_DIR
 rm -rf $TARGET_DIR/public $TARGET_DIR/app
 cp -r $REPO_DIR/public $REPO_DIR/app $REPO_DIR/package.json $TARGET_DIR/
+cp -r $REPO_DIR/resources/create_demo.sql $TARGET_DIR/resources
 rm -rf $REPO_DIR
 cd $TARGET_DIR/
 npm update
