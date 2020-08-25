@@ -31,16 +31,16 @@ const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 
-app.use((req,res,next)=>{
-    if(!req.headers.host) {
+app.use((req, res, next) => {
+    if (!req.headers.host) {
         res.sendStatus(406);
     }
 
     if (req.headers.host.indexOf('localhost') > -1 || req.secure) {
         next()
-} else {
+    } else {
         res.redirect('https://' + req.headers.host + req.url);
-}
+    }
 
 }); 
 
