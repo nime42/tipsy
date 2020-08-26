@@ -292,7 +292,7 @@ table.bettingtable td {
       }
 
 
-      if (getCookie("SessId")) {
+      if (getCookie("SessId") && globals.lastGroup!=-10) { //if lastGroup=-10 then it's the demogroup, go back to startpage when reloading
         toggleLogInOutButton();
         initApp();
       } else {
