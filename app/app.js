@@ -7,6 +7,7 @@ var sessionHandler=require('./utils/sessionHandler.js');
 var matchInfoHandler=require('./utils/matchInfoHandler.js');
 var webScraper=require('./utils/webScraper.js');
 var statisticsManager=require('./utils/statisticsManager.js');
+require('log-timestamp');
 
 sessionHandler.resumeSessions(db.getDbInstance());
 
