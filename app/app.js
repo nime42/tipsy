@@ -35,6 +35,7 @@ app.use(cookieParser());
 app.use((req, res, next) => {
     if (!req.headers.host) {
         res.sendStatus(406);
+        return;
     }
 
     if (req.headers.host.indexOf('localhost') > -1 || req.secure) {
