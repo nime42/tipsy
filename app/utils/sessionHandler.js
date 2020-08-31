@@ -31,7 +31,7 @@ function purge() {
     sessions=sessions.filter(s=> (now-s.timestamp)<maxAge*1000);
 }
 
-var maxAge=2*60*60; //age in seconds
+var maxAge=5*60*60; //age in seconds
 var intervalTimer=setInterval(purge,maxAge*1000);
 function setPurgeIntervall(seconds) {
     clearInterval(intervalTimer);
