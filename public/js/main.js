@@ -1212,6 +1212,7 @@ function parseRows(rows) {
             result: a[3],
             status: a[4],
             matchstart: a[5],
+            matchtime:a[6],
             on1: a[2].match("1") != undefined ? "on" : "off",
             onX: a[2].match("X") != undefined ? "on" : "off",
             on2: a[2].match("2") != undefined ? "on" : "off",
@@ -1266,8 +1267,8 @@ function parseRows(rows) {
                 }
             }
             
-        } else if (res.status.match(/.*slut.*/i)===null) {//om status inte är Avslutad","Slut efter förlängning","Slut efter straffläggning" etc
-            res.result = "(" + res.result + ")";
+        } else if (res.status.match(/.*slut.*/i)) {//om status är Avslutad","Slut efter förlängning","Slut efter straffläggning" etc
+            res.matchtime = "FT";
         }
 
         return res;

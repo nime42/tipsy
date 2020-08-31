@@ -84,10 +84,8 @@ function getDrawAndResultCache(draws, callback=console.log) {
 }
 
 /*
-var draws=[
-{drawnr:4648,product:"Stryktipset"},
-{drawnr:4651,product:"Stryktipset"}
-];
+var draws=[ { drawnumber: 4652, product: 'Stryktipset' } ];
+
 getDrawAndResultCache(draws);
 //getDraw2("europatipset",1966,function(status,data) {console.log(status,data)});
 */
@@ -168,7 +166,6 @@ function parseForecast(data) {
 }
 
 function parseDraw(data) {                
-
     let r = data.draw;
 
     if(r===undefined) {
@@ -190,6 +187,7 @@ function parseDraw(data) {
         row.odds=e.odds;
         row.svenskaFolket=e.svenskaFolket;
         row.match=e.match;
+        row.matchTime=getMatchTime(row.match);
         row.status=e.match.status;//To harmonize with resultInfo (see parseResult)
         let current=e.match.result.find(e=>(e.description==="Full time" ));
         if(current) {
@@ -210,7 +208,32 @@ function parseDraw(data) {
     return res;
 }
 
+function getMatchTime(match) {
+    console.log(match.status);
+    if(match.status.match(/Halvtid/i)) {
+        console.log("HT");
+        return "HT";
+    }
 
+    if(match.status.match(/halvlek/i)) {
+        let d=new Date(match.statusTime);
+        let now=new Date();
+        let minutes=Math.ceil((now-d)/(1000*60));
+        
+        if(minutes>45) {
+            minutes=45;
+        }
+        if(match.status.match(/andra halvlek/i)) {
+            minutes+=45;
+        }
+        console.log(minutes);
+        return minutes+"'";
+
+    } else {
+        return null;
+    }
+    
+}
 
 module.exports={
     getPlayable:getPlayable,

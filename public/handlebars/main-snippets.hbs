@@ -862,7 +862,8 @@
   <table class="bettingtable" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;" >
     <colgroup>
       <col span="1" style="width: 1%;">
-      <col span="1" style="width: 94%;">
+      <col span="1" style="width: 90%;">
+      <col span="1" style="width: 4%;">
       <col span="1" style="width: 1%";>
       <col span="1" style="width: 1%;">
       <col span="1" style="width: 1%;">
@@ -874,6 +875,7 @@
     <tr id="row-{{rownr}}" class="draw-row">
       <td>{{rownr}}.</td>
       <td nowrap>{{teams}}</td>
+      <td style="color:#f6d403;text-align:right">{{#ifnoteq ../drawstate "Finalized" }} {{matchtime}} {{/ifnoteq}}</td>
       <td nowrap style="text-align:center">{{result}}</td>
       <td><button id="col-1" disabled class="1x2 {{status1}} {{../productClass}} {{on1}}">1</button></td>
       <td><button id="col-X" disabled class="1x2 {{statusX}} {{../productClass}} {{onX}}">X</button></td>

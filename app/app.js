@@ -623,6 +623,7 @@ function checkDraw(drawId,SvSpResponse) {
         row.rownr = e.eventNumber;
         row.result = e.result;
         row.matchStart=e.matchStart;
+        row.matchTime=e.matchTime;
         matchRows.push(row);
 
     });
