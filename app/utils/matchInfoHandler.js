@@ -209,7 +209,6 @@ function parseDraw(data) {
 }
 
 function getMatchTime(match) {
-    console.log(match.status);
     if(match.status.match(/Halvtid/i)) {
         console.log("HT");
         return "HT";
@@ -226,7 +225,6 @@ function getMatchTime(match) {
         if(match.status.match(/andra halvlek/i)) {
             minutes+=45;
         }
-        console.log(minutes);
         return minutes+"'";
 
     } else {

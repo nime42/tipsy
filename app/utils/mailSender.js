@@ -30,7 +30,7 @@ function sendMail(from,to,cc,subject,text,html, callback) {
         text: text,
         html:html
       };
-      //console.log(mailOptions);
+      console.log("Sending mail with subject '"+mailOptions.subject+"' to "+mailOptions.to);
       transporter.sendMail(mailOptions, callback);      
 }
 
