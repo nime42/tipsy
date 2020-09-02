@@ -938,6 +938,22 @@
 
 
 <script id="playing-order" type="text/x-handlebars-template">
+<style>
+  .playing-order h4 {
+    margin-top: 2px;
+    font-size: 15px;
+    margin-bottom: 3px;
+    color:#f6d403;
+  }
+   .playing-order p {
+      margin-top: 0px;
+      margin-bottom: 3px;
+      margin-left: 5px;
+   }
+
+</style>
+<div class="playing-order">
+<h4>Aktuellt</h4>
 {{#if lastPlayer }}
   <p><b>{{lastPlayer}}</b> spelade den <b>{{lastPlayed}}</b>.<br/>
 {{/if}}
@@ -948,7 +964,7 @@ Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{
  <b>{{extraBets}}</b> ligger på plus och får gärna lägga ett extra spel!
 {{/if}}
 </p>
-
+</div>
 
 
 </script>
@@ -957,9 +973,9 @@ Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{
 <script id="top-order" type="text/x-handlebars-template">
             
               <table>
-                <caption style="color:white;padding-top:0;padding-bottom: 3px;text-align: left"><b>Topplistan (antal rätt/spel)</b></caption>
+                <caption style="color:#f6d403;font-size:15px;padding-top:0;padding-bottom: 3px;text-align: left"><b>Topplistan</b></caption>
                 {{#each list}}
-                <tr><td style="padding-right:5px"><b>{{pos}}.</b></td><td style="padding-right:20px">{{name}}</td><td style="text-align:right"><b>{{average}}</b></td></tr>
+                <tr><td style="padding-right:5px"><b>{{pos}}.</b></td><td style="padding-right:20px">{{name}}</td><td style="text-align:left"><b>{{average}} {{#ifeq pos 1}}(antal rätt/spel) {{/ifeq}}</b></td></tr>
                 {{/each}}
               </table>
 </script>
