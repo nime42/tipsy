@@ -1,2 +1,2 @@
-openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout private.key -out certificate.crt -subj "/C=SE/ST=Stockholm/L=Stockholm/O=nimeproject/OU=IT Department/CN=nimeproject.com"
-copy certificate.crt ca_bundle.crt
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -keyout ..\resources\private.key -out ..\resources\certificate.crt -subj "/C=SE/ST=Stockholm/L=Stockholm/O=nimeproject/OU=IT Department/CN=nimeproject.com"
+copy ..\resources\certificate.crt ..\resources\ca_bundle.crt
