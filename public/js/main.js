@@ -273,6 +273,10 @@ function initGroups() {
 
         $('#available-groups').append($('<option>', { value: -1, text: "Välj grupp...", }).prop("disabled", true));
 
+        if(globals.usergroups.length===0) {
+            $("#start-info").show();
+        }
+
         for (var i = 0; i < globals.usergroups.length; i++) {
             $('#available-groups').append($('<option>', { value: globals.usergroups[i].groupid, text: globals.usergroups[i].groupname }));
         }
@@ -298,6 +302,11 @@ function initGroups() {
             $("#latest-games").show();
             $("#info").hide();
             $("#group-title").text(globals.activeGroup.groupname ? globals.activeGroup.groupname : "");
+
+            if($("#start-info").is(":visible")) {
+                $("#start-info").hide();
+                configureGroupMembers();
+            }
 
             updateResults(globals.activeGroup.groupid);
         })
