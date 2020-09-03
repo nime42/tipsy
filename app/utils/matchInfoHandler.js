@@ -210,7 +210,6 @@ function parseDraw(data) {
 
 function getMatchTime(match) {
     if(match.status.match(/Halvtid/i)) {
-        console.log("HT");
         return "HT";
     }
 
@@ -236,7 +235,8 @@ function getMatchTime(match) {
 module.exports={
     getPlayable:getPlayable,
     getDrawAndResult:getDrawAndResult,
-    getDrawAndResultCache:getDrawAndResultCache
+    getDrawAndResultCache:getDrawAndResultCache,
+    getMatchDates:getMatchDates
 }
 
 
