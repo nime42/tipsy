@@ -209,3 +209,79 @@ function isDemo() {
     return false;
   }
 }
+
+
+
+/**
+ * Make a html table sortable by clicking on its header columns
+ * @param {JQuery-element} table - a jquery-element that i a html-table
+ * @param {Object} [options] - {
+ *                    cmpFun: compare function used when sorting (default string compare),
+ *                    initialOrder: "desc"|"asc" sortorder to begin with (default "desc")
+ *                    initialCol: column number to use for initial-sort (if missing, no sorting)
+ *                     
+ *                  }
+ */
+
+function initSortableTable(table,options) {
+
+  let cmpFun=function(e1,e2) {return e1.localeCompare(e2);};
+  let initialCol=undefined;
+  let initialOrder="desc";
+  if (options) {
+    if (options.cmpFun) {
+      cmpFun = options.cmpFun;
+    }
+    if(options.initialOrder && options.initialOrder.match(/asc/i)) {
+      initialOrder="asc";
+    }
+    initialCol=options.initialCol;
+  }
+  let iconClass="fa-chevron-circle-up";
+  if(initialOrder==="asc") {
+    iconClass="fa-chevron-circle-down";
+  }
+
+
+  table.find("th").each((i,e)=>{$(e).html($(e).html()+"<i style='padding-left:5px;color:#f6d403;display:none' class='fa "+iconClass+" clickable'></i>")});
+  table.find("th").each((i,e)=>{
+    $(e).click(e=>{
+      table.find(".clickable").hide();
+      table.find("th:nth-child("+(i+1)+") i").toggleClass('fa-chevron-circle-down fa-chevron-circle-up');
+      table.find("th:nth-child("+(i+1)+") i").show();
+
+      let tableVals=[];
+      table.find("tbody tr").each((i,e)=>{
+        let row=[];
+        $(e).find("td").each((i2,e2)=>{
+          row.push($(e2).text());
+        });
+        tableVals.push(row);
+      });
+      let sorted;
+      if(table.find("th:nth-child("+(i+1)+") i").hasClass("fa-chevron-circle-down")) {
+        console.log("sort desc");
+        sorted=tableVals.sort((e1,e2)=>{return cmpFun(e1[i],e2[i])});
+      } else {
+        console.log("sort asc");
+        sorted=tableVals.sort((e1,e2)=>{return cmpFun(e2[i],e1[i])});
+      }
+
+      let r=0;
+      table.find("tbody tr").each((i,e)=>{
+        let row=sorted[r++];
+        let c=0;
+        $(e).find("td").each((i2,e2)=>{
+          $(e2).text(row[c++]);
+        });
+      });
+
+
+    })
+  });
+
+  if(initialCol) {
+    table.find("th:nth-child("+(initialCol+1)+")").click();
+  }
+  
+}

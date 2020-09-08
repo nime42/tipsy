@@ -775,6 +775,17 @@ function configureStatistics() {
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             showModal("#basic-modal", hbsTemplates["main-snippets"]["statistics"](data));
+
+            let cmpFun = function (e1, e2) {
+                e1 = e1.replaceAll(/\s/g, "").replace(/(\(.*kr\))|(kr$)/, "").replaceAll("−", "-");
+                e2 = e2.replaceAll(/\s/g, "").replace(/(\(.*kr\))|(kr$)/, "").replaceAll("−", "-");
+                if (isNaN(Number(e1)) || isNaN(Number(e2))) {
+                    return e1.localeCompare(e2);
+                } else {
+                    return e1 - e2;
+                }
+            }
+            initSortableTable($("#basic-modal").find('#stat-table'), {cmpFun:cmpFun,initialOrder:"asc",initialCol:1});
         }
     });
 
