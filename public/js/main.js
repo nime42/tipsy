@@ -499,7 +499,7 @@ function configureGroups(showApplyTab=false) {
                     if (data.status === 404) {
                         modalPopUp("#popup","Medlemskap", "Hittar inte gruppen!<br/>Kontrollera att namnet är rättstavat!");
     
-                    } if (data.status === 409) {
+                    } else if (data.status === 409) {
                         modalPopUp("#popup","Medlemskap", "Du är redan medlem i denna grupp!");
 
                     } else {

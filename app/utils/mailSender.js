@@ -122,10 +122,26 @@ function sendRemainder(group,user,to,callback) {
 }
 
 
+function sendApprovalNotification(group,to,callback) {
+    var from="tipsy.nu@gmail.com";
+    var subject="Nya medlemsansökning att godkänna";
+    var text="Hej\nEn ny medlem vill gå med i gruppen '"+group+"'.\n";
+    text+="Logga in på https://www.tipsy.nu för att titta på ansökningen (under menyn Medlemmar)!"
+    text+="\nSpela tillsammans!\n\nHälsar\nTipsy";
+    sendMail(from,to,undefined,subject,text,undefined, function(err) {
+        if(err) {
+            callback(false,err);
+        } else {
+            callback(true);
+        }
+    });
+}
+
 module.exports = {
     sendMail:sendMail,
     sendPasswordReset:sendPasswordReset,
     inviteMember:inviteMember,
     sendPaymentList:sendPaymentList,
-    sendRemainder:sendRemainder
+    sendRemainder:sendRemainder,
+    sendApprovalNotification:sendApprovalNotification
 }

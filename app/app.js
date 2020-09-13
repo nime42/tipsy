@@ -308,6 +308,7 @@ app.post('/applyForMembership',(req,res)=> {
     db.applyForMembership(groupName,userId,function(status,mess) {
         if(status===true) {
             res.sendStatus(200);    
+            notifyAdmin(groupName);  
         } else {
             if(mess==="NO_SUCH_GROUP") {
                 res.sendStatus(404); 
@@ -322,6 +323,22 @@ app.post('/applyForMembership',(req,res)=> {
 
     });
 })
+
+function notifyAdmin(groupName) {
+    let dbI=db.getDbInstance();
+    let sql="select email from v_group_members where groupname=? and admin=true;"
+    let rows=dbI.prepare(sql).all(groupName);
+
+    let admins=rows.map(r=>{return r.email}).join(",");
+    if(admins!="") {
+        mailSender.sendApprovalNotification(groupName,admins,function(status,data) {
+            if(!status) {
+                console.log("notifyAdmin",data);
+            }
+        })
+    }
+}
+
 
 app.post('/removeApplicant',(req,res)=> {
     let adminId=sessionHandler.getSession(req).userId;
