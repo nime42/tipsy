@@ -286,20 +286,85 @@ app.get('/getGroups',(req,res)=> {
 })
 
 
+app.post('/searchGroups',(req,res)=> {
+    var searchVal=req.body.searchVal;
+    db.searchGroups(searchVal,function(status,groups){
+        if(status) { 
+            res.json(groups); 
+        } else {
+            console.log("searchGroups",groups);
+            res.sendStatus(404);  
+
+        }
+    })
+
+})
+
+app.post('/applyForMembership',(req,res)=> {
+    var groupName=req.body.groupName;
+    var userId=sessionHandler.getSession(req).userId;
+      
+
+    db.applyForMembership(groupName,userId,function(status,mess) {
+        if(status===true) {
+            res.sendStatus(200);    
+        } else {
+            if(mess==="NO_SUCH_GROUP") {
+                res.sendStatus(404); 
+            } else if(mess==="ALREADY_MEMBER") {
+                res.sendStatus(409); 
+            } else if("APPLICATION_ALREADY_EXISTS") {
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(500);                
+            }
+       }
+
+    });
+})
+
+app.post('/removeApplicant',(req,res)=> {
+    let adminId=sessionHandler.getSession(req).userId;
+    let userId=req.body.userId;
+    let groupId=req.body.groupId;
+    db.removeApplicant(adminId,userId,groupId, function(status,err) {
+        if(status) {
+            res.sendStatus(200);                    
+        } else {
+            res.sendStatus(500);
+        }
+    })
+});
+
+app.post('/approveApplicant',(req,res)=> {
+    let adminId=sessionHandler.getSession(req).userId;
+    let userId=req.body.userId;
+    let groupId=req.body.groupId;
+    db.approveApplicant(adminId,userId,groupId, function(status,data) {
+        if(status) {
+            res.json(data);                   
+        } else {
+            res.sendStatus(500);
+        }
+    })
+});
+
+
 app.post('/getGroupMembers',(req,res)=> {
     let userId=sessionHandler.getSession(req).userId;
     let groupId=req.body.groupId
     db.getGroupMembers(userId,groupId,function(status,rows){
         if(status) { 
             let members=rows;
-            db.getInvites(userId,groupId,function(status,rows){
+            db.getInvitesAndApplications(userId,groupId,function(status,data){
                 if(status) {
                     res.json({
                         members:members,
-                        invites:rows
+                        invites:data.invites,
+                        applications:data.applications
                     });  
                 } else {
-                    console.log("getInvites",rows);
+                    console.log("getInvites",data);
                     res.sendStatus(500);  
         
                 }

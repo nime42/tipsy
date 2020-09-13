@@ -246,6 +246,10 @@ function initUser() {
     getUserInfo(function (data) {
         globals.userinfo = data;
         $("#logged-in-user").text(globals.userinfo.username);
+        if(data.approvedgroups && data.approvedgroups.length>0) {
+            let message="Grattis, du är nu medlem i följande nya grupper:<br/>"+data.approvedgroups.map(function(e) {return e.groupname;}).join("<br/>");
+            modalPopUp("#popup","Din ansökan är godkänd",message);
+        }
 
     });
 }
@@ -303,10 +307,6 @@ function initGroups() {
             $("#info").hide();
             $("#group-title").text(globals.activeGroup.groupname ? globals.activeGroup.groupname : "");
 
-            if($("#start-info").is(":visible")) {
-                $("#start-info").hide();
-                configureGroupMembers();
-            }
 
             updateResults(globals.activeGroup.groupid);
         })
@@ -322,9 +322,19 @@ function initGroups() {
             globals.lastGroup=undefined;
         }
 
-        if (globals.activeGroup.groupid === undefined && globals.usergroups.length > 0) {
+
+
+        if ((globals.activeGroup.groupid === undefined && globals.usergroups.length > 0) || globals.newGroupAdded) {
             globals.activeGroup = globals.usergroups[0];
         }
+
+
+        if(globals.newGroupAdded) {
+            globals.newGroupAdded=undefined;
+            $("#start-info").hide();
+            configureGroupMembers();
+        }
+
 
         if (globals.activeGroup.groupid ) {
             $('#available-groups').val(globals.activeGroup.groupid).trigger("change");
@@ -408,11 +418,14 @@ function configureUser() {
 }
 
 
-function configureGroups() {
+function configureGroups(showApplyTab=false) {
     data = globals.usergroups.filter(function (e) { return e.admin == 1; });
 
 
     showModal("#basic-modal", hbsTemplates["main-snippets"]["groups"](data));
+    if(showApplyTab) {
+        $("#basic-modal").find("#tabbed2").prop("checked", true);    
+    }
 
     $("#basic-modal").find("#add-group").click(function (e) {
         var newGroup = $("#basic-modal").find("#new-group").val().trim();
@@ -433,9 +446,10 @@ function configureGroups() {
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 $("#basic-modal").find("#new-group").val("");
+                globals.newGroupAdded=true;
                 initGroups();
                 hideModal("#basic-modal");
-                modalPopUp("#popup", "Skapa grupp", "Grupp skapad!");
+                modalPopUp("#popup", "Skapa grupp", "Grupp skapad!<br>Glöm inte att bjuda in dina vänner!");
             },
             error: function (data, status, jqxhr) {
                 if (data.status === 403) {
@@ -448,6 +462,58 @@ function configureGroups() {
         });
 
     });
+
+    var autoComp=function(val,display) {
+        if(val.length>0) {
+            $.ajax({
+                type:"POST",
+                url: "/searchGroups",
+                data: { searchVal: val },
+                cache: false,
+                success: function (data, status, jqxhr) {
+                    display(data.map(function(d) {return d.groupname}));
+                }
+            });
+        } else {
+            display([]);
+        }
+    }
+    initAutoComplete($("#basic-modal").find("#apply-group"),autoComp);
+
+    $("#basic-modal").find("#apply-membership").click(function(e) {
+        if(isDemo()) {
+            modalPopUp("#popup","Demo", "Det går inte att ansöka om medlemskap när man är i demo-läge!");
+            return;
+        }
+        var groupName=$("#basic-modal").find("#apply-group").val().trim();
+        if(groupName!="") {
+            $.ajax({
+                type:"POST",
+                url: "/applyForMembership",
+                data: { groupName: groupName },
+                cache: false,
+                success: function (data, status, jqxhr) {
+                    modalPopUp("#popup","Medlemskap", "Din ansökan är skickad!<br/>Du får åtkomst till gruppen när du blivit godkänd av grupp-ägaren.");
+                },
+                error: function (data, status, jqxhr) {
+                    if (data.status === 404) {
+                        modalPopUp("#popup","Medlemskap", "Hittar inte gruppen!<br/>Kontrollera att namnet är rättstavat!");
+    
+                    } if (data.status === 409) {
+                        modalPopUp("#popup","Medlemskap", "Du är redan medlem i denna grupp!");
+
+                    } else {
+                        modalPopUp("#popup","Medlemskap", "Det gick inte att skicka ansökan!<br/>Ett tekniskt fel har inträffat!");
+                    }
+                }
+            });
+        } else {
+            modalPopUp("#popup","Ansök om medlemskap", "Ange vilken grupp du vill bli medlem i!");
+
+        }
+
+    })
+
 }
 
 function updateGroup(groupId, name, button) {
@@ -541,8 +607,21 @@ function configureGroupMembers() {
                 return e;
             })
 
+            var applications=data.applications.map(function(e) {
+                var a=e.username;
+                if(e.name!=="") {
+                    a=e.name;
+                }
+                if(e.email!=="") {
+                    a+=" ("+e.email+")";
+                }
+                return {applicant:a,userid:e.userid,groupid:e.groupid};
+            });
+            if(applications.length===0) {
+                applications=undefined;
+            }
 
-            showModal("#basic-modal", hbsTemplates["main-snippets"]["group-members"]({ members: data.members, admin: globals.activeGroup.admin, invites: data.invites, currentUser: globals.userinfo.userid }));
+            showModal("#basic-modal", hbsTemplates["main-snippets"]["group-members"]({ members: data.members, admin: globals.activeGroup.admin, invites: data.invites, applications: applications, currentUser: globals.userinfo.userid }));
 
             $("#basic-modal").find("#invite-member").click(function (e) {
                 var inviteEmail = $("#basic-modal").find("#invite-email").val().trim();
@@ -699,6 +778,37 @@ function removeInvite(email, rowElem) {
     });
 }
 
+function removeApplicant(userId, rowElem) {
+    $.ajax({
+        type: "POST",
+        url: "/removeApplicant",
+        cache: false,
+        data: { userId:userId, groupId: globals.activeGroup.groupid },
+        success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
+            rowElem.remove();
+        },
+        error: function (data, status, jqxhr) {
+            popup("#popup", "Ta bort ansökan", "Tekniskt fel!");
+        }
+    });
+}
+
+function addApplicant(userId) {
+    $.ajax({
+        type: "POST",
+        url: "/approveApplicant",
+        cache: false,
+        data: { userId:userId, groupId: globals.activeGroup.groupid },
+        success: function (data, status, jqxhr) {
+            reloadIfLoggedOut(jqxhr);
+            configureGroupMembers();
+        },
+        error: function (data, status, jqxhr) {
+            popup("#popup", "Lägg till ansökande", "Tekniskt fel!");
+        }
+    });
+}
 
 function removeMember(memberId, groupId, rowElem) {
     var fun = function () {
@@ -717,7 +827,7 @@ function removeMember(memberId, groupId, rowElem) {
                 reloadIfLoggedOut(jqxhr);
                 rowElem.remove();
                 if (memberId == globals.userinfo.userid) {
-                    initGroups();
+                    location.reload();
                 }
             },
             error: function (data, status, jqxhr) {

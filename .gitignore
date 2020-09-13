@@ -113,3 +113,6 @@ resources/.rnd
 resources/*.db
 tmp/*
 misc/todo.txt
+resources/ca_bundle.crt
+resources/certificate.crt
+resources/private.key

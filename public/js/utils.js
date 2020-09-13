@@ -285,3 +285,26 @@ function initSortableTable(table,options) {
   }
   
 }
+
+
+
+function initAutoComplete(input,handler) {
+  var dataListId=input.attr("id")+"_datalist";
+  var display=function(vals) {
+    var datalistElm=input.parent().find("#"+dataListId);
+    datalistElm.empty();
+    vals.forEach(function(e) {
+      datalistElm.append("<option value='" + e + "'>");
+
+    })
+    console.log(vals);
+  }
+
+  input.attr("list",dataListId)
+  input.after("<datalist id='"+dataListId+"'/>");
+
+  input.keyup(function(event){
+    handler(input.val(),display);
+    console.log(input.val());
+  })
+}

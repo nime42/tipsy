@@ -62,6 +62,8 @@ function updateUserInfo(userid, userprops, callback=console.log) {
 
 function getUserInfo(userId, callback=console.log) {
     const row = db.prepare('SELECT * FROM v_userinfo WHERE userid = ?').get(userId);
+    row.approvedgroups=getApprovedGroups(userId);
+    
     if (row !== undefined) {
         delete row.password;
         callback(true, row);
@@ -173,7 +175,6 @@ function deleteInviteToGroup(groupAdmin, email, groupId, callback=console.log) {
     }
 }
 
-
 function getInvites(groupAdmin, groupId, callback=console.log) {
     try {
     var sql = "select * from invited_members where groupid=? and ? in (select userid from group_members where groupid=? and admin=true)";
@@ -182,6 +183,88 @@ function getInvites(groupAdmin, groupId, callback=console.log) {
     } catch(err) {
         callback(false,err);
     }
+}
+
+function getInvitesAndApplications(groupAdmin, groupId, callback=console.log) {
+    try {
+    var sql = "select * from invited_members where groupid=? and ? in (select userid from group_members where groupid=? and admin=true)";
+    const invites=db.prepare(sql).all(groupId, groupAdmin, groupId);
+
+    sql="\
+        select u.userid,a.groupid,u.username,u.email,u.name from  membership_applications a\
+        left join v_userinfo u on a.userid=u.userid\
+        where a.approved=false and\
+        a.groupid=? and ? in (select userid from group_members where groupid=? and admin=true)\
+        ";
+
+    const applications=db.prepare(sql).all(groupId, groupAdmin, groupId);
+
+    callback(true, {invites:invites,applications:applications});
+    } catch(err) {
+        console.log("getInvitesAndApplications",err);
+        callback(false,err);
+    }
+}
+
+
+function removeApplicant(groupAdmin, userId, groupId, callback=console.log) {
+    try {
+        var sql="delete from membership_applications where userid=? and groupid=? and ? in (select userid from group_members where groupid=? and admin=true)";
+        db.prepare(sql).run(userId,groupId,groupAdmin,groupId);
+        callback(true, null);
+    } catch (err) {
+        console.log("removeApplicant",err);
+        callback(false, err);
+    }
+}
+
+function approveApplicant(groupAdmin, userId, groupId, callback=console.log) {
+    try {
+        var sql="update membership_applications set approved=true where userid=? and groupid=? and ? in (select userid from group_members where groupid=? and admin=true)";
+        const info=db.prepare(sql).run(userId,groupId,groupAdmin,groupId);
+        if(info.changes>0) {
+            try {
+                sql="insert into group_members(userid,groupid,admin,sortorder) values(?,?,false,(SELECT IFNULL(MAX(sortorder), 0) + 1 FROM group_members))";
+                db.prepare(sql).run(userId,groupId);
+            } catch(error) {
+                if(error.code!=='SQLITE_CONSTRAINT_UNIQUE') {
+                    callback(false,error);
+                    return;
+                }
+            }
+            var sql='select * from v_group_members where groupid=? and userid=?';
+            const row=db.prepare(sql).get(groupId,userId);
+            if(row!==undefined) {
+                delete row.password;
+                callback(true,row);
+            } else {
+                callback(false,"NO_USER");
+            }
+        } else {
+            callback(false,"NOT_ALLOWED")
+        }
+    } catch (err) {
+        console.log("approveApplicant",err);
+        callback(false, err);
+    }
+}
+
+
+function getApprovedGroups(userId) {
+    let sql="\
+    select groupname from membership_applications a\
+    join v_group_members g on a.userid=g.userid and a.groupid=g.groupid\
+    where a.approved=true and a.userid=?";
+
+    const rows=db.prepare(sql).all(userId);
+    
+    sql="delete from membership_applications where userid=? and approved=true";
+    db.prepare(sql).run(userId);
+    
+    return rows;
+
+
+
 }
 
 
@@ -196,6 +279,7 @@ function addUserToGroup(groupAdmin, userId, groupId,admin, callback=console.log)
             db.prepare(sql).run(userId, groupId,admin);
             callback(true, null);
         } catch(err) {
+            console.log("addUserToGroup",err);
             callback(false, err);
         }
     }
@@ -258,6 +342,50 @@ function getGroups(userId, callback=console.log) {
         callback(false,err);
     }
 }
+
+
+function searchGroups(searchVal, callback=console.log) {
+    searchVal=searchVal.replace(/([%\\_])/g,"\\$1");
+    searchVal+="%"
+    var sql="select * from groups where lower(groupname) like lower(?) order by groupname";
+    try {
+        const rows=db.prepare(sql).all(searchVal);
+        callback(true, rows);
+    } catch(err) {
+        callback(false,err);
+    }
+}
+
+function applyForMembership(groupName,userId,callback=console.log) {
+    var sql="select * from groups where lower(groupname) like lower(?) order by groupname";
+    var row=db.prepare(sql).get(groupName);
+    if(row===undefined) {
+        callback(false,"NO_SUCH_GROUP");
+        return;
+    }
+    var groupId=row.id;
+    sql="select * from group_members where groupid=? and userid=?";
+    row=db.prepare(sql).get(groupId,userId);
+    if(row!==undefined) {
+        callback(false,"ALREADY_MEMBER");
+        return;
+    }
+
+    sql="insert into membership_applications(groupid,userid,approved) values(?,?,false)";
+    try {
+        db.prepare(sql).run(groupId,userId);
+    } catch(err) {
+        if(err.code==='SQLITE_CONSTRAINT_UNIQUE') {
+            callback(false,"APPLICATION_ALREADY_EXISTS");
+            return;
+        } else {
+            callback(false,err);
+            console.log("applyForMembership","ERROR");
+        }
+    }
+    callback(true);
+}
+
 
 
 function createPassWordResetToken(userId, callback=console.log) {
@@ -741,10 +869,11 @@ function getNextInLine(groupId,callback=console.log) {
     sql="select u.username,u.name,userid,groupname,sendremainder,email from v_group_members u\
         left join (select  max(regclosetime) as lastplayed,groupid,created_by from draws where coalesce(extra_bet,false)<>true and groupid=? group by groupid,created_by) l on u.userid =l.created_by and u.groupid=l.groupid\
         where u.groupid=?\
-        order by l.lastplayed limit 2;"
+        order by l.lastplayed,u.sortorder limit 2;"
     let rows=db.prepare(sql).all(groupId,groupId);
     if(rows.length===0) {
         //There is no one that played anything. Get next player by sorting on member sortorder
+        //Not sure this will happen...
         sql="select username,name,userid,groupname,sendremainder,email from v_group_members where groupid =? order by sortorder" 
         rows=db.prepare(sql).all(groupId);  
     }
@@ -852,10 +981,15 @@ module.exports = {
     getGroups:getGroups,
     updateGroup:updateGroup,
     deleteGroup:deleteGroup,
+    searchGroups:searchGroups,
+    applyForMembership:applyForMembership,
     getGroupMembers:getGroupMembers,
     inviteUserToGroup:inviteUserToGroup,
     deleteInviteToGroup:deleteInviteToGroup,
     getInvites:getInvites,
+    getInvitesAndApplications:getInvitesAndApplications,
+    removeApplicant:removeApplicant,
+    approveApplicant:approveApplicant,
     addInvitedUserToGroup:addInvitedUserToGroup,
     addPlay:addPlay,
     getResults:getResults,

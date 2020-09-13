@@ -78,5 +78,14 @@ create view v_user_surplus as
 select t.userid,t.groupid,totalwin-coalesce(extrabet,0)-coalesce(future_extrabet,0) as surplus,totalwin,coalesce(extrabet,0) as extrabet,coalesce(future_extrabet,0) as future_extrabet from
 (select sum(profit) as totalwin,userid ,groupid from events where eventtype in ('BET','EXTRA BET','PAYMENT') group by userid ,groupid) t
 left join (select sum(cost) as extrabet,userid ,groupid from events where eventtype='EXTRA BET' group by userid ,groupid) e on t.userid=e.userid and t.groupid=e.groupid
-left join (select sum(systemsize*rowprice) as future_extrabet,created_by as userid,groupid from draws where extra_bet=true and drawstate<>'Finalized' group by created_by ,groupid) f on t.userid=f.userid and t.groupid=f.groupid
--
+left join (select sum(systemsize*rowprice) as future_extrabet,created_by as userid,groupid from draws where extra_bet=true and drawstate<>'Finalized' group by created_by ,groupid) f on t.userid=f.userid and t.groupid=f.groupid;
+
+
+create table membership_applications(
+    groupid INTEGER,
+    userid INTEGER,
+    approved BOOLEAN,
+    FOREIGN KEY (userid) REFERENCES users (id) ON DELETE CASCADE ON UPDATE NO ACTION, 
+    FOREIGN KEY (groupid) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE NO ACTION);
+
+CREATE UNIQUE INDEX membership_applications_idx ON group_members (groupid,userid);
