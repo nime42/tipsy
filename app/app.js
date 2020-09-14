@@ -227,7 +227,7 @@ app.post('/forgotPassword',(req,res)=> {
             } else {
                 var userId=row.userid;
                 var mailAdr=row.email;
-                mailsender.sendPasswordReset(userId,mailAdr,req,res);
+                mailSender.sendPasswordReset(userId,mailAdr,req,res);
             }
         } else {
             res.sendStatus(500);
@@ -488,7 +488,7 @@ app.post('/inviteMemberToGroup', (req, res) => {
     var email = req.body.email;
     db.getGroupInfo(groupId, userId, function (status, groupInfo) {
         if (status) {
-            mailsender.inviteMember(userId, groupInfo, email, req, res, function (status, err) {
+            mailSender.inviteMember(userId, groupInfo, email, req, res, function (status, err) {
                 if (status) {
                     res.sendStatus(200);
                 } else {
@@ -825,7 +825,7 @@ app.post('/makePayment',(req,res)=>{
         if(status) {
            
             if(req.body.mailTo) {
-                mailsender.sendPaymentList(req.body.mailTo,req.body.mailBody,function(status,err) {
+                mailSender.sendPaymentList(req.body.mailTo,req.body.mailBody,function(status,err) {
                     if(status) {
                         res.sendStatus(200);
                     } else {
@@ -860,7 +860,7 @@ app.post('/getNextInLine',(req,res)=> {
 function sendRemainder(groupId) {
     db.getNextInLine(groupId,function(next) {
         if(next && next.sendRemainder && next.remainderMail!==null) {
-            mailsender.sendRemainder(next.groupName,next.nextInLine,next.remainderMail,function(status,res) {
+            mailSender.sendRemainder(next.groupName,next.nextInLine,next.remainderMail,function(status,res) {
                 if(status===false) {
                     console.log("sendRemainder("+groupId+"):"+res);
                 }
