@@ -483,26 +483,36 @@
                 <div>
                   <table id="invites">
                     <caption style="text-align: left;font-size:18px;white-space: nowrap;">Skickade inbjudningar</caption>
+                    {{#if invites}}
                     {{#each invites}}
                     <tr>
                       <td style="padding-left: 5px;">{{email}}</td>
                       <td><i style="color:red;font-size:14px;" class="fa fa-remove clickable" onclick="removeInvite('{{email}}',$(this).parent().parent())"></i></td>
                     </tr>
                    {{/each}}
+                   {{else}}
+                      <tr id="empty-row">
+                        <td style="padding-left: 5px;"><i>Inga skickade inbjudningar</i></td>
+                      </tr>
+                   {{/if}}
 
                   </table>
                   <br/>
-                  {{#if applications}}
+                  
                   <table id="applications">
                     <caption style="text-align: left;font-size:18px;white-space: nowrap;">Mottagna medlemsansökningar</caption>
+                    {{#if applications}}
                     {{#each applications}}
                     <tr>
                       <td style="padding-left: 5px;">{{applicant}}</td>
                       <td><i style="color:#00CF91;font-size:14px;padding-left: 10px;" class="fa fa-check clickable" onclick="addApplicant('{{userid}}',$(this).parent().parent())"></i></td>
                       <td><i style="color:red;font-size:14px;padding-left: 10px;" class="fa fa-remove clickable" onclick="removeApplicant('{{userid}}')"></i></td>
-
                     </tr>
                    {{/each}}
+                   {{else}}
+                      <tr id="empty-row">
+                      <td style="padding-left: 5px;"><i>Inga ansökningar</i></td>
+                      </tr>
                    {{/if}}
 
                   </table>
@@ -1461,6 +1471,9 @@ Alla användare kan i sin tur skapa nya grupper och kan då tillhöra flera grup
 <p>Som skapare av en grupp kan du när som helst lägga till eller ta bort medlemmar, utan problem. Adderas en person kommer den automatiskt först i spelturordningen (läs mer under Turordning). </p>
 En gruppmedlem som blivit inbjuden till en grupp kan endast ta bort sig själv från en grupp. 
 
+<h1>Gå med i en grupp</h1>
+<p>Som användare kan du även gå med i en befintlig grupp. <a style="color:#f6d403" href="javascript:configureGroups();">Sök gruppens namn i menyn</a>. Välj grupp och ansök om medlemskap.</p>
+<p>Som gruppadministratör får du ett mejl när någon ansöker om medlemskap i din grupp. Du kan då välja att <a style="color:#f6d403" href="javascript:configureGroupMembers();">acceptera eller neka personen medlemskap i din grupp</a>. Godkänns personen ingår hen i ditt tipsgäng.</p>
 <h1>Turordning</h1>
 <p>Tipsy hanterar turordningen för ordinarie spel enligt följande prioritering;</p>
 <p>•	längst tid sedan senaste ordinarie spel</p>

@@ -640,7 +640,7 @@ function configureGroupMembers() {
                         reloadIfLoggedOut(jqxhr);
                         //var row = "<p style='margin-bottom:0px;'>" + inviteEmail + "<span style='color:red;' class='glyphicon glyphicon-remove' onclick='removeInvite(\"" + inviteEmail + "\",$(this).parent());'></span></p>";
                         var row = '<tr><td style="padding-left: 5px;">'+inviteEmail+'</td><td><i style="color:red;font-size:14px;" class="fa fa-remove" onclick="removeInvite(\''+inviteEmail+'\',$(this).parent().parent())"></i></td></tr>';
-
+                        $("#basic-modal").find("#invites").find("#empty-row").remove();
                         $("#basic-modal").find("#invites").prepend(row);
                         $("#basic-modal").find("#invite-email").val("");
                     },
