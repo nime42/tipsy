@@ -347,7 +347,7 @@ function getGroups(userId, callback=console.log) {
 function searchGroups(searchVal, callback=console.log) {
     searchVal=searchVal.replace(/([%\\_])/g,"\\$1");
     searchVal+="%"
-    var sql="select * from groups where lower(groupname) like lower(?) order by groupname";
+    var sql="select * from groups where lower(groupname) like lower(?) order by lower(groupname) limit 20";
     try {
         const rows=db.prepare(sql).all(searchVal);
         callback(true, rows);
