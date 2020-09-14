@@ -126,8 +126,8 @@ function sendApprovalNotification(group,to,callback) {
     var from="tipsy.nu@gmail.com";
     var subject="Nya medlemsansökning att godkänna";
     var text="Hej\nEn ny medlem vill gå med i gruppen '"+group+"'.\n";
-    text+="Logga in på https://www.tipsy.nu för att titta på ansökningen (under menyn Medlemmar)!"
-    text+="\nSpela tillsammans!\n\nHälsar\nTipsy";
+    text+="Logga in på https://www.tipsy.nu för att granska och godkänna ansökningen (under menyn Medlemmar)!"
+    text+="\n\nSpela tillsammans!\n\nHälsar\nTipsy";
     sendMail(from,to,undefined,subject,text,undefined, function(err) {
         if(err) {
             callback(false,err);

@@ -361,7 +361,7 @@
         </h1>
         <div id="search-groups">
           <h3>Ansök om medlemskap</h3>
-          <p>Här kan du söka upp den grupp du vill bli medlem i.</p>
+          <p>Här kan du söka upp och ansöka om medlemskap i någon annans grupp.</p>
           <div class="groups">
             <div>
               <input id="apply-group" type="text" placeholder="Sök grupp">
@@ -482,7 +482,7 @@
                 <br/>
                 <div>
                   <table id="invites">
-                    <caption style="text-align: left;font-size:18px;white-space: nowrap; overflow: hidden;">Skickade inbjudningar</caption>
+                    <caption style="text-align: left;font-size:18px;white-space: nowrap;">Skickade inbjudningar</caption>
                     {{#each invites}}
                     <tr>
                       <td style="padding-left: 5px;">{{email}}</td>
@@ -494,7 +494,7 @@
                   <br/>
                   {{#if applications}}
                   <table id="applications">
-                    <caption style="text-align: left;font-size:18px;white-space: nowrap; overflow: hidden;">Mottagna medlemsansökningar</caption>
+                    <caption style="text-align: left;font-size:18px;white-space: nowrap;">Mottagna medlemsansökningar</caption>
                     {{#each applications}}
                     <tr>
                       <td style="padding-left: 5px;">{{applicant}}</td>
@@ -1454,7 +1454,7 @@ Tipsy förbehåller sig även rätten att helt eller delvis och utan föregåend
 <p>För att kunna ta del av Tipsy’s alla tjänster krävs ett spelkonto hos Svenska spel. Tipsy redovisar endast målservice, antal rätt och utdelningsprognoser från Svenska spel. Därutöver finns ingen koppling mellan Tipsy och Svenska spel. Det innebär bland annat att en rad som tippas hos Tipsy även måste spelas hos Svenska spel för att vara giltig. Vid en eventuell vinst betalas inga pengar ut via Tipsy. Som användare kan du heller inte sätta in eller ta ut pengar från Tipsy.</p>
 
 <h1>Skapa en grupp</h1>
-<p>Som användare kan du skapa en grupp. Till gruppen kan du bjuda in flera användare. Detta gör du genom att ange mejladressen för de personer som ska ingå i ert spelgäng. Den personen får en länk för vidare registrering av användare. </p>
+<p>Som användare kan du <a style="color:#f6d403" href="javascript:configureGroups();">skapa en grupp</a>. Till gruppen kan du <a style="color:#f6d403" href="javascript:configureGroupMembers();">bjuda in flera användare</a>. Detta gör du genom att ange mejladressen för de personer som ska ingå i ert spelgäng. Den personen får en länk för vidare registrering av användare. </p>
 Alla användare kan i sin tur skapa nya grupper och kan då tillhöra flera grupper.
 
 
