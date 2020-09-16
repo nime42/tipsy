@@ -1,7 +1,6 @@
 #!/bin/bash
 
 if [ "$#" -gt 0 ]; then
-    echo "cd to $1"
     cd $1
 fi
 
