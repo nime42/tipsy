@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ "$#" -gt 0 ]; then
+    echo "cd to $1"
+    cd $1
+fi
+
+
+
 #get highest tag number
 VERSION=`git describe --abbrev=0 --tags 2>/dev/null`
 
