@@ -1080,7 +1080,7 @@ function getPlayable(product, div) {
                             hideModal("#basic-modal");
                             var url =
                             modalDialog("#yes-no", "Lägg spel hos Svenska spel",
-                                    "Vill du gå till svenska spel och göra det faktiska spelet där(funkar bara om du redan är inloggad)?",
+                                    "Vill du gå till svenska spel och göra det faktiska spelet där?",
                                     {
                                         text: "Ja", func: function () {
                                             sendRows(drawInfo,bettings,systemsize);
@@ -1288,14 +1288,20 @@ function getResults(groupId,page) {
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             var finalizedHeader="";
+            $("#ongoing-games").text("");
 
             if(data.results[0]==undefined || data.results[0].drawstate=="Finalized") {
                 $("#no-ongoing-games").show();            
             }
+            var ongoingGames=0;
             data.results.forEach(function (e) {
                 e.rows = parseRows(e.rows);
                 if ((e.drawstate != "Finalized" && e.created_by == globals.userinfo.userid)||globals.activeGroup.admin===1) {
                     e.showDelete = true;
+                }
+
+                if (e.drawstate != "Finalized") {
+                    ongoingGames++;
                 }
 
                 e.results = parseResults(e.results);
@@ -1312,6 +1318,9 @@ function getResults(groupId,page) {
                 if(e.drawstate=="Finalized" && finalizedHeader=="") {
                     finalizedHeader="Avgjorda spel"
                     e.finalizedHeader=finalizedHeader;
+                    if(ongoingGames>0) {
+                        $("#ongoing-games").text("("+ongoingGames+" spel)");
+                    }
                 }
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 
@@ -1441,6 +1450,18 @@ function deleteDraw(drawId) {
                 $("#results").find("#draw-" + drawId).empty();
                 getNextInLine(groupId);
                 getToplist(groupId);
+                var regexResult=/\d+/.exec($("#ongoing-games").text());
+                if(regexResult!=null) {
+                    let ongoingGames=parseInt(regexResult[0])-1;
+                    if(ongoingGames>0) {
+                        $("#ongoing-games").text("("+ongoingGames+" spel)");
+                    } else {
+                        $("#ongoing-games").text("");
+                        $("#no-ongoing-games").show(); 
+                    }
+                }
+
+                
             },
             error: function (data, status, jqxhr) {
                 modalPopUp("#popup", "Ta bort spel", "Ett Tekniskt fel har inträffat, försök igen senare!");

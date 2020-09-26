@@ -127,37 +127,24 @@ function sendRows(drawData,rows,systemSize) {
   var product="";
   switch(drawData.product) {
     case "Stryktipset": 
-        product="Stryktipset"
+        product="stryktipset"
         break;
     case "Europatipset":
-        product="Europatipset";
+        product="europatipset";
         break;
-    case "Topptipset":  
-        product="Topptipset,Omg="+drawData.drawnumber+",Insats=1";
-        break;
+    case "Topptipset":
     case "Topptipset Extra":
-        product="Topptipset,Europa,Omg="+drawData.drawnumber+",Insats=1";
+    case "Topptipset Stryk":    
+        product="topptipset";
         break;
-    case "Topptipset Stryk":
-        product="Topptipset,Stryk,Omg="+drawData.drawnumber+",Insats=1";
   }
   var betRow=rows.join(",");
-  if(systemSize==1) {
-    betRow="E,"+betRow;
-  } else {
-    betRow="M"+systemSize+","+betRow;
-  }
+  var url="https://spela.svenskaspel.se/"+product+"?row="+betRow;
+  //console.log(url);
 
-  var fileContent=product+"\n"+betRow;
-  console.log(fileContent);
-
-  var f=new File([new Blob([fileContent])], "filename.txt");
- 
-  let list = new DataTransfer();
-  list.items.add(f);
-  form.find("#file")[0].files=list.files;
-  form.submit();
+  window.open(url);
 }
+
 /**
  * Takes a multiline string with bets, example:
  * "12
