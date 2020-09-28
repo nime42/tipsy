@@ -890,10 +890,10 @@ function getNextInLine(groupId,callback=console.log) {
 
 
     sql="select username,name,surplus from\
-    (select userid,groupid,surplus from v_user_surplus us where surplus>0 and not exists (select created_by,groupid from draws where created>? and userid=us.userid and groupid=us.groupid and drawstate<>'Finalized' and extra_bet=true)) s\
+    (select userid,groupid,surplus from v_user_surplus us where surplus>0 and not exists (select created_by,groupid from draws where userid=us.userid and groupid=us.groupid and drawstate<>'Finalized' and extra_bet=true)) s\
     join v_group_members u on u.userid =s.userid and u.groupid=s.groupid\
     where s.groupid=?";
-    let extraBets=db.prepare(sql).all(lastPlayed,groupId);
+    let extraBets=db.prepare(sql).all(groupId);
     extraBets.forEach(e=>{
         e.name=e.name===""?e.username:e.name;
     })
