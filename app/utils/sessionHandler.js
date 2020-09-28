@@ -57,7 +57,7 @@ function resumeSessions(db) {
     const rows=db.prepare(getSql).all();
     rows.forEach(r=>{
         sessions[r.key]={
-            timestamp:r.timestamp,
+            timestamp:new Date(r.timestamp),
             userId:r.userId
         }
     });
