@@ -124,7 +124,12 @@ app.get("/shutdown",(req,res) => {
     if(isLocal) {
         console.log("Shutting down!");
         res.sendStatus(200);
-        sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
+        try {
+            sessionHandler.saveSessions(db.getDbInstance(),function(err) {process.exit()});
+        } catch(e) {
+            console.log("Failed to save sessions",e);
+            process.exit();
+        }
     }
 
 })
