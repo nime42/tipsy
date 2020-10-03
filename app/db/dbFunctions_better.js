@@ -487,10 +487,10 @@ function getResults(userId, groupId,page, callback=console.log) {
 
 
 function updateMatchResults(drawId,matchRows) {
-    let sql = "update draw_rows set result=?,status=?,matchstart=coalesce(?,matchstart),matchtime=? where drawid=? and rownr=?"
+    let sql = "update draw_rows set result=?,status=?,matchstart=coalesce(?,matchstart),matchtime=?,lastevent=? where drawid=? and rownr=?"
     let stmt = db.prepare(sql);
     matchRows.forEach(r => {
-        stmt.run(r.result, r.status, r.matchStart, r.matchTime, drawId, r.rownr);
+        stmt.run(r.result, r.status, r.matchStart, r.matchTime,r.lastEvent, drawId, r.rownr);
     });
 }
 

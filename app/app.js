@@ -708,6 +708,9 @@ function checkDraw(drawId,SvSpResponse) {
         for (let m = 0; m < SvSpResponse.draws.draws.length; m++) {
             let e = SvSpResponse.draws.draws[m];
             matches[m].matchStart = e.match ? e.match.matchStart : undefined;
+            if(SvSpResponse.forecast && SvSpResponse.forecast.matchInfo) {
+                matches[m].lastEvent=SvSpResponse.forecast.matchInfo[m].time;
+            }
         }
     }
 
@@ -720,8 +723,8 @@ function checkDraw(drawId,SvSpResponse) {
         row.result = e.result;
         row.matchStart=e.matchStart;
         row.matchTime=e.matchTime;
+        row.lastEvent=e.lastEvent;
         matchRows.push(row);
-
     });
 
     let drawState = SvSpResponse.draws.drawState;

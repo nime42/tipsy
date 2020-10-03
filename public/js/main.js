@@ -1352,6 +1352,7 @@ function parseRows(rows) {
             status: a[4],
             matchstart: a[5],
             matchtime:a[6],
+            lastevent:a[7],
             on1: a[2].match("1") != undefined ? "on" : "off",
             onX: a[2].match("X") != undefined ? "on" : "off",
             on2: a[2].match("2") != undefined ? "on" : "off",
@@ -1389,6 +1390,18 @@ function parseRows(rows) {
                     res.status2 = "missed";
                 }
             }
+
+            try {
+                var last=new Date(res.lastevent);
+                var now=new Date();
+                if(((now-last)/(1000*60))<5) {
+                    //If something have happend in the last 5 minutes, blink the result
+                    res.blink=true;
+                }  
+            } catch(err) {
+
+            }
+
         }
 
         if (res.status == "Inte startat") {
@@ -1408,6 +1421,9 @@ function parseRows(rows) {
             
         } else if (res.status.match(/.*slut.*/i)) {//om status är Avslutad","Slut efter förlängning","Slut efter straffläggning" etc
             res.matchtime = "FT";
+        }
+        if(res.matchtime==="FT" || res.matchtime==="HT") {
+            res.blink=false;
         }
 
         return res;

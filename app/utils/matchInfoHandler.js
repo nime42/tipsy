@@ -152,14 +152,20 @@ function parseResult(data) {
 }
 
 function parseForecast(data) {
+    
     let r = data.forecastResult;
+
     if(r===undefined) {
         return null;
     }
+    //console.log(r.drawResults);
+    let matchInfo=r.drawResults.map(e=>{return {home:e.home,away:e.away,outcome:e.outcome,time:e.time}});
     let res={};
     if(r.winresult) {
         res.winresult=r.winresult.map(e=>{e.amount=e.winValue;return e});
+        res.matchInfo=matchInfo;
         return res;
+
     } else {
         return null;
     }
@@ -179,7 +185,6 @@ function parseDraw(data) {
     res.regCloseTime=r.regCloseTime;
     res.rowPrice=r.rowPrice.replace(",",".");
     res.draws=[];
-    
     r.drawEvents.forEach(e => {
         let row={};
         row.eventDescription=e.eventDescription;
