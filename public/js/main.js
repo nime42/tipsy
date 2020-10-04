@@ -1329,7 +1329,7 @@ function getResults(groupId,page) {
             })
             $("#results").find("#more-results").remove();
             if(data.hasMorePages) {
-                $("#results").append('<input type="button" id="more-results" class="btn btn-info" value="Mer..." onclick="getResults('+groupId+','+(page+1)+')"/>');
+                $("#results").append('<input type="button" id="more-results" class="round-button" value="Mer..." onclick="getResults('+groupId+','+(page+1)+')"/>');
 
             }
         },
