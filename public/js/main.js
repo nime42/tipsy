@@ -1394,8 +1394,8 @@ function parseRows(rows) {
             try {
                 var last=new Date(res.lastevent);
                 var now=new Date();
-                if(((now-last)/(1000*60))<3) {
-                    //If something have happend in the last 3 minutes, blink the result
+                if(((now-last)/(1000*60))<5) {
+                    //If something have happend in the last 5 minutes, blink the result
                     res.blink=true;
                 }  
             } catch(err) {
