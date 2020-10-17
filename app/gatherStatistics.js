@@ -212,9 +212,38 @@ function updateDraw(draw) {
 function getSuggestions() {
     matchInfoHandler.getPlayable("topptipsetfamily",function(status,data) {
         if(status) {
+            console.log("-------ToppTipset------");
             suggest(data.draws);
+            console.log("\n\n");
+
         }
+
+        console.log("---------------------------");
+        matchInfoHandler.getPlayable("stryktipset",function(status,data) {
+            if(status) {
+                console.log("-------strykTipset------");
+                suggest(data.draws);
+                console.log("\n\n");
+            }
+            console.log("---------------------------");
+
+            matchInfoHandler.getPlayable("europatipset",function(status,data) {
+                if(status) {
+                    console.log("-------EuropaTipset------");
+                    suggest(data.draws);
+                    console.log("\n\n");
+                }
+            });
+        
+
+        });
+    
+
     });
+
+
+
+
     /*
     matchInfoHandler.getPlayable("stryktipset",function(status,data) {
         console.log(status,data);
@@ -227,7 +256,7 @@ function getSuggestions() {
 
 }
 
-function suggest(matchData) {
+function suggest_old(matchData) {
     matchData.forEach(r=>{
         console.log(r.eventDescription);
         console.log(r.svenskaFolket);
@@ -241,15 +270,15 @@ function suggest(matchData) {
         let res={'one':0,'x':0,'two':0};
         Object.keys(r.svenskaFolket).forEach(k=>{
             let p=calcOdds2("SvenskaFolket",'one',k,r.svenskaFolket[k]);
-            console.log('one',k,p);
+            //console.log('one',k,p);
             res['one']+=p;
 
             p=calcOdds2("SvenskaFolket",'x',k,r.svenskaFolket[k]);
-            console.log('x',k,p);
+            //console.log('x',k,p);
             res['x']+=p;
 
             p=calcOdds2("SvenskaFolket",'two',k,r.svenskaFolket[k]);
-            console.log('two',k,p);
+            //console.log('two',k,p);
             res['two']+=p;
         })
  
@@ -261,6 +290,45 @@ function suggest(matchData) {
     })
 
 }
+
+
+function suggest(matchData) {
+    matchData.forEach(r=>{
+        console.log(r.eventDescription);
+        console.log(r.svenskaFolket);
+
+        let actual=undefined;
+        if(r.match.result && r.match.result.length>0) {
+            let l=r.match.result[r.match.result.length-1];
+            actual=getResult(l.home,l.away); 
+        }
+        console.log("actual",actual);
+        let res={'one':0,'x':0,'two':0};
+        let totP={'one':1,'x':1,'two':1};
+        Object.keys(r.svenskaFolket).forEach(k=>{
+            let p=calcOdds3("SvenskaFolket",r.svenskaFolket[k],k,'one');
+            res['one']+=p;
+            totP['one']*=p;
+            p=calcOdds3("SvenskaFolket",r.svenskaFolket[k],k,'x');
+            res['x']+=p;
+            totP['x']*=p;
+            p=calcOdds3("SvenskaFolket",r.svenskaFolket[k],k,'two');
+            res['two']+=p;
+            totP['two']*=p;
+        })
+ 
+        let ordered=Object.keys(res).map(k=>{return {k:k,v:res[k]};}).sort((e1,e2)=>{return e2.v-e1.v});
+        console.log(ordered[0]);
+        console.log(ordered[0].v/(ordered[0].v+ordered[1].v+ordered[2].v))
+        console.log(totP);
+        console.log("--------------");
+
+    })
+
+}
+
+
+
 
 function calcOdds(type,outcome,subset) {
     let sql="\
@@ -274,14 +342,32 @@ function calcOdds(type,outcome,subset) {
 }
 
 function calcOdds2(type,result,outcome,odds) {
+    
     let res={};
     res.P_outCome=P_outcome(outcome);
     res.P_C_outcome=P_C_outcome(type,outcome,odds);
     res.P_C_outcome_outcome_o=P_C_outcome_outcome_o(type,result,outcome,odds);
     res.res=(res.P_outCome*res.P_C_outcome_outcome_o)/res.P_C_outcome;
+    console.log("When "+type+":P("+outcome+")="+odds+" => P("+result+")="+res.res);
     return res.res;
 
 }
+
+function calcOdds3(type,odds,outcome,actual) {
+ 
+    let sql="select count(*) as cnt from v_draw_rows_and_odds where type=? and odds/5=?/5 and outcome=?";
+    let tot=db.prepare(sql).get(type,odds,outcome).cnt;
+    sql+=" and result=?";
+    let act=db.prepare(sql).get(type,odds,outcome,actual).cnt;
+    let res=act/(tot*1.0);
+    console.log("When "+type+":P("+outcome+")="+odds+" => P("+actual+")="+res);
+    return act/tot;
+
+
+
+
+}
+
 
 function main(argv) {
     if(argv.length<3) {
@@ -346,12 +432,12 @@ function P_C_outcome_outcome_o(type,result,outcome,odds) {
 
 
 /*
-getDraw("topptipset",1255,function(status,data) {
+getDraw("topptipsetstryk",668,function(status,data) {
     suggest(data.draw.drawEvents);
 })
 
-return;*/
-
+return;
+*/
 
 main(process.argv);
 
