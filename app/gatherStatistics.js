@@ -293,6 +293,7 @@ function suggest_old(matchData) {
 
 
 function suggest(matchData) {
+    let props=[];
     matchData.forEach(r=>{
         console.log(r.eventDescription);
         console.log(r.svenskaFolket);
@@ -307,12 +308,16 @@ function suggest(matchData) {
         let totP={'one':1,'x':1,'two':1};
         Object.keys(r.svenskaFolket).forEach(k=>{
             let p=calcOdds3("SvenskaFolket",r.svenskaFolket[k],k,'one');
+            props.push({event:r.eventDescription,outcome:"one",prop:p});
             res['one']+=p;
             totP['one']*=p;
             p=calcOdds3("SvenskaFolket",r.svenskaFolket[k],k,'x');
+            props.push({event:r.eventDescription,outcome:"x",prop:p});
+
             res['x']+=p;
             totP['x']*=p;
             p=calcOdds3("SvenskaFolket",r.svenskaFolket[k],k,'two');
+            props.push({event:r.eventDescription,outcome:"two",prop:p});
             res['two']+=p;
             totP['two']*=p;
         })
@@ -323,7 +328,14 @@ function suggest(matchData) {
         console.log(totP);
         console.log("--------------");
 
-    })
+    });      
+    console.log("ordered props");
+    props.sort((a,b)=>{return a.prop-b.prop;}).forEach(e=> {
+        console.log(e);
+    });
+    console.log("-------------------");
+
+
 
 }
 
@@ -361,7 +373,7 @@ function calcOdds3(type,odds,outcome,actual) {
     let act=db.prepare(sql).get(type,odds,outcome,actual).cnt;
     let res=act/(tot*1.0);
     console.log("When "+type+":P("+outcome+")="+odds+" => P("+actual+")="+res);
-    return act/tot;
+    return res;
 
 
 
