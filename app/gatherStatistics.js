@@ -323,16 +323,33 @@ function suggest(matchData) {
         })
  
         let ordered=Object.keys(res).map(k=>{return {k:k,v:res[k]};}).sort((e1,e2)=>{return e2.v-e1.v});
+
         console.log(ordered[0]);
         console.log(ordered[0].v/(ordered[0].v+ordered[1].v+ordered[2].v))
         console.log(totP);
         console.log("--------------");
 
     });      
-    console.log("ordered props");
-    props.sort((a,b)=>{return a.prop-b.prop;}).forEach(e=> {
+
+    let grouped=[];
+    props.forEach(e=>{
+        if(grouped[e.event+";"+e.outcome]) {
+            grouped[e.event+";"+e.outcome].prop+=e.prop;
+        } else {
+            grouped[e.event+";"+e.outcome]=e;
+        }
+    });
+
+    console.log("--------minst chans--------------");
+    Object.keys(grouped).map(k=>{let e=grouped[k];e.prop=e.prop/3;return e;}).sort((a,b)=>{return a.prop-b.prop;}).forEach(e=> {
         console.log(e);
     });
+    //console.log(grouped);
+
+    /*console.log("ordered props");
+    props.sort((a,b)=>{return a.prop-b.prop;}).forEach(e=> {
+        console.log(e);
+    });*/
     console.log("-------------------");
 
 
