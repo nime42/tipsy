@@ -3,16 +3,26 @@
 
 
 
-
+---Installera nödvändiga paket och applikationer:
 sudo apt-get update && sudo apt-get install apache2 -y
 sudo apt-get update && sudo apt-get install npm -y
 sudo apt-get update && sudo apt-get install git -y
-
 sudo apt-get update && sudo apt-get install sqlite3 libsqlite3-dev
 
-Hämta nytt cert:
+
+---Hämta nytt cert:
 https://app.zerossl.com/certificates
 
+--Hur man installerar ett nytt cert
+Gå till zerossl
 
-problem med puppeteer (lib saknas):
+Välj renew på befintligt cert (borde finnas under Expiring soon)
+Välj http verification (typ så hette det) och hämta hem filen och lägg den i tipsys publika folder, dvs
+    mkdir -p ~/tipsy/public/.well-known/pki-validation
+    mv 93BF58F4D12BCE54B0CCD3B1A3E37B73.txt ~/tipsy/public/.well-known/pki-validation/
+
+Ladda ner zipfilen (tipsy.nu.zip)från zerossl och packa upp den i ~/tipsy/resources
+Starta om tipsy
+
+---problem med puppeteer (lib saknas):
 sudo apt-get install gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget libgbm-dev

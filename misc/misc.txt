@@ -1,0 +1,19 @@
+
+
+--Räkna totala antalet 1,x,2
+select rows.rownr,t.teams,coalesce(r1.cnt,0) as 'ettor',coalesce(rX.cnt,0) as 'kryss',coalesce(r2.cnt,0) as 'tvåor' from 
+(with cnt as (select 1 rownr union select rownr+1 from cnt where rownr<13) select rownr from cnt) rows
+left join
+(select '1' as res,count(*) as cnt,rownr from draw_rows where drawid in (select id from draws where groupid=4 and drawnumber=4663)
+and bet like '%1%'
+group by rownr) r1 on rows.rownr=r1.rownr
+left join 
+(select 'X' as res,count(*) as cnt,rownr from draw_rows where drawid in (select id from draws where groupid=4 and drawnumber=4663)
+and bet like '%X%'
+group by rownr) rX on rows.rownr=rX.rownr
+left join
+(select '2' as res,count(*) as cnt,rownr from draw_rows where drawid in (select id from draws where groupid=4 and drawnumber=4663)
+and bet like '%2%'
+group by rownr) r2 on rows.rownr=r2.rownr
+left join
+(select distinct rownr,teams from draw_rows where drawid in (select id from draws where groupid=4 and drawnumber=4663)) t on rows.rownr=t.rownr
