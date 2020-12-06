@@ -345,7 +345,7 @@
               <div class="groups" style="margin-bottom: 7px;">
                 <input class="group-name" type="text" style="border-radius: 15px 0 0 15px;width:auto;" value="{{groupname}}" onkeyup="$(this).parent().find('.save-button').css('color', 'lightgreen').prop('disabled', false)">
                 <i style="color:#428bca;" class="fa fa-check-circle save-button clickable" onclick="updateGroup({{groupid}},$(this).parent().find('.group-name').val(),$(this))"></i>
-                <i style="color:red;" class="fa fa-remove clickable" onclick="deleteGroup({{groupid}},'{{groupname}}',$(this).parent())"></i>
+                <i style="color:red;" class="fa fa-remove clickable" onclick="deleteGroup({{groupid}},'{{escape groupname}}',$(this).parent())"></i>
               </div>
             </div>
 
