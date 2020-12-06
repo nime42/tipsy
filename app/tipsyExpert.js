@@ -108,11 +108,9 @@ function getBet(matchData) {
     Object.keys(odds).forEach(k=>{
         odds[k]=odds[k]/3.0;
     })
-    console.log(odds);
 
     let point=Math.random();
 
-    console.log(point);
     if(point<odds.one) {
         return '1';
     } 
