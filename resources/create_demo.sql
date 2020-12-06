@@ -5,9 +5,9 @@ pragma foreign_keys = ON;
 delete from draws where id<0;
 delete from events where id<0;
 
-delete from users where id<0;
+delete from users where id<-1;
 
-delete from groups where id<0;
+delete from groups where id<0 and id>-20;
 
 INSERT INTO users (id,username) VALUES (
 -10,'Lars-Gunnar');
