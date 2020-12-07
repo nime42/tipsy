@@ -183,6 +183,24 @@ function pasteRows(tableElem,rowLines) {
 }
 
 
+function parseResult(matchResult) {
+  let res;
+  if (matchResult && matchResult.match(/Lottad /)) {
+    res = matchResult.replace("Lottad ", "");
+  } else {
+    let tmp = matchResult.split("-");
+    let home = parseInt(tmp[0].trim());
+    let away = parseInt(tmp[1].trim());
+    if (home > away) {
+      res = "1";
+    } else if (home === away) {
+      res = "X";
+    } else {
+      res = "2";
+    }
+  }
+  return res;
+}
 
 function clearRows(tableElem) {
   tableElem.find(".1x2").addClass("off").removeClass("on");

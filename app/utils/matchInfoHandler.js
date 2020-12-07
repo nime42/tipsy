@@ -42,7 +42,6 @@ function getDrawAndResult(product, draw, callback) {
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/forecast/" + draw);
     urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw+"/result");
     let httpReq=config.matchInfo.url+"/multifetch?urls="+urls.join("|")+"&_="+ new Date().getTime();
-    //console.log(httpReq);
     fetch(httpReq)
         .then(res => res.json())
         .then(
@@ -58,6 +57,7 @@ function getDrawAndResult(product, draw, callback) {
         );
 }
 
+//getDrawAndResult('topptipsetextra',1275,function(status,data) {console.log(status,data)});
 
 function getDrawAndResultCache(draws, callback=console.log) {
     let nrofCalls=draws.length;
@@ -141,9 +141,14 @@ function parseResult(data) {
     r.events.forEach(e => {
         let row={};
         row.eventDescription=e.eventDescription;
+        row.cancelled=e.cancelled;
         row.eventNumber=e.eventNumber;
         row.outcome=e.outcome;
-        row.result=e.outcomeScore.home+" - "+e.outcomeScore.away;
+        if(row.cancelled && row.outcome) {
+            row.result="Lottad "+row.outcome;
+        } else {
+            row.result=e.outcomeScore.home+" - "+e.outcomeScore.away;
+        }
         row.status="Avslutad"; // To harmonze with drawInfo (see parseDraw)
         res.results.push(row);
 

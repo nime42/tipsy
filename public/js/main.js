@@ -1367,18 +1367,20 @@ function parseRows(rows) {
         if (res.status == "-1" || res.status=="Uppskjuten") {
             res.status = "Inte startat";
         }
-        var tmp = res.result.split("-");
-        var home = parseInt(tmp[0].trim());
-        var away = parseInt(tmp[1].trim());
+ 
         if (res.status != "Inte startat") {
-            if (home > away) {
+            let matchResult=parseResult(res.result);
+            if(res.result.match(/Lottad/)) {
+                res.result="Lottad";
+            }
+            if (matchResult==="1") {
                 if (res.on1 == "on") {
                     res.status1 = "correct";
                     res.isCorrect = true;
                 } else {
                     res.status1 = "missed";
                 }
-            } else if (home == away) {
+            } else if (matchResult==="X") {
                 if (res.onX == "on") {
                     res.statusX = "correct";
                     res.isCorrect = true;

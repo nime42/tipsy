@@ -745,16 +745,20 @@ function rectify(drawId, callback=console.log) {
     let nrOfFull = 0;
     let nrOfWrongHalf = 0;
     rows.forEach(r => {
-        let tmp = r.result.split("-");
-        let home = parseInt(tmp[0].trim());
-        let away = parseInt(tmp[1].trim());
         let result;
-        if (home > away) {
-            result = "1";
-        } else if (home === away) {
-            result = "X";
+        if (r.result && r.result.match(/Lottad /)) {
+            result=r.result.replace("Lottad ","");
         } else {
-            result = "2";
+            let tmp = r.result.split("-");
+            let home = parseInt(tmp[0].trim());
+            let away = parseInt(tmp[1].trim());
+            if (home > away) {
+                result = "1";
+            } else if (home === away) {
+                result = "X";
+            } else {
+                result = "2";
+            }
         }
         if (r.bet.match(result) === null) {
             switch (r.bet.length) {
