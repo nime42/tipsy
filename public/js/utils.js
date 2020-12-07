@@ -299,7 +299,8 @@ function initAutoComplete(input,handler) {
     var datalistElm=input.parent().find("#"+dataListId);
     datalistElm.empty();
     vals.forEach(function(e) {
-      datalistElm.append("<option value='" + e + "'>");
+      datalistElm.append("<option>");
+      datalistElm.children()[datalistElm.children().length-1].value=e;
 
     })
     console.log(vals);
