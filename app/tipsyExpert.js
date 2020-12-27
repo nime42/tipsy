@@ -48,22 +48,23 @@ function checkIfPlayExists(product,drawnumber) {
 function makePlay(product) {
     matchInfoHandler.getPlayable(product,function(status,data) {
         if(status) {
-            if(checkIfPlayExists(data.productName,data.drawNumber)) {
+            let draw=data[0];
+            if(checkIfPlayExists(draw.productName,data.drawNumber)) {
                 return;
             }
 
             let play={
                 groupid: tipsyExpertGroup,
-                drawnumber: data.drawNumber,
-                product: data.productName,
-                drawstate: data.drawState,
-                regclosetime: data.regCloseTime,
-                rowprice: data.rowPrice,
+                drawnumber: draw.drawNumber,
+                product: draw.productName,
+                drawstate: draw.drawState,
+                regclosetime: draw.regCloseTime,
+                rowprice: draw.rowPrice,
                 extra_bet: "false"
 
             }
             let bets=[];
-            data.draws.forEach(d=>{
+            draw.draws.forEach(d=>{
                 let bet={
                     rownr:d.eventNumber,
                     teams:d.eventDescription,

@@ -94,6 +94,28 @@ Handlebars.registerHelper("match", function(a,b, options)
     }
 });
 
+
+Handlebars.registerHelper("replace", function(from,to, string, options)
+{
+    return string.replace(from,to);
+});
+
+
+Handlebars.registerHelper("dateFormat", function(date, template, options)
+{
+    let d=new Date(date);
+    let result=template;
+    result=result.replaceAll("YYYY",d.getFullYear());
+    result=result.replaceAll("MM",((d.getMonth()+1)+"").padStart(2,"0"));
+    result=result.replaceAll("DD",(d.getDate()+"").padStart(2,"0"));
+    result=result.replaceAll("hh",(d.getHours()+"").padStart(2,"0"));
+    result=result.replaceAll("mm",(d.getMinutes()+"").padStart(2,"0"));
+    result=result.replaceAll("ss",(d.getSeconds()+"").padStart(2,"0"));
+    return result;
+});
+
+
+
 Handlebars.registerHelper("isNaN", function(a, options)
 {
     console.log(a,isNaN(a));

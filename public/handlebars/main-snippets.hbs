@@ -851,23 +851,46 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
   }
   }
 
+  .select {
+    background: #525252;
+    color: white;
+    font-size: 18px;
+    font-weight:bold;
+    margin-left: -5px;
+    border: 0;
+    outline:0 none;
+  }
 </style>
 <div style="overflow: auto;max-height: calc(100vh - 110px);">  
-<h2 style="margin-bottom: 0;">{{productName}}</h2>
-  {{#if (match productName "Topptipset") }}  
+
+  {{#if (match draw.productName "Topptipset") }}  
     {{setVar "productClass" "topptipset"}}
   {{/if}}
-  {{#if (match productName "Stryktipset") }}  
+  {{#if (match draw.productName "Stryktipset") }}  
     {{setVar "productClass" "stryktipset"}}
   {{/if}}
-  {{#if (match productName "Europatipset") }}  
+  {{#if (match draw.productName "Europatipset") }}  
     {{setVar "productClass" "europatipset"}}
   {{/if}}
-  <p style="margin-top: 0;">Spelstopp:{{regCloseTime}} </p>
+
+  {{#if (gt drawDates.length 1)}}
+  <h2 style="margin-bottom: 4px;">
+    <select id="draw-selector" class="select">
+    {{#each drawDates}} 
+      <option value={{@index}}>{{this}}</option> 
+    {{/each}}  
+    </select>
+    </h2>
+  {{else}}
+    <h2 style="margin-bottom: 0;">{{draw.productName}}</h2>
+  {{/if}}
+
+
+  <p style="margin-top: 0;">Spelstopp: <span id="draw-stop">{{dateFormat draw.regCloseTime "YYYY-MM-DD hh:mm:ss"}}</span></p>
   <p style="margin-bottom: 10;"><B>OBS!!</B> tänk på att det faktiska spelet måste göras på <a style="color:#f6d403;" href="https://spela.svenskaspel.se">Svenska spels sida</a></p>
 
 
-  <button id="paste" type="button" class="round-button" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'))">Klistra in</button>
+  <button id="paste" type="button" class="round-button" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'),$(this).parent().find('#draw-selector'))">Klistra in</button>
   <span style="color: #f6d403;margin: 7px;font-size: 15px;" class="fa fa-info-circle clickable"  onclick='showPastingRowsInfo()'></span>
 
   <table class="bettingtable play-table" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;min-width:300px;" >
@@ -879,10 +902,10 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
       <col span="1" style="width: 5%;">
    </colgroup>
    <tbody>
-    {{#each draws}}
+    {{#each draw.draws}}
     <tr id="row-{{inc @index}}" class="draw-row">
       <td>{{inc @index}}.</td>
-      <td>{{eventDescription}}</td>
+      <td id="event-description">{{eventDescription}}</td>
       <td><button class="1x2 {{../productClass}} off" style="border-style: solid; margin-right:3px;">1</button></td>
       <td><button class="1x2 {{../productClass}} off" style="border-style: solid;margin-right:3px;">X</button></td>
       <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">2</button></td>

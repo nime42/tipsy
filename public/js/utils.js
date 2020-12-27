@@ -138,9 +138,10 @@ function sendRows(drawData,rows,systemSize) {
         product="topptipset";
         break;
   }
+  var draw_id=drawData.productId+"_"+drawData.drawnumber;
+
   var betRow=rows.join(",");
-  var url="https://spela.svenskaspel.se/"+product+"?row="+betRow;
-  //console.log(url);
+  var url="https://spela.svenskaspel.se/"+product+"/"+draw_id+"/?row="+betRow;
 
   window.open(url);
 }
@@ -313,4 +314,17 @@ function initAutoComplete(input,handler) {
     handler(input.val(),display);
     console.log(input.val());
   })
+}
+
+
+function dateFormat(date,template) {
+  let d=new Date(date);
+  let result=template;
+  result=result.replaceAll("YYYY",d.getFullYear());
+  result=result.replaceAll("MM",((d.getMonth()+1)+"").padStart(2,"0"));
+  result=result.replaceAll("DD",(d.getDate()+"").padStart(2,"0"));
+  result=result.replaceAll("hh",(d.getHours()+"").padStart(2,"0"));
+  result=result.replaceAll("mm",(d.getMinutes()+"").padStart(2,"0"));
+  result=result.replaceAll("ss",(d.getSeconds()+"").padStart(2,"0"));
+  return result;
 }

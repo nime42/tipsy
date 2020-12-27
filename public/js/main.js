@@ -750,7 +750,7 @@ function makePayment(amount,surplus,sendMail) {
             if (data.status === 400) {
                 modalPopUp("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
         
-            } if(data.status === 406) { 
+            } else if(data.status === 406) { 
                 modalPopUp("#popup", "Utbetalning", "Utbetalning registrerad men det gick ej att skicka mail!");
             } else {
                 modalPopUp("#popup", "Utbetalning", "Tekniskt fel!");
@@ -1021,9 +1021,24 @@ function getPlayable(product, div) {
         cache: false,
         data: { product: product },
         success: function (data, status, jqxhr) {
+            let drawDates=data.map(e=>{return e.productName+", "+dateFormat(e.regCloseTime,"YYYY-MM-DD")});
             reloadIfLoggedOut(jqxhr);
-            data.regCloseTime = data.regCloseTime.replace("T", " ").replace(/\+.*$/, "");
-            $("#basic-modal").find("#" + div).prepend(hbsTemplates["main-snippets"]["matches"](data));
+            $("#basic-modal").find("#" + div).prepend(hbsTemplates["main-snippets"]["matches"]({drawDates:drawDates,draw:data[0]}));
+
+            $("#basic-modal").find("#" + div).find("#draw-selector").data("draws",data);
+            $("#basic-modal").find("#" + div).find("#draw-selector").change(function() {
+                let drawIndex=$(this).val();
+                $("#basic-modal").find("#" + div).find("#draw-stop").text(dateFormat(data[drawIndex].regCloseTime,"YYYY-MM-DD hh:mm:ss"));
+            
+                for(let r=1;r<=data[drawIndex].draws.length;r++) {
+                    $("#basic-modal").find("#" + div).find(".play-table").find("#row-"+r).find("#event-description").text(data[drawIndex].draws[r-1].eventDescription);
+                }
+
+                $("#basic-modal").find("#" + div).find("#clear").click();
+            })
+
+
+
             $("#basic-modal").find("#" + div).find(".1x2").click(function () {
                 $(this).toggleClass('on off');
                 var nrOfRows = 1;
@@ -1045,13 +1060,19 @@ function getPlayable(product, div) {
 
             });
             $("#basic-modal").find("#" + div).find("#play").click(function () {
+                let drawIndex=0;
+                if(data.length>1) {
+                    drawIndex=$("#basic-modal").find("#" + div).find("#draw-selector").val();
+                }
+
                 let drawInfo = {
                     groupid: globals.activeGroup.groupid,
-                    drawnumber: data.drawNumber,
-                    product: data.productName,
-                    drawstate: data.drawState,
-                    regclosetime: data.regCloseTime,
-                    rowprice: data.rowPrice,
+                    drawnumber: data[drawIndex].drawNumber,
+                    product: data[drawIndex].productName,
+                    productId: data[drawIndex].productId,
+                    drawstate: data[drawIndex].drawState,
+                    regclosetime: data[drawIndex].regCloseTime,
+                    rowprice: data[drawIndex].rowPrice,
                     extra_bet: false,
                     rows: []
                 }
@@ -1060,9 +1081,9 @@ function getPlayable(product, div) {
                 for (let i = 0; i < bettings.length; i++) {
                     let row = {};
                     row.rownr = i + 1;
-                    row.teams = data.draws[i].eventDescription;
+                    row.teams = data[drawIndex].draws[i].eventDescription;
                     row.bet = bettings[i];
-                    row.matchstart=data.draws[i].match.matchStart;
+                    row.matchstart=data[drawIndex].draws[i].match.matchStart;
                     systemsize *= row.bet.length;
                     drawInfo.rows.push(row);
                 }
@@ -1129,6 +1150,7 @@ function getPlayable(product, div) {
         }
     });
 }
+
 
 function getDrawBettings(div) {
     var rows = [];
@@ -1223,16 +1245,17 @@ function getRowsFromLink(link,callback) {
 }
 
 
-function getRowsFromClipBoard(pasteButton, targetTable) {
+function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
 
     var f=function(clipText) {
         pasteButton.attr("disabled", true);
         if (clipText.match(/http.*/i)) {
             modalPopUp("#message-popup", "Klistra in", "Hämtar rader...");
             getRowsFromLink(clipText, function (rows) {
+                selectDrawFromLink(drawSelector,clipText);
                 if (!pasteRows(targetTable, rows)) {
                     modalPopUp("#popup", "Klistra in", "Det gick inte att klistra in raderna");
-                };
+                }
                 pasteButton.attr("disabled", false);
                 hideModal("#another-modal");
                 hideModal("#message-popup");
@@ -1264,16 +1287,24 @@ function getRowsFromClipBoard(pasteButton, targetTable) {
             f($("#another-modal").find("#link-to-send").val());
         });
     }
-    
-    
-
-
-
-    return;
-
-        
+    return;      
 }
 
+function selectDrawFromLink(drawSelector,link) {
+    if(drawSelector.length==0) {
+        //We just have one draw e.g. no select-element
+        return;
+    }
+    //the link with the draw-bettings is on the format https://spela.svenskaspel.se/{product}/dela/{drawnumber}/{id}
+    let drawNumber=link.match(/https?:\/\/.*\/.*\/dela\/(\d+)\//)[1];
+    if(drawNumber) {
+       let draws=drawSelector.data("draws");
+       let i=draws.findIndex(function(e) {return e.drawNumber==drawNumber});
+       if(i>-1) {
+        drawSelector.val(i).change();
+       }
+    }
+}
 
 
 function getResults(groupId,page) {

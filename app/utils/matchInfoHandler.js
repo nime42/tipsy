@@ -97,22 +97,15 @@ function getPlayable(product,callback) {
     //console.log(year,month);
     getMatchDates(product, year, month, function (status, resultDates) {
         if (status) {
-            let res = resultDates.find(e => {
-                return e.drawState === "Open";
+            let drawDates=resultDates.filter(e=>(e.drawState === "Open"));
+            getMultipleDraws(drawDates,function(draws) {
+                if(draws.length===0) {
+                    callback(false,"NOT_PLAYABLE");
+                } else {
+                    callback(true, draws);
+                }
             });
 
-
-            if (res) {
-                getDraw(res.product, res.drawNumber, function (status, data) {
-                    if (status) {
-                        callback(true, data);
-                    } else {
-                        callback(false, data);
-                    }
-                });
-            } else {
-                callback(false,"NOT_PLAYABLE");
-            }
         } else {
             callback(false, resultDates);
         }
@@ -121,6 +114,31 @@ function getPlayable(product,callback) {
     });
 
 
+}
+
+//getPlayable("topptipsetfamily",function() {});
+
+function getMultipleDraws(draws, callback) {
+    let nrofDraws = draws.length;
+    let res = [];
+
+    if (draws.length == 0) {
+        callback(res);
+    } else {
+        for (let i = 0; i < draws.length; i++) {
+            getDraw(draws[i].product, draws[i].drawNumber, function (status, data) {
+                nrofDraws--;
+                if (status) {
+                    res.push(data);
+                }
+                if (nrofDraws == 0) {
+                    res.sort((a, b) => (new Date(a.regCloseTime) - new Date(b.regCloseTime)));
+                    callback(res);
+                }
+
+            });
+        }
+    }
 }
 
 
@@ -134,6 +152,7 @@ function parseResult(data) {
     let res={};
     res.cancelled=r.cancelled;
     res.productName = r.productName;
+    res.productId=r.productId;
     res.distribution=r.distribution;
     res.drawNumber=r.drawNumber;
     res.regCloseTime=r.regCloseTime;
@@ -185,7 +204,8 @@ function parseDraw(data) {
 
     let res={};
     res.drawState=r.drawState;
-    res.productName = r.productName, //r.productFamily?r.productFamily:r.productName; //handle when productName="topptipset Extra for example"
+    res.productName = r.productName; //r.productFamily?r.productFamily:r.productName; //handle when productName="topptipset Extra for example"
+    res.productId=r.productId;
     res.drawNumber=r.drawNumber;
     res.regCloseTime=r.regCloseTime;
     res.rowPrice=r.rowPrice.replace(",",".");
