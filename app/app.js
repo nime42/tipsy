@@ -727,13 +727,12 @@ function checkDraw(drawId,SvSpResponse) {
         matchRows.push(row);
     });
 
-    let drawState = SvSpResponse.draws.drawState;
-
     let dbi = db.getDbInstance();
     try {
         dbi.transaction(() => {
             db.updateMatchResults(drawId,matchRows);
             if (outcome !== null) {
+                let drawState = SvSpResponse.draws.drawState;
                 db.updateDrawResult(drawId, drawState, outcome);
             }
         })();
