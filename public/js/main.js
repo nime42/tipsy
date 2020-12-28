@@ -1366,6 +1366,10 @@ function getResults(groupId,page) {
             if (globals.isRefreshing) {
                 document.getElementById("top-list").scrollIntoView();
             }
+
+            if(ongoingGames>0) {
+                $("#refresh-button").fadeIn(2000);
+            }
         },
         error: function (data, status, jqxhr) {
             modalPopUp("#popup", "Hämta resultat", "Tekniskt fel!");

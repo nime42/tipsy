@@ -203,12 +203,21 @@ table.bettingtable td {
   .hor-scroll {
     overflow-x:auto !important;
   }
+
+  #refresh-button-container {
+    display:block;
+  }
 }
 
 @media screen and (min-width: 1100px) {
   #info {
     font-size: x-large;
   }
+
+  #refresh-button-container {
+    display:none;
+  }
+
 }
 </style>
 
@@ -302,12 +311,7 @@ table.bettingtable td {
       }
 
     });
-
-
-
-
-
-  });
+    });
 
 
 
@@ -337,7 +341,9 @@ table.bettingtable td {
     <i style="font-size: 20px;" class="fa fa-bars"></i>
   </a>
 </div>
-
+<div id="refresh-button-container" style="position:fixed;bottom:5px;right:5px;">
+<i id="refresh-button" class="fa fa-refresh" style="color:#f6d403; font-size:18px;opacity: 0.75;display:none" aria-hidden="true" onclick="location.reload();"></i>
+</div>
 
 <div id="front-page">
 <div id="start-info" style="height: auto;padding-top: 20px; min-height: 800px;display:none">
