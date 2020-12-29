@@ -47,7 +47,7 @@
   padding-left: 10px;
 }
 
-.user-info-fields input[type=button] {
+.user-info-fields button {
   
     height: 45px;
     width: 80%;
@@ -104,9 +104,9 @@
 
               <div class="sticky">
               {{#if register}}
-              <input type="button" id="reg-or-update" class="round-button" value="Skapa"/>
+              <button type="button" id="reg-or-update" class="round-button">Skapa</button>
               {{else}}
-              <input type="button" id="reg-or-update" class="round-button" value="Uppdatera"/>
+              <button type="button" id="reg-or-update" class="round-button">Uppdatera</button>
               {{/if}}
               </div>
             </form>
@@ -853,6 +853,7 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
 
   #draw-selector {
     font-size: 16px;
+    padding: .15em;
   }
 </style>
 <div style="overflow: auto;max-height: calc(100vh - 110px);">  
