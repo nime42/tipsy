@@ -853,8 +853,8 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
 
   #draw-selector {
     font-size: 16px;
-    padding: .15em;
-  }
+    background-color:#f6d403  
+    }
 </style>
 <div style="overflow: auto;max-height: calc(100vh - 110px);">  
 
@@ -870,7 +870,7 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
 
   {{#if (gt drawDates.length 1)}}
   <h2 style="margin-bottom: 4px;">
-    <select id="draw-selector" class="round-button">
+    <select id="draw-selector">
     {{#each drawDates}} 
       <option value={{@index}}>{{this}}</option> 
     {{/each}}  
