@@ -213,7 +213,7 @@ function getSuggestions() {
     matchInfoHandler.getPlayable("topptipsetfamily",function(status,data) {
         if(status) {
             console.log("-------ToppTipset------");
-            suggest(data.draws);
+            suggest(data[0].draws);
             console.log("\n\n");
 
         }
@@ -222,7 +222,7 @@ function getSuggestions() {
         matchInfoHandler.getPlayable("stryktipset",function(status,data) {
             if(status) {
                 console.log("-------strykTipset------");
-                suggest(data.draws);
+                suggest(data[0].draws);
                 console.log("\n\n");
             }
             console.log("---------------------------");
@@ -230,7 +230,7 @@ function getSuggestions() {
             matchInfoHandler.getPlayable("europatipset",function(status,data) {
                 if(status) {
                     console.log("-------EuropaTipset------");
-                    suggest(data.draws);
+                    suggest(data[0].draws);
                     console.log("\n\n");
                 }
             });
