@@ -49,7 +49,7 @@ function makePlay(product) {
     matchInfoHandler.getPlayable(product,function(status,data) {
         if(status) {
             let draw=data[0];
-            if(checkIfPlayExists(draw.productName,draw.drawNumber)) {
+            if(false && checkIfPlayExists(draw.productName,draw.drawNumber)) {
                 return;
             }
 
@@ -105,20 +105,15 @@ function getBet(matchData) {
     odds.two+=calcOdds('SvenskaFolket',matchData.one,'one','two');
     odds.two+=calcOdds('SvenskaFolket',matchData.x,'x','two');
     odds.two+=calcOdds('SvenskaFolket',matchData.two,'two','two');
-
-    Object.keys(odds).forEach(k=>{
-        odds[k]=odds[k]/3.0;
-    })
-
-    let point=Math.random();
-
-    if(point<odds.one) {
-        return '1';
-    } 
-    if(point<odds.one+odds.x) {
-        return 'X';
+ 
+    let best=Object.keys(odds).map(k=>({k:k,o:odds[k]})).sort((e1,e2)=>(e2.o-e1.o))[0].k;
+    console.log(best);
+    switch(best) {
+        case "one": return '1';
+        case "x": return 'X';
+        case "two":return '2';
     }
-    return '2';
+
 
 }
 
