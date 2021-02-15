@@ -884,6 +884,16 @@ function configureStatistics() {
         data: { groupId: groupId },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
+            data.tot_ord_games=data.userStats.map(e=>(e.games_ord)).reduce((total,v)=>(total+v));
+            data.tot_extra_games=data.userStats.map(e=>(e.games_extra)).reduce((total,v)=>(total+v));
+            data.tot_ord_input=data.userStats.map(e=>(e.input_ord)).reduce((total,v)=>(total+v));
+            data.tot_extra_input=data.userStats.map(e=>(e.input_extra)).reduce((total,v)=>(total+v));
+            data.tot_win_brutto=data.userStats.map(e=>(e.win_brutto)).reduce((total,v)=>(total+v));
+            data.tot_win_netto=data.userStats.map(e=>(e.win_netto)).reduce((total,v)=>(total+v));
+            data.tot_average_stryktips=data.userStats.map(e=>(e.average_stryktips!=="-"?e.average_stryktips:0)).reduce((total,v)=>(total+v))/data.userStats.length;
+            data.tot_average_stryktips=data.tot_average_stryktips.toFixed(1);
+            data.tot_average_topptips=data.userStats.map(e=>(e.average_topptips!=="-"?e.average_topptips:0)).reduce((total,v)=>(total+v))/data.userStats.length;
+            data.tot_average_topptips=data.tot_average_topptips.toFixed(1);
             showModal("#basic-modal", hbsTemplates["main-snippets"]["statistics"](data));
 
             let cmpFun = function (e1, e2) {

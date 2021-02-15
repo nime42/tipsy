@@ -423,18 +423,12 @@
     cursor: pointer;
 }
 
-#member-table th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background:#525252;
 
-}
 
 
 </style>
 
-              <div style="max-height: 188px; overflow-y:auto;overflow-x:hidden" class="hor-scroll">
+              <div style="height: 185px;" class="table-scroll">
                 <table class="table-bordered" id="member-table">
                   <thead>
                     <tr>
@@ -533,27 +527,25 @@
 
 <script id="statistics" type="text/x-handlebars-template">
 <div class="modal-content">
+  <style>
+    .bottom td {
+      border-left: none !important;
+      border-right:none !important;
+      border-bottom: none !important;
+    }
+  </style>
   <div class="modal-header">
   <button type="button" class="close">&times;</button>
   </div>
   <br/>
   <br/>
-<style>
 
-#stat-table th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background:#525252;
 
-}
-</style>
-
-              <div id="stat-table" style="max-height: 200px; overflow:auto; margin:10px" class="hor-scroll">
+              <div class="table-scroll">
                 <table class="table-bordered" id="stat-table">
                   <thead>
                     <tr>
-                      <th nowrap style="vertical-align:top" scope="col">Namn</th>
+                      <th class="fixed-col corner" nowrap style="vertical-align:top" scope="col">Namn</th>
                       <th nowrap style="text-align:center" scope="col">Rätt/spel<BR/>(Stryk/Euro)</th>
                       <th nowrap style="text-align:center" scope="col">Rätt/spel<BR/>(Topptips)</th>
                       <th nowrap style="text-align:center" scope="col">Ordinarie Spel<BR/>(insats)</th>
@@ -566,16 +558,29 @@
                   <tbody>
                     {{#each userStats}}
                     <tr>
-                      <td nowrap style="text-align:center">{{name}}</td>
-                      <td nowrap style="text-align:center"><b> {{average_stryktips}}</b></td>
+                      <td class="fixed-col" nowrap style="text-align:center">{{name}}</td>
+                      <td nowrap style="text-align:center"><b>{{average_stryktips}}</b></td>
                       <td nowrap style="text-align:center"><b> {{average_topptips}}</b></td>
-                      <td nowrap style="text-align:center"><b>{{#if (gt games_ord 0) }} {{games_ord}}</b> (<i>{{toLocalNumber input_ord}} kr</i>){{else}}0{{/if}}</td>
+                      <td nowrap style="text-align:center"><b> {{#if (gt games_ord 0) }} {{games_ord}} </b> (<i>{{toLocalNumber input_ord}} kr</i>){{else}}0{{/if}}</td>
                       <td nowrap style="text-align:center"><b>{{#if (gt games_extra 0) }} {{games_extra}}</b> (<i>{{toLocalNumber input_extra}} kr</i>){{else}}0{{/if}}</td>
                       <td nowrap style="text-align:center">{{toLocalNumber win_brutto}} kr</td>
                       <td nowrap style="text-align:center">{{toLocalNumber win_netto}} kr</td>
                     </tr>
                     {{/each}}
+
                   </tbody>
+                  <tfoot>
+                    <tr class="bottom">
+                      <td class="fixed-col corner" nowrap style="text-align:right"><b>Totalt:</b></td>
+                      <td nowrap style="text-align:center"><b> {{#if (gt tot_average_stryktips 0)}} {{tot_average_stryktips}} {{else}} - {{/if}}</b></td>
+                      <td nowrap style="text-align:center"><b> {{#if (gt tot_average_topptips 0)}} {{tot_average_topptips}} {{else}} - {{/if}}</b></td>
+                      <td nowrap style="text-align:center"><b>{{#if (gt tot_ord_games 0) }} {{tot_ord_games}}</b> (<i>{{toLocalNumber tot_ord_input}} kr</i>){{else}}0{{/if}}</td>
+                      <td nowrap style="text-align:center"><b>{{#if (gt tot_extra_games 0) }} {{tot_extra_games}}</b> (<i>{{toLocalNumber tot_extra_input}} kr</i>){{else}}0{{/if}}</td>
+                      <td nowrap style="text-align:center"><b> {{toLocalNumber tot_win_brutto}} kr</b></td>
+                      <td nowrap style="text-align:center"><b>  {{toLocalNumber tot_win_netto}} kr</b></td>
+                    </tr>
+                    </tfoot>
+
                 </table>
               </div>
            <br/> 
@@ -608,11 +613,6 @@
       <br/>
       <br/>
       <br/>
-
-
-
-
-
 </div>
 </script>
 
@@ -625,15 +625,6 @@
   <br/>
   <br/>
 <style>
-
-#event-table th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background:#525252;
-
-}
-
   #payments a {
   color:#f6d403;
   }
@@ -641,7 +632,7 @@
 
 
 
-              <div  style="max-height: 200px; overflow:auto;margin:10px" class="hor-scroll">
+              <div  style="height: 185px; overflow:auto;margin:10px" class="table-scroll">
                 <table id="event-table" class="table-bordered">
                   <thead>
                     <tr>
@@ -738,13 +729,6 @@
   border-radius: 0 15px  15px 0;
 }
 
-#payment-table th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background:#525252;
-
-}
 
 </style>
 <p>Grattis till vinsten!</p>
@@ -756,7 +740,7 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
           <span>Kr</span>
         </div>
 
-        <div  id="payment-div" style="max-height: 205px; overflow:auto; margin:10px" class="hor-scroll">
+        <div  id="payment-div" style="max-height: 180px; overflow:auto; margin:10px" class="table-scroll">
         <table id="payment-table" class="table table-bordered table-striped">
           <thead>
             <tr>
