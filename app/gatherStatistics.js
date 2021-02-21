@@ -176,7 +176,8 @@ function updateDraw(draw) {
     home_goals=coalesce(excluded.home_goals,home_goals),\
     away_teamName=coalesce(excluded.away_teamName,away_teamName),\
     away_teamId=coalesce(excluded.away_teamId,away_teamId),\
-    away_goals=coalesce(excluded.away_goals,away_goals)\
+    away_goals=coalesce(excluded.away_goals,away_goals),\
+    result=coalesce(excluded.result,result)\
     ";
 
     let stmt=db.prepare(sql);
@@ -190,7 +191,6 @@ function updateDraw(draw) {
         let r=draw.rows[i];
         r.drawId=drawId;
         console.log(r.drawId,r.matchNr);
-        //console.log(r.svF);
         stmt.run(r);
 
         for(let key in r.svF) {
