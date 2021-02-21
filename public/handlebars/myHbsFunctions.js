@@ -64,13 +64,22 @@ Handlebars.registerHelper("inc", function(value, options)
 });
 
 //e.g. add thousand separators
-Handlebars.registerHelper("toLocalNumber", function(value, options)
+Handlebars.registerHelper("toLocalNumber", function(value,nrOfDecimals, options)
 {
+    let decimal=undefined;
+
+    if(typeof nrOfDecimals === 'number' && isFinite(nrOfDecimals)) {
+        decimal=Number(nrOfDecimals);   
+    }
     var n= parseFloat(value);
     if(isNaN(n)) {
         return value;
     } else {
-        return n.toLocaleString();
+        if(decimal) {
+            return n.toFixed(decimal)
+        } else {
+            return n.toLocaleString();
+        }
     }
 });
 

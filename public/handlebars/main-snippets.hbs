@@ -559,8 +559,8 @@
                     {{#each userStats}}
                     <tr>
                       <td class="fixed-col" nowrap style="text-align:center">{{name}}</td>
-                      <td nowrap style="text-align:center"><b>{{average_stryktips}}</b></td>
-                      <td nowrap style="text-align:center"><b> {{average_topptips}}</b></td>
+                      <td nowrap style="text-align:center"><b>{{toLocalNumber average_stryktips 2}}</b></td>
+                      <td nowrap style="text-align:center"><b> {{toLocalNumber average_topptips 2}}</b></td>
                       <td nowrap style="text-align:center"><b> {{#if (gt games_ord 0) }} {{games_ord}} </b> (<i>{{toLocalNumber input_ord}} kr</i>){{else}}0{{/if}}</td>
                       <td nowrap style="text-align:center"><b>{{#if (gt games_extra 0) }} {{games_extra}}</b> (<i>{{toLocalNumber input_extra}} kr</i>){{else}}0{{/if}}</td>
                       <td nowrap style="text-align:center">{{toLocalNumber win_brutto}} kr</td>
