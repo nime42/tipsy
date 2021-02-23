@@ -65,7 +65,7 @@ app.use((req,res,next)=>{
  
     if(
         req.url.startsWith("/handlebars") || 
-        req.url.startsWith("/.well-known/pki-validation") ||
+        req.url.startsWith("/.well-known") ||
         req.url.startsWith("/js") || 
         req.url.startsWith("/css") ||
         req.url.startsWith("/img") ||
