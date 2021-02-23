@@ -15,9 +15,9 @@ sessionHandler.resumeSessions(db.getDbInstance());
 var config=require('../resources/config.js');
 
 
-var privateKey  = fs.readFileSync('./resources/private.key', 'utf8');
-var certificate = fs.readFileSync('./resources/certificate.crt', 'utf8');
-var ca = fs.readFileSync('./resources/ca_bundle.crt', 'utf8');
+var privateKey  = fs.readFileSync(config.certs.privateKey, 'utf8');
+var certificate = fs.readFileSync(config.certs.certificate, 'utf8');
+var ca = fs.readFileSync(config.certs.ca, 'utf8');
 
 var credentials = {key: privateKey, cert: certificate,ca:ca};
 var express = require('express');
