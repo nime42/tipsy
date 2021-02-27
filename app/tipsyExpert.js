@@ -49,7 +49,7 @@ function makePlay(product) {
     matchInfoHandler.getPlayable(product,function(status,data) {
         if(status) {
             let draw=data[0];
-            if(false && checkIfPlayExists(draw.productName,draw.drawNumber)) {
+            if(checkIfPlayExists(draw.productName,draw.drawNumber)) {
                 return;
             }
 
