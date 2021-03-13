@@ -306,7 +306,7 @@ function suggest(matchData) {
         console.log("actual",actual);
         let res={'one':0,'x':0,'two':0};
         let totP={'one':1,'x':1,'two':1};
-        Object.keys(r.svenskaFolket).forEach(k=>{
+        Object.keys(r.svenskaFolket).filter(k=>(["one","x","two"].find(e=>(e===k)))).forEach(k=>{
             let p=calcOdds3("SvenskaFolket",r.svenskaFolket[k],k,'one');
             props.push({event:r.eventDescription,outcome:"one",prop:p});
             res['one']+=p;

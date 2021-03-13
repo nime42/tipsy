@@ -85,6 +85,8 @@ function printSystemFile(product,drawnumber,systems,file) {
     }
     let headerText;
     if(product.match(/topp.*/i)) {
+        product=product.replace(/extra/i,"Europa"); //Extra should be Europa...
+
         headerText=product.replace(" ",",")+",Omg="+drawnumber+",Insats=1";  
     } else {
         headerText=product;
@@ -103,7 +105,6 @@ function makeReducedSystem(product,options) {
     matchInfoHandler.getPlayable(product,function(status,data) {
         if(status) {
             let draw=data[0];
-
             let drawnumber= draw.drawNumber;
             let product= draw.productName;
 
@@ -139,9 +140,13 @@ function makeReducedSystem(product,options) {
             console.log();
             let systems=makeSystem(row,options.singles,options.maxErrors,options.impossibles); 
 
+            systems.singleRows=convertToSingleRows(systems.systems);
+
             let singleOutfile;
+            let allRowsOutfile;
             if(options.outfile) {
                 singleOutfile=options.outfile.replace(/(\..*$|$)/,"_enkel$1");
+                allRowsOutfile=options.outfile.replace(/(\..*$|$)/,"_all$1");
                 console.log("Systemfil:"+options.outfile);
             } else {
                 console.log("Systemrader:");
@@ -156,6 +161,11 @@ function makeReducedSystem(product,options) {
                 console.log("Enkelrader:");
             }
             printSystemFile(product,drawnumber,systems.systems.filter(s=>(s.size===1)),singleOutfile);
+
+            if(allRowsOutfile) {
+                console.log("\nAlla enkelrader:"+allRowsOutfile);
+                printSystemFile(product,drawnumber,systems.singleRows,allRowsOutfile);
+            }
 
             console.log("\nSystem storlek:"+systems.size);
 
@@ -179,7 +189,7 @@ function makeReducedSystem(product,options) {
 
 function getBet(type,matchData) {
     let text=matchData.one+"\t"+matchData.x+"\t"+matchData.two;
-    let odds=Object.keys(matchData).map(e=>({symbol:e,value:matchData[e].replace(',','.')}));
+    let odds=Object.keys(matchData).filter(k=>(["one","x","two"].find(e=>(e===k)))).map(e=>({symbol:e,value:matchData[e].replace(',','.')}));
     //console.log(odds);
     let suggestion;
     if(type=="percent") {
@@ -203,6 +213,33 @@ function getBet(type,matchData) {
 
     return {text:text,suggestion:suggestion};
 }
+
+function convertToSingleRows(systems) {
+    let res=[];
+    systems.map(s=>(s.row)).forEach(r=>{
+        allCombinations(r.split(",")).forEach(e=>{
+            res.push({size:1,row:e.join(",")});
+        })
+    }) 
+    return res;
+}
+
+function allCombinations(row) {
+    let res=[];
+    if(row.length===0) {
+        return [[]];
+    }
+    let first=row[0];
+    let rest=allCombinations(row.slice(1));
+    first.split("").forEach(f=>{
+        rest.forEach(r=>{
+            res.push([f].concat(r)) 
+        })
+    });
+    return res;
+}
+
+
 
 //========================================================
 
@@ -237,6 +274,7 @@ function makeSystem(bets,singlePositions, maxErrors,impossibles) {
 
 
     for (let i = 0; i <= maxErrors; i++) {
+        //if(i!=maxErrors) continue;
         let errorComb = pickOutN(Array(bets.length).fill().map((element, index) => index), i);
         errorComb.forEach(p => {
             let system=generateRows(p, bets);
