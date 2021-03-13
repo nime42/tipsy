@@ -13,7 +13,8 @@ function main(argv) {
         return;    
     }
 
-    let options=parseOptions(argv.slice(2));
+    let optionList=["-row","-maxErrors","-singles","-impossibles","-outfile","-maxX"];
+    let options=parseOptions(argv.slice(3),optionList);
 
     if(argv[2].match(/stryk.*/i))  {
         makeReducedSystem("stryktipset",options);
@@ -31,7 +32,7 @@ function main(argv) {
 
 }
 
-function parseOptions(argv) {
+function parseOptions(argv,optionList) {
     let cmdLine = argv.join(" ");
     let args = {};
     let matches = cmdLine.match(/-[^ ]+ [^ ]+/g);
@@ -39,8 +40,20 @@ function parseOptions(argv) {
         matches.forEach(e => {
             const [param, val] = e.split(" ");
             args[param]=val;
+            cmdLine=cmdLine.replace(e,"");
         })
     }
+
+    cmdLine=cmdLine.replace(/  +/g," ").trim();
+    if(cmdLine!="") {
+        console.log('\x1b[1m\x1b[31m%s\x1b[0m%s', "Warning!"," Failed to parse some options: '"+cmdLine+"'\n"); 
+    }
+    Object.keys(args).forEach(k=>{
+        if(optionList.find(e=>(e===k))===undefined) {
+            console.log('\x1b[1m\x1b[31m%s\x1b[0m%s', "Warning",":"+k+" is not an option."); 
+        }
+    })
+
     let params={};
 
     if(args["-row"]) {
