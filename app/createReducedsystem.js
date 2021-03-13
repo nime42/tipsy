@@ -7,7 +7,7 @@ var fs=require('fs');
 
 
 function main(argv) {
-    let argDescr=" [stryktips|europatips|topptips] -row [SvF|Odds|1,X,2..] -maxErrors n -singles [0,2,3..] -impossibles [0:X,1:2..] -outfile [filename]";
+    let argDescr=" [stryktips|europatips|topptips] -row [SvF|Odds|1,X,2..] -maxErrors n -singles [0,2,3..] -impossibles [0:X,1:2..] -outfile [filename] -maxX n";
     if(argv.length<3) {
         console.log("Usage: "+argv[1]+argDescr);
         return;    
@@ -68,6 +68,10 @@ function parseOptions(argv) {
     
     if(args["-outfile"]) {
         params.outfile=args["-outfile"];
+    } 
+
+    if(args["-maxX"]) {
+        params.maxX=args["-maxX"];
     } 
 
     params.cmdLine=argv.join(" ");
@@ -142,33 +146,20 @@ function makeReducedSystem(product,options) {
 
             systems.singleRows=convertToSingleRows(systems.systems);
 
-            let singleOutfile;
-            let allRowsOutfile;
+            if(options.maxX) {
+                systems.singleRows=filterOnMaxX(systems.singleRows,options.maxX);
+
+            }
+
             if(options.outfile) {
-                singleOutfile=options.outfile.replace(/(\..*$|$)/,"_enkel$1");
-                allRowsOutfile=options.outfile.replace(/(\..*$|$)/,"_all$1");
                 console.log("Systemfil:"+options.outfile);
             } else {
                 console.log("Systemrader:");
             }
-            printSystemFile(product,drawnumber,systems.systems.filter(s=>(s.size>1)),options.outfile);
 
-            console.log();
+            printSystemFile(product,drawnumber,systems.singleRows,options.outfile);
 
-            if(singleOutfile) {
-                console.log("EnkelSystemfil:"+singleOutfile);
-            } else {
-                console.log("Enkelrader:");
-            }
-            printSystemFile(product,drawnumber,systems.systems.filter(s=>(s.size===1)),singleOutfile);
-
-            if(allRowsOutfile) {
-                console.log("\nAlla enkelrader:"+allRowsOutfile);
-                printSystemFile(product,drawnumber,systems.singleRows,allRowsOutfile);
-            }
-
-            console.log("\nSystem storlek:"+systems.size);
-
+            console.log("\nSystem storlek:"+systems.singleRows.length);
 
             if(options.outfile) {
                 let optionFile=options.outfile.replace(/(\..*$|$)/,"_options$1");
@@ -176,7 +167,10 @@ function makeReducedSystem(product,options) {
                 fs.appendFileSync(optionFile,JSON.stringify(options, null, 2));
             } else {
                 console.log(options);
-            }
+            }            
+
+
+
             
 
         }
@@ -239,6 +233,21 @@ function allCombinations(row) {
     return res;
 }
 
+function filterOnMaxX(systems,maxX) {
+    let res=[];
+    let filtered=0;
+    systems.forEach(s=>{
+        let nrX=(s.row.match(/X/g)||[]).length;
+        if(nrX>maxX) {
+            filtered++;
+        } else {
+            res.push(s);
+        }
+    });
+    console.log("removed "+filtered+" rows with to many X");
+    return res;
+
+}
 
 
 //========================================================
