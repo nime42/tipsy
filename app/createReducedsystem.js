@@ -7,7 +7,7 @@ var fs=require('fs');
 
 
 function main(argv) {
-    let argDescr=" [stryktips|europatips|topptips] -row [SvF|Odds|1,X,2..] -maxErrors n -singles [0,2,3..] -impossibles [0:X,1:2..] -outfile [filename] -maxX n";
+    let argDescr=" [stryktips|europatips|topptips] -row [SvF|Odds|1,X,2..] -maxErrors [0,1,2...] -singles [0,1,2..] -impossibles [0:X,1:2..] -outfile [filename] -maxX n";
     if(argv.length<3) {
         console.log("Usage: "+argv[1]+argDescr);
         return;    
@@ -61,7 +61,7 @@ function parseOptions(argv,optionList) {
     }
 
     if(args["-maxErrors"]) {
-        params.maxErrors=args["-maxErrors"];
+        params.maxErrors=args["-maxErrors"].split(",");
     } else {
         params.maxErrors=0;
     }
@@ -295,9 +295,11 @@ function makeSystem(bets,singlePositions, maxErrors,impossibles) {
 
 
 
-    for (let i = 0; i <= maxErrors; i++) {
+    for (i in maxErrors) {
         //if(i!=maxErrors) continue;
-        let errorComb = pickOutN(Array(bets.length).fill().map((element, index) => index), i);
+        let e=maxErrors[i];
+        let errorComb = pickOutN(Array(bets.length).fill().map((element, index) => index), e);
+        //console.log(e,errorComb.length);
         errorComb.forEach(p => {
             let system=generateRows(p, bets);
             systems.push(system);
