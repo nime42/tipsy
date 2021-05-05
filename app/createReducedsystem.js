@@ -195,6 +195,9 @@ function makeReducedSystem(product,options) {
 
 
 function getBet(type,matchData) {
+    if(!matchData) {
+        return {text:"-",suggestion:"-"};
+    }
     let text=matchData.one+"\t"+matchData.x+"\t"+matchData.two;
     let odds=Object.keys(matchData).filter(k=>(["one","x","two"].find(e=>(e===k)))).map(e=>({symbol:e,value:matchData[e].replace(',','.')}));
     //console.log(odds);
