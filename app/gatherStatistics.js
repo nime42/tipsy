@@ -214,9 +214,11 @@ function getSuggestions() {
         if(status) {
             console.log("-------ToppTipset------");
             suggest(data[0].draws);
+            //compareTeams(data[0].regCloseTime,data[0].draws);
             console.log("\n\n");
 
         }
+        return;
 
         console.log("---------------------------");
         matchInfoHandler.getPlayable("stryktipset",function(status,data) {
@@ -353,6 +355,66 @@ function suggest(matchData) {
     console.log("-------------------");
 
 
+
+}
+
+
+function compareTeams(drawClosingTime,matchData) {
+    matchData.forEach(r=>{
+        console.log(r.eventDescription);
+        //console.log(r);
+        
+        let matchStart=r.match.matchStart;
+        let homeId=r.match.participants[0].id;
+        let awayId=r.match.participants[1].id;
+        let homeTeamMatches=getOldResults(homeId,drawClosingTime);
+        let awayTeamMatches=getOldResults(awayId,drawClosingTime);
+        console.log(homeTeamMatches);
+        console.log(awayTeamMatches);
+
+    })
+}
+
+function getOldResults(teamId,matchStart) {
+    let res={};
+
+    let sql="select distinct drawdate,matchid, home_teamName,home_teamid, away_teamName,away_teamid,home_goals,away_goals from v_draw_rows where (home_teamid=? or away_teamid=?) and drawdate<? order by drawdate desc";
+    res.matches=db.prepare(sql).all(teamId,teamId,matchStart);
+    res.trend=[];
+    res.homeTrend=[];
+    res.awayTrend=[];
+    res.matches.forEach(m=>{
+        m.result=getResult(m.home_goals,m.away_goals);
+        m.win=null;
+        if(teamId===m.home_teamId) {
+            switch(m.result) {
+                case "one":
+                    m.win=true;
+                    break;
+                case "two":
+                    m.win=false;
+            }
+            m.homeWin=m.win;
+            res.homeTrend.push(m.win);
+        } else {
+            switch(m.result) {
+                case "one":
+                    m.win=false;
+                    break;
+                case "two":
+                    m.win=true;
+            }
+            m.awayWin=m.win;
+            res.awayTrend.push(m.win);
+
+        }
+
+
+        //res.wins[m.result]=res.wins[m.result]?res.wins[m.result]+1:1;
+        res.trend.push(m.win);
+    })
+    //res.matches=undefined;
+    return res;
 
 }
 

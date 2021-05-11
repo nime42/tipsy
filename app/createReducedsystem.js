@@ -7,13 +7,13 @@ var fs=require('fs');
 
 
 function main(argv) {
-    let argDescr=" [stryktips|europatips|topptips] -row [SvF|Odds|1,X,2..] -maxErrors [0,1,2...] -singles [0,1,2..] -impossibles [0:X,1:2..] -outfile [filename] -maxX n";
+    let argDescr=" [stryktips|europatips|topptips] -row [SvF|Odds|1,X,2..] -maxErrors [0,1,2...] -singles [0,1,2..] -impossibles [0:X,1:2..] -outfile [filename] -max1 n -maxX n -max2 n";
     if(argv.length<3) {
         console.log("Usage: "+argv[1]+argDescr);
         return;    
     }
 
-    let optionList=["-row","-maxErrors","-singles","-impossibles","-outfile","-maxX"];
+    let optionList=["-row","-maxErrors","-singles","-impossibles","-outfile","-max1","-maxX","-max2"];
     let options=parseOptions(argv.slice(3),optionList);
 
     if(argv[2].match(/stryk.*/i))  {
@@ -83,8 +83,16 @@ function parseOptions(argv,optionList) {
         params.outfile=args["-outfile"];
     } 
 
+    if(args["-max1"]) {
+        params.max1=args["-max1"];
+    }     
+
     if(args["-maxX"]) {
         params.maxX=args["-maxX"];
+    } 
+
+    if(args["-max2"]) {
+        params.max2=args["-max2"];
     } 
 
     params.cmdLine=argv.join(" ");
@@ -159,9 +167,18 @@ function makeReducedSystem(product,options) {
 
             systems.singleRows=convertToSingleRows(systems.systems);
 
-            if(options.maxX) {
-                systems.singleRows=filterOnMaxX(systems.singleRows,options.maxX);
+            if(options.max1) {
+                systems.singleRows=filterOnMaxResults('1',systems.singleRows,options.max1);
 
+            }
+
+            if(options.maxX) {
+                systems.singleRows=filterOnMaxResults('X',systems.singleRows,options.maxX);
+
+            }
+
+            if(options.max2) {
+                systems.singleRows=filterOnMaxResults('2',systems.singleRows,options.max2);
             }
 
             if(options.outfile) {
@@ -249,18 +266,18 @@ function allCombinations(row) {
     return res;
 }
 
-function filterOnMaxX(systems,maxX) {
+function filterOnMaxResults(result,systems,max) {
     let res=[];
     let filtered=0;
     systems.forEach(s=>{
-        let nrX=(s.row.match(/X/g)||[]).length;
-        if(nrX>maxX) {
+        let nrX=(s.row.match(new RegExp(result, 'g'))||[]).length;
+        if(nrX>max) {
             filtered++;
         } else {
             res.push(s);
         }
     });
-    console.log("removed "+filtered+" rows with to many X");
+    console.log("removed "+filtered+" rows with to many "+result);
     return res;
 
 }
