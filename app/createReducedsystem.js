@@ -5,6 +5,15 @@ var matchInfoHandler=require('./utils/matchInfoHandler.js');
 
 var fs=require('fs');
 
+var statDB=undefined;
+try {
+var sqlite3 = require('better-sqlite3');
+statDB = new sqlite3('./resources/tipsy_statistics.db');
+db.pragma("foreign_keys = ON");
+} catch(err) {}
+
+
+
 
 function main(argv) {
     let argDescr=" [stryktips|europatips|topptips] -row [SvF|Odds|1,X,2..] -maxErrors [0,1,2...] -singles [0,1,2..] -impossibles [0:X,1:2..] -outfile [filename] -max1 n -maxX n -max2 n";
@@ -133,17 +142,25 @@ function makeReducedSystem(product,options) {
             let drawnumber= draw.drawNumber;
             let product= draw.productName;
 
+            let matchOdds=[];
+
             let svfBets=[];
             let oddsBets=[];
-            draw.draws.forEach(d=>{
+            let tipsyBets=[];
+            draw.draws.forEach((d,i)=>{
                 //console.log(d);
-                console.log(d.eventDescription);
+                console.log(i+": "+d.eventDescription);
                 let svF=getBet('percent',d.svenskaFolket);
                 console.log(" Svenska Folket:"+"("+svF.suggestion+")"+svF.text);
                 svfBets.push(svF.suggestion);
                 let odds=getBet('odds',d.odds);
                 console.log("         Oddset:"+"("+odds.suggestion+")"+odds.text);
                 oddsBets.push(odds.suggestion);
+                if(statDB!=undefined) {
+                    let todds=getTipsyBet(d.svenskaFolket);
+                    console.log("          Tipsy:"+"("+todds.suggestion+")"+todds.text);
+                    matchOdds.push(todds.allOdds);
+                }
 
                 
             });
@@ -187,9 +204,14 @@ function makeReducedSystem(product,options) {
                 console.log("Systemrader:");
             }
 
+
             printSystemFile(product,drawnumber,systems.singleRows,options.outfile);
 
             console.log("\nSystem storlek:"+systems.singleRows.length);
+            if(statDB) {
+                console.log("Chans:"+calcTotalOdds(options,matchOdds).toFixed(2));
+            }
+
 
             if(options.outfile) {
                 let optionFile=options.outfile.replace(/(\..*$|$)/,"_options$1");
@@ -208,7 +230,26 @@ function makeReducedSystem(product,options) {
 
 }
 
+function calcTotalOdds(options,matchOdds) {
+    let odds=1.0;
+    if(options.singles) {
+        options.singles.forEach(s=>{
+            let outcome=options.row.split(",")[s];
+            odds*=matchOdds[s][numToAlpha(outcome)].odds;
+        });
+    }
 
+    if(options.impossibles) {
+        options.impossibles.forEach(i=>{
+            let m=i.pos;
+            let outcome=i.val;
+            odds*=(1-matchOdds[m][numToAlpha(outcome)].odds);
+        })
+    }   
+    return odds; 
+
+
+}
 
 
 function getBet(type,matchData) {
@@ -240,6 +281,79 @@ function getBet(type,matchData) {
 
     return {text:text,suggestion:suggestion};
 }
+
+function getTipsyBet(matchData) {
+    if (!matchData) {
+        return { text: "-", suggestion: "-" };
+    }
+    let odds = Object.keys(matchData).filter(k => (["one", "x", "two"].find(e => (e === k)))).map(e => ({ symbol: e, value: matchData[e].replace(',', '.') }));
+    let tipsy={};
+    odds.forEach(o=>{
+        tipsy[o.symbol]={
+            symbol:o.symbol,
+            odds:calcOdds("SvenskaFolket",o.value,o.symbol,o.symbol)
+        }
+    })
+    let text=tipsy.one.odds+"\t"+tipsy.x.odds+"\t"+tipsy.two.odds;
+
+    let suggestion=Object.values(tipsy).sort((a,b)=>(b.odds-a.odds))[0].symbol;
+    suggestion=alphaToNum(suggestion);
+    return { text: text, suggestion: suggestion,allOdds:tipsy };
+
+
+}
+
+
+function calcOdds(type,odds,outcome,actual) {
+    //console.log(type,odds,outcome,actual);
+    let sql="select count(*) as cnt from v_draw_rows_and_odds where type=? and odds/5=?/5 and outcome=?";
+    let tot=statDB.prepare(sql).get(type,odds,outcome).cnt;
+    sql+=" and result=?";
+    let act=statDB.prepare(sql).get(type,odds,outcome,actual).cnt;
+    let res=act/(tot*1.0);
+    //console.log("When "+type+":P("+outcome+")="+odds+" => P("+actual+")="+res);
+    return Number(res.toFixed(2));
+
+
+
+
+}
+
+
+function alphaToNum(a) {
+    let n;
+    switch(a) {
+        case "one":
+            n= '1';
+            break;
+        case "x":
+            n= 'X';
+            break;
+        case "two":
+            n= '2';
+            break;
+    }
+
+    return n;
+}
+
+function numToAlpha(n) {
+    let a;
+    switch(n) {
+        case "1":
+            a= 'one';
+            break;
+        case "X":
+            a= 'x';
+            break;
+        case "2":
+            a= 'two';
+            break;
+    }
+
+    return a;
+}
+
 
 function convertToSingleRows(systems) {
     let res=[];
