@@ -1409,7 +1409,7 @@ function parseRows(rows) {
             status2: ""
         };
 
-        if (res.status == "-1" || res.status=="Uppskjuten") {
+        if (res.status == "-1" || res.status== "" || res.status=="Uppskjuten") {
             res.status = "Inte startat";
         }
  
