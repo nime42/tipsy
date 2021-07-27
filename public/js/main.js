@@ -1363,6 +1363,10 @@ function getResults(groupId,page) {
                         $("#ongoing-games").text("("+ongoingGames+" spel)");
                     }
                 }
+
+                //updating nrofrights, don't count X's in matches that haven't started yet.
+                e.nrofrights=calcNrOfRights(e.rows);
+
                 $("#results").append(hbsTemplates["main-snippets"]["results"](e));
 
 
@@ -1388,6 +1392,21 @@ function getResults(groupId,page) {
 
 
 }
+
+//calculate nr of actual rights skipping X's in matches thats not started yet
+function calcNrOfRights(rows) {
+    let nrOfRights=0;
+    rows.forEach(r=>{
+        if(r.status!="Inte startat") {
+          if(r.isCorrect)  {
+            nrOfRights++;
+          }
+        }
+    })
+    return nrOfRights;
+
+}
+
 
 function parseRows(rows) {
     var res = rows.split('|').map(function (e) {
