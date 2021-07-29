@@ -109,7 +109,8 @@ CREATE TABLE group_members (
 CREATE TABLE groups (
     id        INTEGER   PRIMARY KEY AUTOINCREMENT,
     groupname TEXT,
-    created   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    allowextragames INTEGER default 1
 );
 
 
@@ -251,18 +252,20 @@ CREATE VIEW v_draws_in_groups AS
 
 
 -- View: v_group_members
-CREATE VIEW v_group_members AS
+CREATE VIEW v_group_members AS 
     SELECT g.groupname,
+           g.allowextragames, 
            m.groupid,
            m.admin,
            g.created AS group_created,
            u.*,
-           m.sortorder
-      FROM groups g
-           LEFT JOIN
-           group_members m ON g.id = m.groupid
-           LEFT JOIN
-           v_userinfo u ON u.userid = m.userid;
+           m.sortorder 
+      FROM groups g 
+           LEFT JOIN 
+           group_members m ON g.id = m.groupid 
+           LEFT JOIN 
+           v_userinfo u ON u.userid = m.userid; 
+
 
 
 -- View: v_user_surplus

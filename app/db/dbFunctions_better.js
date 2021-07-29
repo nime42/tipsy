@@ -115,11 +115,11 @@ function getGroupInfo(groupId,groupAdmin,callback=console.log) {
 } 
 
 
-function updateGroup(userId,groupId,groupName, callback=console.log) {
+function updateGroup(userId,groupId,groupName,allowExtraGames, callback=console.log) {
 
     try {
-        var sql="update groups set groupname=? where id=? and ? in (select userid from group_members where groupid=? and admin=true)";
-        const res = db.prepare(sql).run(groupName,groupId,userId,groupId);
+        var sql="update groups set groupname=?, allowextragames=? where id=? and ? in (select userid from group_members where groupid=? and admin=true)";
+        const res = db.prepare(sql).run(groupName,allowExtraGames,groupId,userId,groupId);
         callback(true, null);
     } catch (err) {
         callback(false, err);
@@ -902,6 +902,15 @@ function getNextInLine(groupId,callback=console.log) {
         e.name=e.name===""?e.username:e.name;
     })
 
+    //Calculate total profit
+    sql="select ordinarie.profit+extra.profit as profit from\
+    (select groupid,sum(profit) as profit from events where eventtype in ('BET','PAYMENT') group by groupid) ordinarie\
+    left join (select groupid,sum(profit) -sum(cost) as profit from events where eventtype in ('EXTRA BET') group by groupid) extra on ordinarie.groupid=extra.groupid\
+    where ordinarie.groupid=?";
+
+    row=db.prepare(sql).get(groupId);
+    let groupProfit=row?row.profit:0;
+
     let res={
         groupName:groupName,
         lastPlayer:lastPlayer,
@@ -911,7 +920,8 @@ function getNextInLine(groupId,callback=console.log) {
         sendRemainder:sendRemainder,
         remainderMail:remainderMail,
         runnerUp:runnerUp,
-        extraBets:extraBets
+        extraBets:extraBets,
+        groupProfit:groupProfit
     }
     callback(res);
        

@@ -516,6 +516,45 @@ function configureGroups(showApplyTab=false) {
 
 }
 
+function showEditGroupWindow(groupId,divElem) {
+    let hbParams={};
+    hbParams.groupName=divElem.find(".group-name").val();
+    hbParams.allowExtraGames=divElem.find(".allow-extra-games").val();
+
+    showModal("#another-modal", hbsTemplates["main-snippets"]["edit-group"](hbParams));
+    $("#another-modal").find("#save").click(function (e) {
+        let newGroupName=$("#another-modal").find("#group-name").val().trim();
+        let allowExtraGames=$("#another-modal").find("#allow-extra-games").prop("checked")?1:0;
+
+        $.ajax({
+            type: "POST",
+            url: "/updateGroup",
+            cache: false,
+            data: { groupId: groupId, groupName: newGroupName,allowExtraGames:allowExtraGames },
+            success: function (data, status, jqxhr) {
+                reloadIfLoggedOut(jqxhr);
+                divElem.find(".group-name").val(newGroupName);
+                divElem.find(".allow-extra-games").val(allowExtraGames);
+                hideModal("#another-modal");
+                initGroups();
+            },
+            error: function (data, status, jqxhr) {
+                if (data.status === 403) {
+                    modalPopUp("#popup", "Uppdatera grupp", "Gruppen finns redan!");
+                } else {
+                    modalPopUp("#popup", "Uppdatera grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                }
+            }
+        });
+    
+
+
+
+
+    });
+}
+
+
 function updateGroup(groupId, name, button) {
     $.ajax({
         type: "POST",
@@ -1128,7 +1167,7 @@ function getPlayable(product, div) {
                     });
                 }
                 getUserSurplus(function (surplus) {
-                    if (surplus>0) {
+                    if (surplus>0 && globals.activeGroup.allowextragames===1) {
                         modalDialog("#yes-no", "Extra spel",
                             "Är detta ett extra eller ett ordinarie spel?",
                             {
@@ -1213,6 +1252,7 @@ function getNextInLine(groupId) {
                 data.lastPlayed=d.getDate()+"/"+(d.getMonth()+1);
             }
 
+            data.allowExtraGames=globals.activeGroup?globals.activeGroup.allowextragames:undefined;
             $("#who-should-play").empty();
             $("#who-should-play").append(hbsTemplates["main-snippets"]["playing-order"](data));
         }

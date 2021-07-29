@@ -456,9 +456,10 @@ app.post('/createGroup',(req,res)=> {
 app.post('/updateGroup',(req,res)=> {
     var userId=sessionHandler.getSession(req).userId;
     var groupId=req.body.groupId;
-    var groupName=req.body.groupName
+    var groupName=req.body.groupName;
+    var allowExtraGames=req.body.allowExtraGames;
 
-    db.updateGroup(userId,groupId,groupName, function(status,err) {
+    db.updateGroup(userId,groupId,groupName,allowExtraGames, function(status,err) {
         if(status) {
             res.sendStatus(200);                    
         } else {

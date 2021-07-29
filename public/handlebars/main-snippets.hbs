@@ -186,86 +186,6 @@
 </div>
 </script>
 
-<script id="groups-old" type="text/x-handlebars-template">
-<div class="modal-content">
-  <div class="modal-header">
-  <button type="button" class="close">&times;</button>
-  </div>
-  <br/>
-  <br/>
-<style>
-   .groups div {
-  display: -ms-flexbox; /* IE10 */
-  display: flex;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.groups i {
-  padding-left: 5px;
-  min-width: 20px;
-  text-align: center;
-  font-size: 15px;
-  
-}
-
-.middle {
-  border-radius:0 0 0 0;
-}
-
- .groups input[type=text] {
-  width: 50%;
-  padding: 5px 0px 5px 10px;
-  outline: none;
-  border-radius: 15px 0 0 15px;
-  border-style: none;
-}
-
- 
-.groups button {
-    border-radius:0 15px 15px 0;
-    background: #f6d403;
-    color: black;
-    font-size: 14px;
-    font-weight: bold;
-    border-style: none;
-    cursor:pointer;
-}
-</style>
-
-<h2 style="margin-bottom: 5px;">Skapa grupp</h2>
-<div class="groups">
-  <div>
-    <input id="new-group" type="text" placeholder="Ny grupp">
-    <button type="button" id="add-group">Lägg till</button>
-  </div>
-</div>
-
-<h2 style="margin-bottom: 5px;">Ansök om medlemskap</h2>
-<div class="groups">
-  <div>
-    <input id="apply-group" type="text" placeholder="Sök grupp">
-    <button type="button" id="apply-membership">Ansök</button>
-  </div>
-</div>
-
-
-<div style="overflow:auto;">
-  <h2 style="margin-bottom: 5px;">Mina grupper</h2>
-  {{#each this}}
-    <div>
-      <div class="groups" style="margin-bottom: 7px;">
-        <input class="group-name" type="text" style="border-radius: 15px 0 0 15px;width:auto;" value="{{groupname}}" onkeyup="$(this).parent().find('.save-button').css('color', 'lightgreen').prop('disabled', false)">
-        <i style="color:#428bca;" class="fa fa-check-circle save-button clickable" onclick="updateGroup({{groupid}},$(this).parent().find('.group-name').val(),$(this))"></i>
-        <i style="color:red;" class="fa fa-remove clickable" onclick="deleteGroup({{groupid}},'{{groupname}}',$(this).parent())"></i>
-      </div>
-    </div>
-
-  {{/each}}
-</div>
-</div>
-</script>
-
 
 
 <script id="groups" type="text/x-handlebars-template">
@@ -343,8 +263,9 @@
           {{#each this}}
             <div>
               <div class="groups" style="margin-bottom: 7px;">
-                <input class="group-name" type="text" style="border-radius: 15px 0 0 15px;width:auto;" value="{{groupname}}" onkeyup="$(this).parent().find('.save-button').css('color', 'lightgreen').prop('disabled', false)">
-                <i style="color:#428bca;" class="fa fa-check-circle save-button clickable" onclick="updateGroup({{groupid}},$(this).parent().find('.group-name').val(),$(this))"></i>
+                <input class="group-name" readonly type="text" style="border-radius: 15px 0 0 15px;width:auto;" value="{{groupname}}" >
+                <input type="hidden" class="allow-extra-games" value="{{allowextragames}}"/>
+                <i style="color:#f6d403;" class="fa fa-wrench save-button clickable" onclick="showEditGroupWindow({{groupid}},$(this).parent())"></i>
                 <i style="color:red;" class="fa fa-remove clickable" onclick="deleteGroup({{groupid}},'{{escape groupname}}',$(this).parent())"></i>
               </div>
             </div>
@@ -377,6 +298,88 @@
 </script>
 
 
+
+<script id="edit-group" type="text/x-handlebars-template">
+<div class="modal-content" style="height:100%; padding-bottom:100%;max-width:450px">
+  <div class="modal-header">
+  <button type="button" class="close">&times;</button>
+  </div>
+  <br/>
+  <br/>
+<style>
+.group-info-fields input[type=text],[type=password], select {
+  width: 100%;
+  padding: 5px 0px 5px 10px;
+  margin: 5px 5px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+
+
+
+
+.group-info-fields label {
+  color:#f6d403;
+  margin-left: -10px;
+
+}
+
+.group-info-fields a {
+  color:#f6d403;
+}
+
+
+.group-info-fields .sticky {
+  position: sticky;
+  bottom: 45px;
+  background: #525252;
+  width: 100%;
+  text-align: left;
+
+}
+
+.group-info-fields div {
+  border-radius: 5px;
+  padding-left: 10px;
+}
+
+.group-info-fields button {
+  
+    height: 35px;
+    width: 50%;
+    margin-top: 15px;
+    margin-left:-10px;
+}
+
+</style>
+
+<div class="group-info-fields">
+<form action="">
+
+
+                <label for="group-name">Grupp Namn:</label>
+                <input type="text" id="group-name" value="{{groupName}}">
+              <br/>
+              <br/>
+          
+              <div>
+              <input class="yellow-checkbox" type="checkbox" id="allow-extra-games" name="allow-extra-games" value="allow-extra-games" style="margin-left: -25px;" {{#ifeq allowExtraGames 1}} checked {{/ifeq}} >
+              <label for="allow-extra-games" style="margin-left: 5px;"> Tillåt extra spel</label>
+              </div>
+
+              <br/>
+              <div>
+                <button id="save" type="button"  class="round-button" style="margin-right:12px;">Spara</button>
+                <button id="cancel" type="button" class="round-button close" >Avbryt</button>
+              </div>
+
+            </form>
+
+</div>
+</script>
 
 
 
@@ -1043,11 +1046,18 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
   <p><b>{{lastPlayer}}</b> spelade den <b>{{lastPlayed}}</b>.<br/>
 {{/if}}
 Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{runnerUp}}</b>{{/if}}.
+{{#ifeq allowExtraGames 1}}
 {{#if extraBets }}
  <br/>
  <br/>
  <b>{{extraBets}}</b> ligger på plus och får gärna lägga ett extra spel!
 {{/if}}
+{{/ifeq}}
+
+ <br/>
+ <br/>
+ <b>Gemensam vinstpott</b>: {{groupProfit}} kr
+
 </p>
 </div>
 
