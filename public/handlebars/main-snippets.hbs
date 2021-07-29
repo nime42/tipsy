@@ -764,7 +764,7 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
         </table>
         </div>
         <div class="form-check">
-          <button type="button" class="round-button" onclick="makePayment($('#payment-amount').val(),{{surplus}},$('#mail-list').val())">Utför</button>
+          <button type="button" class="round-button" onclick="makePayment($('#payment-amount').val(),{{surplus}},$('#mail-list').is(':checked'))">Utför</button>
           <button type="button" class="round-button close-modal">Avbryt</button>
           &nbsp;&nbsp;
           <input type="checkbox" class="yellow-checkbox"  id="mail-list" value="true" checked>
@@ -1054,10 +1054,11 @@ Nästa omgång spelar <b>{{nextInLine}}</b> {{#if runnerUp}} och därefter <b>{{
 {{/if}}
 {{/ifeq}}
 
+{{#ifnoteq allowExtraGames 1}}
  <br/>
  <br/>
  <b>Gemensam vinstpott</b>: {{groupProfit}} kr
-
+{{/ifnoteq}}
 </p>
 </div>
 

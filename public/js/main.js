@@ -784,6 +784,7 @@ function makePayment(amount,surplus,sendMail) {
             reloadIfLoggedOut(jqxhr);
             hideModal("#basic-modal");
             modalPopUp("#popup", "Utbetalning", "Utbetalning registrerad!");
+            initGroups();
         },
         error: function (data, status, jqxhr) {
             if (data.status === 400) {
