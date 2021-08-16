@@ -760,6 +760,9 @@ function rectify(drawId, callback=console.log) {
                 result = "2";
             }
         }
+        if(r.status=='Inte startat') { //Don't count matches that have'nt started
+            result="-";
+        }
         if (r.bet.match(result) === null) {
             switch (r.bet.length) {
                 case 1:
