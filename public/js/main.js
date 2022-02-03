@@ -1280,6 +1280,17 @@ function getToplist(groupId) {
 
 
 function getRowsFromLink(link,callback) {
+    try {
+        //link is on the formathttps://spela.svenskaspel.se/topptipset?product=25&draw=1744&signs=1:12,2:1,3:X2,4:1X,5:1,6:X2,7:12,8:1X&share=valid
+        let row=decodeURIComponent(link).match(/signs=([^&]*)/i)[1].split(",").map(r=>(r.split(":")[1]));
+        callback(row);
+    } catch(err) {
+        console.log("failed to parse out row from link",link);
+        callback(null);
+
+    }
+
+//No need to webscrape SvSp site, the link contains the row.
     $.ajax({
         type: "POST",
         url: "/getRowsFromLink",
@@ -1346,8 +1357,8 @@ function selectDrawFromLink(drawSelector,link) {
         //We just have one draw e.g. no select-element
         return;
     }
-    //the link with the draw-bettings is on the format https://spela.svenskaspel.se/{product}/dela/{drawnumber}/{id}
-    let drawNumber=link.match(/https?:\/\/.*\/.*\/dela\/(\d+)\//)[1];
+    //the link with the draw-bettings is on the format "https://spela.svenskaspel.se/topptipset?product=25&draw=1744&signs=1%3A12%2C2%3A1%2C3%3AX2%2C4%3A1X%2C5%3A1%2C6%3AX2%2C7%3A12%2C8%3A1X&share=valid"
+    let drawNumber=link.match(/.*draw=(\d+)&.*/)[1]
     if(drawNumber) {
        let draws=drawSelector.data("draws");
        let i=draws.findIndex(function(e) {return e.drawNumber==drawNumber});

@@ -154,14 +154,13 @@ function sendRows(drawData,rows,systemSize) {
  * and instanciates the betting table with this rows.
  * 
  * @param {*} tableElem - a table element to put the rows 
- * @param {*} rowLines - a string with multiple lines each line should match [1Xx2]+
+ * @param {*} rows - an array where each element should match [1Xx2]+
  */
-function pasteRows(tableElem,rowLines) {
-  if(rowLines==null || rowLines.match(/^([1xX2]+\n?)+$/)==null) {
+function pasteRows(tableElem,rows) {
+  if(rows==null || rows.length==0) {
     return false;
   }
   clearRows(tableElem);
-  var rows=rowLines.trim().split("\n");
   for(var i=0;i<rows.length;i++) {
     var rowElem=tableElem.find("#row-"+(i+1));
     var bets=rowElem.find(".1x2");
