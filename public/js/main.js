@@ -1289,7 +1289,7 @@ function getRowsFromLink(link,callback) {
         callback(null);
 
     }
-
+    return;
 //No need to webscrape SvSp site, the link contains the row.
     $.ajax({
         type: "POST",
