@@ -1335,7 +1335,17 @@ function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
 
     try {
         navigator.clipboard.readText().then(
-            function (clipText) { f(clipText); },
+            function (clipText) {
+                if (clipText.match(/http.*/i)) {
+                    f(clipText); 
+                } else { //there seems to be some problem with clipboard on Safari...let the user manually paste
+                    showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
+                    $("#another-modal").find("#send-link").click(function () {
+                        f($("#another-modal").find("#link-to-send").val());
+                    });
+    
+                }
+            },
             function (rejectReason) {
                 showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
                 $("#another-modal").find("#send-link").click(function () {
