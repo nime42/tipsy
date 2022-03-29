@@ -1310,6 +1310,60 @@ function getRowsFromLink(link,callback) {
 }
 
 
+
+function getUrlFromClipboard(success,failure) {
+    let urlRegex = /(https?:\/\/[^ ]*)/;
+
+    navigator.clipboard.read().then((data) => {
+        if(data[0].types.includes("text/plain")) {
+            data[0].getType('text/plain').then((d)=>{
+                d.text().then(t=>{
+                    let m=t.match(urlRegex); //try to find an url from plain/text clip
+                    if(m && m.length>1) {
+                        success(m[1]); //found then success.
+                    } else {
+                        if(data[0].types.includes("text/html")) { //see if you can find an url from the html text (should probably look for a href too)
+                            data[0].getType('text/html').then((d)=>{
+                                d.text().then(t=>{
+                                    let m=t.match(urlRegex);
+                                    if(m && m.length>1) {
+                                        success(m[1]);
+                                    } else {
+                                        failure(); //did'nt find an url in either plain or html text then failure
+                                    }
+                                });
+                            });
+                        }
+                    }
+                });
+            });
+        } else {
+            //if there is no plain text, try with html
+            if(data[0].types.includes("text/html")) {
+                data[0].getType('text/html').then((d)=>{
+                    d.text().then(t=>{
+                        let m=t.match(urlRegex);
+                        if(m && m.length>1) {
+                            success(m[1]);
+                        } else {
+                            failure();
+                        }
+                    });
+                });
+            } else {
+                failure(); //no plain or html text, give up and fail.
+            }
+
+
+        }
+    }
+    );
+
+
+}
+
+
+
 function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
 
     var f=function(clipText) {
@@ -1338,15 +1392,18 @@ function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
 
 
     try {
-        navigator.clipboard.readText().then(
-            function (clipText) { f(clipText); },
-            function (rejectReason) {
+
+        getUrlFromClipboard(
+            (url)=>{
+                f(url);
+            },
+            ()=>{
                 showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
                 $("#another-modal").find("#send-link").click(function () {
                     f($("#another-modal").find("#link-to-send").val());
-                });
+                });                
             }
-        );
+        )
     } catch (err) {
         saveClientLog("navigator-err="+err);
         showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
@@ -1354,7 +1411,6 @@ function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
             f($("#another-modal").find("#link-to-send").val());
         });
     }
-    return;      
 }
 
 function selectDrawFromLink(drawSelector,link) {
