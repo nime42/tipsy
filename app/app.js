@@ -898,6 +898,21 @@ app.post('/getToplist',(req,res)=>{
     })
 })
 
+
+app.post('/saveClientLog',(req,res)=> {
+    var userAgent=req.body.userAgent;
+    var message=req.body.message;
+    var session=req.cookies.SessId;
+    db.saveClientLog(session,userAgent,message,function(status,err){
+        if(status) {
+            res.sendStatus(200);
+        } else {
+            console.log("saveClientLog",err)
+            res.sendStatus(500);
+        }
+    })
+})
+
 app.post("/getRowsFromLink",(req,res)=>{
     var link=req.body.link;
     (async () => {

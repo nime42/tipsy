@@ -979,6 +979,17 @@ function getToplist(userId, groupId, callback = console.log) {
 }
 
 
+function saveClientLog(session,userAgent,message, callback=console.log) {
+    try {
+        const res = db.prepare("INSERT INTO clientlog(sessionid, useragent, message) VALUES(?,?,?);").run(session,userAgent,message);
+        callback(true);
+    } catch (err) {
+        callback(false, err);
+    }
+
+}
+
+
 function getDbInstance() {
     return db;
 }
@@ -1022,6 +1033,7 @@ module.exports = {
     swapSortOrder:swapSortOrder,
     getNextInLine:getNextInLine,
     getToplist:getToplist,
-    getDbInstance:getDbInstance
+    getDbInstance:getDbInstance,
+    saveClientLog:saveClientLog
 }
 

@@ -1280,11 +1280,14 @@ function getToplist(groupId) {
 
 
 function getRowsFromLink(link,callback) {
+    saveClientLog("link="+link);
     try {
         //link is on the formathttps://spela.svenskaspel.se/topptipset?product=25&draw=1744&signs=1:12,2:1,3:X2,4:1X,5:1,6:X2,7:12,8:1X&share=valid
         let row=decodeURIComponent(link).match(/signs=([^&]*)/i)[1].split(",").map(r=>(r.split(":")[1]));
         callback(row);
     } catch(err) {
+        saveClientLog("getRowsFromLink="+err);
+
         console.log("failed to parse out row from link",link);
         callback(null);
 
@@ -1310,6 +1313,7 @@ function getRowsFromLink(link,callback) {
 function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
 
     var f=function(clipText) {
+        saveClientLog("clipText="+clipText);
         pasteButton.attr("disabled", true);
         if (clipText.match(/http.*/i)) {
             modalPopUp("#message-popup", "Klistra in", "Hämtar rader...");
@@ -1344,6 +1348,7 @@ function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
             }
         );
     } catch (err) {
+        saveClientLog("navigator-err="+err);
         showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
         $("#another-modal").find("#send-link").click(function () {
             f($("#another-modal").find("#link-to-send").val());

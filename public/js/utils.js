@@ -327,3 +327,19 @@ function dateFormat(date,template) {
   result=result.replaceAll("ss",(d.getSeconds()+"").padStart(2,"0"));
   return result;
 }
+
+
+function saveClientLog(message) {
+    let userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    $.ajax({
+      type: "POST",
+      url: "/saveClientLog",
+      cache: false,
+      data: {
+          userAgent: userAgent,
+          message: message
+      }
+    }
+    );
+
+}
