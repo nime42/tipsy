@@ -1413,19 +1413,23 @@ function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
     }
 }
 
-function selectDrawFromLink(drawSelector,link) {
-    if(drawSelector.length==0) {
+function selectDrawFromLink(drawSelector, link) {
+    if (drawSelector.length == 0) {
         //We just have one draw e.g. no select-element
         return;
     }
     //the link with the draw-bettings is on the format "https://spela.svenskaspel.se/topptipset?product=25&draw=1744&signs=1%3A12%2C2%3A1%2C3%3AX2%2C4%3A1X%2C5%3A1%2C6%3AX2%2C7%3A12%2C8%3A1X&share=valid"
-    let drawNumber=link.match(/.*draw=(\d+)&.*/)[1]
-    if(drawNumber) {
-       let draws=drawSelector.data("draws");
-       let i=draws.findIndex(function(e) {return e.drawNumber==drawNumber});
-       if(i>-1) {
-        drawSelector.val(i).change();
-       }
+    try {
+        let drawNumber = link.match(/.*draw=(\d+)&.*/)[1]
+        if (drawNumber) {
+            let draws = drawSelector.data("draws");
+            let i = draws.findIndex(function (e) { return e.drawNumber == drawNumber });
+            if (i > -1) {
+                drawSelector.val(i).change();
+            }
+        }
+    } catch (err) {
+        return;
     }
 }
 
