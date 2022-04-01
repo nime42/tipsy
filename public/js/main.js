@@ -1365,7 +1365,7 @@ function getUrlFromClipboard(success,failure) {
 
 
 function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
-
+    saveClientLog("getRowsFromClipBoard");
     var f=function(clipText) {
         saveClientLog("clipText="+clipText);
         pasteButton.attr("disabled", true);
@@ -1392,12 +1392,13 @@ function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
 
 
     try {
-
+        saveClientLog("clipText="+clipText);
         getUrlFromClipboard(
             (url)=>{
                 f(url);
             },
             ()=>{
+                saveClientLog("Failed to get url");
                 showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
                 $("#another-modal").find("#send-link").click(function () {
                     f($("#another-modal").find("#link-to-send").val());
