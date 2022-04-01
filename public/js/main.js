@@ -1392,7 +1392,7 @@ function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
 
 
     try {
-        saveClientLog("clipText="+clipText);
+        saveClientLog("trying to get url from clipboard");
         getUrlFromClipboard(
             (url)=>{
                 f(url);
