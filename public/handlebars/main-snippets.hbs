@@ -964,7 +964,7 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
       <td>{{rownr}}.</td>
       <td nowrap>{{teams}}</td>
       <td style="color:#f6d403;text-align:right">{{#ifnoteq ../drawstate "Finalized" }} {{matchtime}} {{/ifnoteq}}</td>
-      <td nowrap style="text-align:right" {{#if blink}}class="blink"{{/if}}>{{result}}</td>
+      <td nowrap style="text-align:right; max-width: 80px;overflow: hidden;" {{#if blink}}class="blink"{{/if}}>{{result}}</td>
       <td><button id="col-1" disabled class="1x2 {{status1}} {{../productClass}} {{on1}}">1</button></td>
       <td><button id="col-X" disabled class="1x2 {{statusX}} {{../productClass}} {{onX}}">X</button></td>
       <td><button id="col-2" disabled class="1x2 {{status2}} {{../productClass}} {{on2}}">2</button></td>
