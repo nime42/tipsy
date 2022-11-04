@@ -1315,6 +1315,7 @@ function getUrlFromClipboard(success,failure) {
     let urlRegex = /(https?:\/\/[^ ]*)/;
 
     navigator.clipboard.read().then((data) => {
+        saveClientLog(JSON.stringify(data[0].types));
         if(data[0].types.includes("text/plain")) {
             data[0].getType('text/plain').then((d)=>{
                 d.text().then(t=>{
