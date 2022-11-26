@@ -580,6 +580,12 @@ app.post('/getPlayable',(req,res)=> {
 
 app.post('/play',(req,res)=> {
     var userId=sessionHandler.getSession(req).userId;
+
+    if(req.body.product=="VM-tipset") {
+        req.body.product="Europatipset";
+    }
+
+
     db.addPlay(userId,req.body, function(status,data) {
         if(status) {
             res.sendStatus(200);                    
