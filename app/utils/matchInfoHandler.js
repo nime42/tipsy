@@ -179,7 +179,7 @@ function parseForecast(data) {
     
     let r = data.forecastResult;
 
-    if(r===undefined) {
+    if(!r) {
         return null;
     }
     //console.log(r.drawResults);
@@ -198,7 +198,7 @@ function parseForecast(data) {
 function parseDraw(data) {                
     let r = data.draw;
 
-    if(r===undefined) {
+    if(!r) {
         return null;
     }
 
