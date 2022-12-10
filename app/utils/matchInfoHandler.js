@@ -145,7 +145,7 @@ function getMultipleDraws(draws, callback) {
 
 function parseResult(data) {
     let r = data.result;
-    if(r===undefined) {
+    if(!r) {
         return null;
     }
 
