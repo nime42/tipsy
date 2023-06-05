@@ -5,7 +5,7 @@ var config=require('../../resources/config.js');
 
 
 function getMatchDates(product, year, month, callback) {
-    let httpReq = config.matchInfo.url + "/draw/results/datepicker?product=" + product + "&year=" + year + "&month=" + month + "&_=" + new Date().getTime();
+    let httpReq = config.matchInfo.url + "/draw/1/results/datepicker?product=" + product + "&year=" + year + "&month=" + month + "&_=" + new Date().getTime();
     fetch(httpReq)
     .then(res => res.json())
     .then(
@@ -24,7 +24,7 @@ function getMatchDates(product, year, month, callback) {
 
 
 function getDraw(product, draw, callback) {
-    let httpReq = config.matchInfo.url + "/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw + "?_=" + new Date().getTime();
+    let httpReq = config.matchInfo.url + "/draw/1/" + product.toLowerCase().replace(" ","") + "/draws/" + draw + "?_=" + new Date().getTime();
     fetch(httpReq)
         .then(res => res.json())
         .then(
@@ -38,9 +38,9 @@ function getDraw(product, draw, callback) {
 
 function getDrawAndResult(product, draw, callback) {
     let urls=[];
-    urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw);
-    urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/forecast/" + draw);
-    urls.push("/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw+"/result");
+    urls.push("/draw/1/" + product.toLowerCase().replace(" ","") + "/draws/" + draw);
+    urls.push("/draw/1/" + product.toLowerCase().replace(" ","") + "/draws/forecast/" + draw);
+    urls.push("/draw/1/" + product.toLowerCase().replace(" ","") + "/draws/" + draw+"/result");
     let httpReq=config.matchInfo.url+"/multifetch?urls="+urls.join("|")+"&_="+ new Date().getTime();
     fetch(httpReq)
         .then(res => res.json())
@@ -266,7 +266,8 @@ module.exports={
     getPlayable:getPlayable,
     getDrawAndResult:getDrawAndResult,
     getDrawAndResultCache:getDrawAndResultCache,
-    getMatchDates:getMatchDates
+    getMatchDates:getMatchDates,
+    getDraw:getDraw
 }
 
 
