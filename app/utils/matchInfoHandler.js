@@ -50,6 +50,20 @@ function getDrawAndResult(product, draw, callback) {
                 res.draws=parseDraw(json.responses[0]);
                 res.forecast=parseForecast(json.responses[1]);
                 res.result=parseResult(json.responses[2]);
+
+                res.draws.draws.filter(d=>(d.result==="? - ?")).forEach(d=>{
+                    let i=d.eventNumber-1;
+                    let matchInfo=res.forecast.matchInfo[i];
+                    if(matchInfo) {
+                        let home=matchInfo.home;
+                        let away=matchInfo.away;
+                        d.result=`${home?home:"0"} - ${away?away:"0"}`
+                    } else {
+                        d.result="0 - 0";
+                    }
+                });
+
+
                 callback(true,res);
                 
             },
@@ -227,7 +241,7 @@ function parseDraw(data) {
             if(current) {
                 row.result=current.home+" - "+current.away;//Also for harmonizing with resultInfo
             } else {
-             row.result="0 - 0";
+             row.result="? - ?";
             }
         }
 
