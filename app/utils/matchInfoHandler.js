@@ -53,7 +53,7 @@ function getDrawAndResult(product, draw, callback) {
 
                 res.draws.draws.filter(d=>(d.result==="? - ?")).forEach(d=>{
                     let i=d.eventNumber-1;
-                    let matchInfo=res.forecast.matchInfo[i];
+                    let matchInfo=(res.forecast!=null && res.forecast.matchinfo)?res.forecast.matchInfo[i]:undefined
                     if(matchInfo) {
                         let home=matchInfo.home;
                         let away=matchInfo.away;
