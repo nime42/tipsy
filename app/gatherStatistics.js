@@ -8,7 +8,7 @@ const fetch = require('node-fetch');
 var config=require('../resources/config.js');
 
 function getDraw(product, draw, callback) {
-    let httpReq = config.matchInfo.url + "/draw/" + product.toLowerCase().replace(" ","") + "/draws/" + draw + "?_=" + new Date().getTime();
+    let httpReq = config.matchInfo.url + "/draw/1/" + product.toLowerCase().replace(" ","") + "/draws/" + draw + "?_=" + new Date().getTime();
 
     console.log(httpReq);
     fetch(httpReq)
