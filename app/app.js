@@ -458,8 +458,9 @@ app.post('/updateGroup',(req,res)=> {
     var groupId=req.body.groupId;
     var groupName=req.body.groupName;
     var allowExtraGames=req.body.allowExtraGames;
+    var mailSecondPlayer=req.body.mailSecondPlayer;
 
-    db.updateGroup(userId,groupId,groupName,allowExtraGames, function(status,err) {
+    db.updateGroup(userId,groupId,groupName,allowExtraGames,mailSecondPlayer, function(status,err) {
         if(status) {
             res.sendStatus(200);                    
         } else {
@@ -872,15 +873,22 @@ app.post('/getNextInLine',(req,res)=> {
 })
 
 function sendRemainder(groupId) {
-    db.getNextInLine(groupId,function(next) {
-        if(next && next.sendRemainder && next.remainderMail!==null) {
-            mailSender.sendRemainder(next.groupName,next.nextInLine,next.remainderMail,function(status,res) {
-                if(status===false) {
-                    console.log("sendRemainder("+groupId+"):"+res);
+    db.getNextInLine(groupId, function (next) {
+        if (next && next.sendRemainder && next.remainderMail !== null) {
+            mailSender.sendRemainder(next.groupName, next.nextInLine, next.remainderMail, function (status, res) {
+                if (status === false) {
+                    console.log("sendRemainder(" + groupId + "):" + res);
+                }
+                if (next.runnerUpMailInfo && next.runnerUpMailInfo.sendRemainder) {
+                    mailSender.sendRemainder(next.groupName, next.runnerUp, next.runnerUpMailInfo.remainderMail, function (status, res) {
+                        if (status === false) {
+                            console.log("sendRemainder(" + groupId + "):" + res);
+                        }
+                    })
                 }
             });
         }
-    
+
     });
 }
 

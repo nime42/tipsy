@@ -520,21 +520,24 @@ function showEditGroupWindow(groupId,divElem) {
     let hbParams={};
     hbParams.groupName=divElem.find(".group-name").val();
     hbParams.allowExtraGames=divElem.find(".allow-extra-games").val();
+    hbParams.mailSecondPlayer=divElem.find(".mail-second-player").val();
 
     showModal("#another-modal", hbsTemplates["main-snippets"]["edit-group"](hbParams));
     $("#another-modal").find("#save").click(function (e) {
         let newGroupName=$("#another-modal").find("#group-name").val().trim();
         let allowExtraGames=$("#another-modal").find("#allow-extra-games").prop("checked")?1:0;
+        let mailSecondPlayer=$("#another-modal").find("#mail-second-player").prop("checked")?1:0;
 
         $.ajax({
             type: "POST",
             url: "/updateGroup",
             cache: false,
-            data: { groupId: groupId, groupName: newGroupName,allowExtraGames:allowExtraGames },
+            data: { groupId: groupId, groupName: newGroupName,allowExtraGames:allowExtraGames,mailSecondPlayer:mailSecondPlayer },
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 divElem.find(".group-name").val(newGroupName);
                 divElem.find(".allow-extra-games").val(allowExtraGames);
+                divElem.find(".mail-second-player").val(mailSecondPlayer);
                 hideModal("#another-modal");
                 initGroups();
             },

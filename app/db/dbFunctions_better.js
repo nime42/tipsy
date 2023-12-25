@@ -115,11 +115,11 @@ function getGroupInfo(groupId,groupAdmin,callback=console.log) {
 } 
 
 
-function updateGroup(userId,groupId,groupName,allowExtraGames, callback=console.log) {
+function updateGroup(userId,groupId,groupName,allowExtraGames,mailSecondPlayer, callback=console.log) {
 
     try {
-        var sql="update groups set groupname=?, allowextragames=? where id=? and ? in (select userid from group_members where groupid=? and admin=true)";
-        const res = db.prepare(sql).run(groupName,allowExtraGames,groupId,userId,groupId);
+        var sql="update groups set groupname=?, allowextragames=?,mailsecondplayer=? where id=? and ? in (select userid from group_members where groupid=? and admin=true)";
+        const res = db.prepare(sql).run(groupName,allowExtraGames,mailSecondPlayer,groupId,userId,groupId);
         callback(true, null);
     } catch (err) {
         callback(false, err);
@@ -873,7 +873,7 @@ function getNextInLine(groupId,callback=console.log) {
 
 
     //Get the members that should play the following 2 weeks,by sorting on their last play. And by joining  against v_group_members we only get active users
-    sql="select u.username,u.name,userid,groupname,sendremainder,email from v_group_members u\
+    sql="select u.username,u.name,userid,groupname,sendremainder,email,mailsecondplayer from v_group_members u\
         left join (select  max(regclosetime) as lastplayed,groupid,created_by from draws where coalesce(extra_bet,false)<>true and groupid=? group by groupid,created_by) l on u.userid =l.created_by and u.groupid=l.groupid\
         where u.groupid=?\
         order by l.lastplayed,u.sortorder limit 2;"
@@ -881,7 +881,7 @@ function getNextInLine(groupId,callback=console.log) {
     if(rows.length===0) {
         //There is no one that played anything. Get next player by sorting on member sortorder
         //Not sure this will happen...
-        sql="select username,name,userid,groupname,sendremainder,email from v_group_members where groupid =? order by sortorder" 
+        sql="select username,name,userid,groupname,sendremainder,email,mailsecondplayer from v_group_members where groupid =? order by sortorder" 
         rows=db.prepare(sql).all(groupId);  
     }
 
@@ -891,8 +891,16 @@ function getNextInLine(groupId,callback=console.log) {
     let sendRemainder=rows[0].sendremainder;
     let remainderMail=rows[0].email;
     let runnerUp=undefined;
+    let runnerUpMailInfo=undefined;
     if(rows[1]!==undefined) {
         runnerUp=rows[1].name===""?rows[1].username:rows[1].name;
+        if(rows[1].mailsecondplayer) {
+            runnerUpMailInfo={
+                remainderMail:rows[1].email,
+                sendRemainder:rows[1].sendremainder
+            }
+        }
+        
     }
 
 
@@ -923,6 +931,7 @@ function getNextInLine(groupId,callback=console.log) {
         sendRemainder:sendRemainder,
         remainderMail:remainderMail,
         runnerUp:runnerUp,
+        runnerUpMailInfo:runnerUpMailInfo,
         extraBets:extraBets,
         groupProfit:groupProfit
     }

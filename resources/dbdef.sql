@@ -10,7 +10,7 @@ CREATE TABLE clientlog (
 
 -- groups definition
 
-CREATE TABLE groups (id INTEGER PRIMARY KEY AUTOINCREMENT, groupname TEXT, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE groups (id INTEGER PRIMARY KEY AUTOINCREMENT, groupname TEXT, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, allowextragames INTEGER default 1, mailsecondplayer INTEGER);
 
 CREATE UNIQUE INDEX groups_idx ON groups (groupname);
 
@@ -102,7 +102,6 @@ CREATE TABLE draw_results (drawid integer, rights integer, rows integer, worth n
 CREATE TABLE draw_rows (drawid integer, rownr integer, teams text, bet text, result text, status TEXT, matchstart date, matchtime text, lastevent DATE, PRIMARY KEY (drawid, rownr), FOREIGN KEY (drawid) REFERENCES draws (id) ON DELETE CASCADE ON UPDATE NO ACTION);
 
 
-
 -- v_draw_results source
 
 CREATE VIEW v_draw_results as
@@ -117,7 +116,7 @@ CREATE VIEW v_draws_in_groups AS SELECT d.*,r.rows FROM draws d LEFT JOIN (SELEC
 
 -- v_group_members source
 
-CREATE VIEW v_group_members AS SELECT g.groupname, m.groupid, m.admin, g.created AS group_created, u.*, m.sortorder FROM groups g LEFT JOIN group_members m ON g.id = m.groupid LEFT JOIN v_userinfo u ON u.userid = m.userid;
+CREATE VIEW v_group_members AS SELECT g.groupname,g.allowextragames,g.mailsecondplayer , m.groupid, m.admin, g.created AS group_created, u.*, m.sortorder FROM groups g LEFT JOIN group_members m ON g.id = m.groupid LEFT JOIN v_userinfo u ON u.userid = m.userid;
 
 
 -- v_user_surplus source
@@ -134,5 +133,3 @@ left join (select sum(systemsize*rowprice) as future_extrabet,created_by as user
 CREATE VIEW v_userinfo AS
 SELECT u.username,i.* FROM users u
 LEFT JOIN userinfo i ON u.id=i.userid;
-
-

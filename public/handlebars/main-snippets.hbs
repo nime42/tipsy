@@ -265,6 +265,7 @@
               <div class="groups" style="margin-bottom: 7px;">
                 <input class="group-name" readonly type="text" style="border-radius: 15px 0 0 15px;width:auto;" value="{{groupname}}" >
                 <input type="hidden" class="allow-extra-games" value="{{allowextragames}}"/>
+                <input type="hidden" class="mail-second-player" value="{{mailsecondplayer}}"/>
                 <i style="color:#f6d403;" class="fa fa-wrench save-button clickable" onclick="showEditGroupWindow({{groupid}},$(this).parent())"></i>
                 <i style="color:red;" class="fa fa-remove clickable" onclick="deleteGroup({{groupid}},'{{escape groupname}}',$(this).parent())"></i>
               </div>
@@ -368,6 +369,11 @@
               <div>
               <input class="yellow-checkbox" type="checkbox" id="allow-extra-games" name="allow-extra-games" value="allow-extra-games" style="margin-left: -25px;" {{#ifeq allowExtraGames 1}} checked {{/ifeq}} >
               <label for="allow-extra-games" style="margin-left: 5px;"> Tillåt extra spel</label>
+              </div>
+
+                            <div>
+              <input class="yellow-checkbox" type="checkbox" id="mail-second-player" name="mail-second-player" value="mail-second-player" style="margin-left: -25px;" {{#ifeq mailSecondPlayer 1}} checked {{/ifeq}} >
+              <label for="mail-second-player" style="margin-left: 5px;"> Skicka påminnelsebrev även till efterföljande spelare</label>
               </div>
 
               <br/>
