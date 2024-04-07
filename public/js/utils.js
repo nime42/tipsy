@@ -140,8 +140,8 @@ function sendRows(drawData,rows,systemSize) {
   }
   var draw_id=drawData.productId+"_"+drawData.drawnumber;
 
-  var betRow=rows.join(",");
-  var url="https://spela.svenskaspel.se/"+product+"/"+draw_id+"/?row="+betRow;
+  var betRow=rows.map((r,i)=>(i+1+":"+r)).join(",");
+  var url=`https://spela.svenskaspel.se/${product}/?product=${drawData.productId}&draw=${drawData.drawnumber}&signs=${betRow}`;
 
   window.open(url);
 }
