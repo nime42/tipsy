@@ -462,13 +462,16 @@ function calcOdds3(type,odds,outcome,actual) {
 
 function main(argv) {
     if(argv.length<3) {
-        console.log("Usage: "+argv[1]+" [getStatistics|suggest]");
+        console.log("Usage: "+argv[1]+" [getStatistics [year month]|suggest]");
         return;    
     }
     if(argv[2].match(/.*stat.*/i)!=null) {
-        updateStatistics("topptipsetfamily");
-        updateStatistics("stryktipset");
-        updateStatistics("europatipset");  
+        let year=argv[3];
+        let month=argv[4];
+        console.log(year,month);
+        updateStatistics("topptipsetfamily", year,month);
+        updateStatistics("stryktipset", year,month);
+        updateStatistics("europatipset", year,month);  
     } else {
         getSuggestions();
     }
