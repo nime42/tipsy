@@ -936,7 +936,6 @@ app.post("/getRowsFromLink", (req, res) => {
 
 });
 
-var suggest = require("./suggest.js");
 
 app.post("/askTipsy", (req, res) => {
     const userId = sessionHandler.getSession(req).userId;
