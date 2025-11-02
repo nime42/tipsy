@@ -3,7 +3,7 @@ const child_process = require("child_process");
 const { spawn } = child_process;
 const runPythonWithData = (script, args) => {
     return new Promise((resolve, reject) => {
-        const process = spawn("python", [script, ...args]);
+        const process = spawn("python3", [script, ...args]);
         let output = "";
 
         process.stdout.on("data", (data) => (output += data.toString()));

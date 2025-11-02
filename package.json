@@ -17,6 +17,7 @@
     "basic-auth": "^2.0.1",
     "better-sqlite3": "^7.6.2",
     "body-parser": "^1.20.3",
+    "child_process": "^1.0.2",
     "cookie-parser": "^1.4.7",
     "crypto": "^1.0.1",
     "express": "^4.21.2",
