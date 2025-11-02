@@ -1,19 +1,19 @@
 
 function logInOut() {
-    if($("#log-in-out").find("span").text()==="Logga in") {
+    if ($("#log-in-out").find("span").text() === "Logga in") {
         login();
     } else {
         logout();
-    }   
+    }
 }
 
 function toggleLogInOutButton() {
-    if($("#log-in-out").find("span").text()==="Logga in") {
-        $("#log-in-out").find("span").text("Logga ut");      
+    if ($("#log-in-out").find("span").text() === "Logga in") {
+        $("#log-in-out").find("span").text("Logga ut");
     } else {
-        $("#log-in-out").find("span").text("Logga in");       
-    }   
-    $("#log-in-out").find("i").toggleClass("fa-sign-in fa-sign-out");  
+        $("#log-in-out").find("span").text("Logga in");
+    }
+    $("#log-in-out").find("i").toggleClass("fa-sign-in fa-sign-out");
 }
 
 
@@ -77,8 +77,8 @@ function demoLogin() {
             initApp();
         },
         error: function (data, status, jqxhr) {
-                modalPopUp("#popup", "Inloggning", "Just nu går det inte att logga in, försök senare!");
-            }
+            modalPopUp("#popup", "Inloggning", "Just nu går det inte att logga in, försök senare!");
+        }
     });
 }
 
@@ -180,7 +180,7 @@ function resetPassword(resetToken) {
 
 
         if (password !== pwd2) {
-            modalPopUp("#popup","Återställ lösenord", "Lösenorden stämmer inte överens!!");
+            modalPopUp("#popup", "Återställ lösenord", "Lösenorden stämmer inte överens!!");
             return false;
         }
 
@@ -197,14 +197,14 @@ function resetPassword(resetToken) {
                 modalPopUp("#popup", "Återställ lösenord", "Lösenordet är uppdaterat");
                 removeUrlVars();
                 initApp();
-                
+
 
             },
             error: function (data, status, jqxhr) {
                 if (data.status === 404) {
-                    modalPopUp("#popup","Återställ lösenord", "Det gick inte att uppdatera lösenordet");
+                    modalPopUp("#popup", "Återställ lösenord", "Det gick inte att uppdatera lösenordet");
                 } else {
-                    modalPopUp("#popup", "Återställ lösenord","Ett Tekniskt fel har inträffat, försök igen senare!");
+                    modalPopUp("#popup", "Återställ lösenord", "Ett Tekniskt fel har inträffat, försök igen senare!");
                 }
             }
         });
@@ -246,9 +246,9 @@ function initUser() {
     getUserInfo(function (data) {
         globals.userinfo = data;
         $("#logged-in-user").text(globals.userinfo.username);
-        if(data.approvedgroups && data.approvedgroups.length>0) {
-            let message="Grattis, du är nu medlem i följande nya grupper:<br/>"+data.approvedgroups.map(function(e) {return e.groupname;}).join("<br/>");
-            modalPopUp("#popup","Din ansökan är godkänd",message);
+        if (data.approvedgroups && data.approvedgroups.length > 0) {
+            let message = "Grattis, du är nu medlem i följande nya grupper:<br/>" + data.approvedgroups.map(function (e) { return e.groupname; }).join("<br/>");
+            modalPopUp("#popup", "Din ansökan är godkänd", message);
         }
 
     });
@@ -277,7 +277,7 @@ function initGroups() {
 
         $('#available-groups').append($('<option>', { value: -1, text: "Välj grupp...", }).prop("disabled", true));
 
-        if(globals.usergroups.length===0) {
+        if (globals.usergroups.length === 0) {
             $("#start-info").show();
         }
 
@@ -290,7 +290,7 @@ function initGroups() {
         $('#available-groups').change(function () {
             var selected = $(this).find("option:selected").val();
 
-            if( $("#myTopnav").hasClass("responsive")) {
+            if ($("#myTopnav").hasClass("responsive")) {
                 toggleMenu();
             }
 
@@ -299,7 +299,7 @@ function initGroups() {
             for (var i = 0; i < globals.usergroups.length; i++) {
                 if (globals.usergroups[i].groupid == selected) {
                     globals.activeGroup = globals.usergroups[i];
-                    window.history.replaceState(null, null, "?active-group="+selected);
+                    window.history.replaceState(null, null, "?active-group=" + selected);
                     break;
                 }
             }
@@ -314,12 +314,12 @@ function initGroups() {
         $("#group-title").text("");
         $("#latest-games").hide();
 
-        if(globals.lastGroup) {
-            var g=globals.usergroups.find(function(g) {return g.groupid==globals.lastGroup});
-            if(g) {
-                globals.activeGroup=g;    
+        if (globals.lastGroup) {
+            var g = globals.usergroups.find(function (g) { return g.groupid == globals.lastGroup });
+            if (g) {
+                globals.activeGroup = g;
             }
-            globals.lastGroup=undefined;
+            globals.lastGroup = undefined;
         }
 
 
@@ -329,14 +329,14 @@ function initGroups() {
         }
 
 
-        if(globals.newGroupAdded) {
-            globals.newGroupAdded=undefined;
+        if (globals.newGroupAdded) {
+            globals.newGroupAdded = undefined;
             $("#start-info").hide();
             configureGroupMembers();
         }
 
 
-        if (globals.activeGroup.groupid ) {
+        if (globals.activeGroup.groupid) {
             $('#available-groups').val(globals.activeGroup.groupid).trigger("change");
         }
 
@@ -369,9 +369,9 @@ function configureUser() {
                     error: function (data, status, jqxhr) {
                         console.log(data, status, jqxhr);
                         if (data.status === 403) {
-                            modalPopUp("#popup","Användarinfo", "Användarnamnet finns redan!");
+                            modalPopUp("#popup", "Användarinfo", "Användarnamnet finns redan!");
                         } else {
-                            modalPopUp("#popup","Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                            modalPopUp("#popup", "Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
                         }
                     }
                 });
@@ -388,8 +388,8 @@ function configureUser() {
                 reloadIfLoggedOut(jqxhr);
                 showModal("#basic-modal", hbsTemplates["main-snippets"]["user-info"](data));
                 $("#basic-modal").find("#reg-or-update").click(function (e) {
-                    if(isDemo()) {
-                        modalPopUp("#popup","Demo", "Detta går inte att uppdatera användarinfo när man är i demo-läge!");
+                    if (isDemo()) {
+                        modalPopUp("#popup", "Demo", "Detta går inte att uppdatera användarinfo när man är i demo-läge!");
                         return;
                     }
 
@@ -406,7 +406,7 @@ function configureUser() {
                                 initApp();
                             },
                             error: function (data, status, jqxhr) {
-                                modalPopUp("#popup","Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                                modalPopUp("#popup", "Användarinfo", "Ett Tekniskt fel har inträffat, försök igen senare!");
                             }
                         });
                     }
@@ -418,26 +418,26 @@ function configureUser() {
 }
 
 
-function configureGroups(showApplyTab=false) {
+function configureGroups(showApplyTab = false) {
     data = globals.usergroups.filter(function (e) { return e.admin == 1; });
 
 
     showModal("#basic-modal", hbsTemplates["main-snippets"]["groups"](data));
-    if(showApplyTab) {
-        $("#basic-modal").find("#tabbed2").prop("checked", true);    
+    if (showApplyTab) {
+        $("#basic-modal").find("#tabbed2").prop("checked", true);
     }
 
     $("#basic-modal").find("#add-group").click(function (e) {
         var newGroup = $("#basic-modal").find("#new-group").val().trim();
         if (newGroup === "") {
-            modalPopUp("#popup","Skapa grupp", "Gruppnamn saknas!");
+            modalPopUp("#popup", "Skapa grupp", "Gruppnamn saknas!");
             return;
         }
 
-        if(isDemo()) {
-            modalPopUp("#popup","Demo", "Detta går inte att skapa grupper när man är i demo-läge!");
+        if (isDemo()) {
+            modalPopUp("#popup", "Demo", "Detta går inte att skapa grupper när man är i demo-läge!");
             return;
-        }        
+        }
         $.ajax({
             type: "POST",
             url: "/createGroup",
@@ -446,69 +446,69 @@ function configureGroups(showApplyTab=false) {
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 $("#basic-modal").find("#new-group").val("");
-                globals.newGroupAdded=true;
+                globals.newGroupAdded = true;
                 initGroups();
                 hideModal("#basic-modal");
                 modalPopUp("#popup", "Skapa grupp", "Grupp skapad!<br>Glöm inte att bjuda in dina vänner!");
             },
             error: function (data, status, jqxhr) {
                 if (data.status === 403) {
-                    modalPopUp("#popup","Skapa grupp", "Gruppen finns redan!");
+                    modalPopUp("#popup", "Skapa grupp", "Gruppen finns redan!");
 
                 } else {
-                    modalPopUp("#popup","Skapa grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
+                    modalPopUp("#popup", "Skapa grupp", "Ett Tekniskt fel har inträffat, försök igen senare!");
                 }
             }
         });
 
     });
 
-    var autoComp=function(val,display) {
-        if(val.length>0) {
+    var autoComp = function (val, display) {
+        if (val.length > 0) {
             $.ajax({
-                type:"POST",
+                type: "POST",
                 url: "/searchGroups",
                 data: { searchVal: val },
                 cache: false,
                 success: function (data, status, jqxhr) {
-                    display(data.map(function(d) {return d.groupname}));
+                    display(data.map(function (d) { return d.groupname }));
                 }
             });
         } else {
             display([]);
         }
     }
-    initAutoComplete($("#basic-modal").find("#apply-group"),autoComp);
+    initAutoComplete($("#basic-modal").find("#apply-group"), autoComp);
 
-    $("#basic-modal").find("#apply-membership").click(function(e) {
-        if(isDemo()) {
-            modalPopUp("#popup","Demo", "Det går inte att ansöka om medlemskap när man är i demo-läge!");
+    $("#basic-modal").find("#apply-membership").click(function (e) {
+        if (isDemo()) {
+            modalPopUp("#popup", "Demo", "Det går inte att ansöka om medlemskap när man är i demo-läge!");
             return;
         }
-        var groupName=$("#basic-modal").find("#apply-group").val().trim();
-        if(groupName!="") {
+        var groupName = $("#basic-modal").find("#apply-group").val().trim();
+        if (groupName != "") {
             $.ajax({
-                type:"POST",
+                type: "POST",
                 url: "/applyForMembership",
                 data: { groupName: groupName },
                 cache: false,
                 success: function (data, status, jqxhr) {
-                    modalPopUp("#popup","Medlemskap", "Din ansökan är skickad!<br/>Du får åtkomst till gruppen när du blivit godkänd av grupp-ägaren.");
+                    modalPopUp("#popup", "Medlemskap", "Din ansökan är skickad!<br/>Du får åtkomst till gruppen när du blivit godkänd av grupp-ägaren.");
                 },
                 error: function (data, status, jqxhr) {
                     if (data.status === 404) {
-                        modalPopUp("#popup","Medlemskap", "Hittar inte gruppen!<br/>Kontrollera att namnet är rättstavat!");
-    
+                        modalPopUp("#popup", "Medlemskap", "Hittar inte gruppen!<br/>Kontrollera att namnet är rättstavat!");
+
                     } else if (data.status === 409) {
-                        modalPopUp("#popup","Medlemskap", "Du är redan medlem i denna grupp!");
+                        modalPopUp("#popup", "Medlemskap", "Du är redan medlem i denna grupp!");
 
                     } else {
-                        modalPopUp("#popup","Medlemskap", "Det gick inte att skicka ansökan!<br/>Ett tekniskt fel har inträffat!");
+                        modalPopUp("#popup", "Medlemskap", "Det gick inte att skicka ansökan!<br/>Ett tekniskt fel har inträffat!");
                     }
                 }
             });
         } else {
-            modalPopUp("#popup","Ansök om medlemskap", "Ange vilken grupp du vill bli medlem i!");
+            modalPopUp("#popup", "Ansök om medlemskap", "Ange vilken grupp du vill bli medlem i!");
 
         }
 
@@ -516,23 +516,23 @@ function configureGroups(showApplyTab=false) {
 
 }
 
-function showEditGroupWindow(groupId,divElem) {
-    let hbParams={};
-    hbParams.groupName=divElem.find(".group-name").val();
-    hbParams.allowExtraGames=divElem.find(".allow-extra-games").val();
-    hbParams.mailSecondPlayer=divElem.find(".mail-second-player").val();
+function showEditGroupWindow(groupId, divElem) {
+    let hbParams = {};
+    hbParams.groupName = divElem.find(".group-name").val();
+    hbParams.allowExtraGames = divElem.find(".allow-extra-games").val();
+    hbParams.mailSecondPlayer = divElem.find(".mail-second-player").val();
 
     showModal("#another-modal", hbsTemplates["main-snippets"]["edit-group"](hbParams));
     $("#another-modal").find("#save").click(function (e) {
-        let newGroupName=$("#another-modal").find("#group-name").val().trim();
-        let allowExtraGames=$("#another-modal").find("#allow-extra-games").prop("checked")?1:0;
-        let mailSecondPlayer=$("#another-modal").find("#mail-second-player").prop("checked")?1:0;
+        let newGroupName = $("#another-modal").find("#group-name").val().trim();
+        let allowExtraGames = $("#another-modal").find("#allow-extra-games").prop("checked") ? 1 : 0;
+        let mailSecondPlayer = $("#another-modal").find("#mail-second-player").prop("checked") ? 1 : 0;
 
         $.ajax({
             type: "POST",
             url: "/updateGroup",
             cache: false,
-            data: { groupId: groupId, groupName: newGroupName,allowExtraGames:allowExtraGames,mailSecondPlayer:mailSecondPlayer },
+            data: { groupId: groupId, groupName: newGroupName, allowExtraGames: allowExtraGames, mailSecondPlayer: mailSecondPlayer },
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 divElem.find(".group-name").val(newGroupName);
@@ -549,7 +549,7 @@ function showEditGroupWindow(groupId,divElem) {
                 }
             }
         });
-    
+
 
 
 
@@ -643,24 +643,24 @@ function configureGroupMembers() {
             reloadIfLoggedOut(jqxhr);
             var isAdmin = globals.activeGroup.admin;
             data.members.map(function (e) {
-                if ((isAdmin && e.userid !== globals.userinfo.userid) || (!isAdmin && e.userid == globals.userinfo.userid )) {
+                if ((isAdmin && e.userid !== globals.userinfo.userid) || (!isAdmin && e.userid == globals.userinfo.userid)) {
                     e.isDeletable = true;
                 }
                 return e;
             })
 
-            var applications=data.applications.map(function(e) {
-                var a=e.username;
-                if(e.name!=="") {
-                    a=e.name;
+            var applications = data.applications.map(function (e) {
+                var a = e.username;
+                if (e.name !== "") {
+                    a = e.name;
                 }
-                if(e.email!=="") {
-                    a+=" ("+e.email+")";
+                if (e.email !== "") {
+                    a += " (" + e.email + ")";
                 }
-                return {applicant:a,userid:e.userid,groupid:e.groupid};
+                return { applicant: a, userid: e.userid, groupid: e.groupid };
             });
-            if(applications.length===0) {
-                applications=undefined;
+            if (applications.length === 0) {
+                applications = undefined;
             }
 
             showModal("#basic-modal", hbsTemplates["main-snippets"]["group-members"]({ members: data.members, admin: globals.activeGroup.admin, invites: data.invites, applications: applications, currentUser: globals.userinfo.userid }));
@@ -681,7 +681,7 @@ function configureGroupMembers() {
                     success: function (data, status, jqxhr) {
                         reloadIfLoggedOut(jqxhr);
                         //var row = "<p style='margin-bottom:0px;'>" + inviteEmail + "<span style='color:red;' class='glyphicon glyphicon-remove' onclick='removeInvite(\"" + inviteEmail + "\",$(this).parent());'></span></p>";
-                        var row = '<tr><td style="padding-left: 5px;">'+inviteEmail+'</td><td><i style="color:red;font-size:14px;" class="fa fa-remove" onclick="removeInvite(\''+inviteEmail+'\',$(this).parent().parent())"></i></td></tr>';
+                        var row = '<tr><td style="padding-left: 5px;">' + inviteEmail + '</td><td><i style="color:red;font-size:14px;" class="fa fa-remove" onclick="removeInvite(\'' + inviteEmail + '\',$(this).parent().parent())"></i></td></tr>';
                         $("#basic-modal").find("#invites").find("#empty-row").remove();
                         $("#basic-modal").find("#invites").prepend(row);
                         $("#basic-modal").find("#invite-email").val("");
@@ -704,38 +704,38 @@ function configureGroupMembers() {
 
 function moveTableRow(rowElem, dir) {
     var groupId = globals.activeGroup.groupid;
-  
+
     var from = rowElem.find("#sortorder").text();
     var to = null;
     if (dir == "up") {
-      to = rowElem.prev().find("#sortorder").text();
+        to = rowElem.prev().find("#sortorder").text();
     } else {
-      to = rowElem.next().find("#sortorder").text();
+        to = rowElem.next().find("#sortorder").text();
     }
-  
-    if(from=="" || to=="") {
-      return;
+
+    if (from == "" || to == "") {
+        return;
     }
-  
+
     $.ajax({
-      url: "/swapSortOrder",
-      type: "POST",
-      cache: false,
-      data: { groupId: groupId, from: from, to: to },
-      success: function (data, status, jqxhr) {
-        rowElem.find("#sortorder").text(to);
-        if (dir == "up") {
-            rowElem.prev().find("#sortorder").text(from);  
-            rowElem.insertBefore(rowElem.prev());
-        } else {
-            rowElem.next().find("#sortorder").text(from);  
-            rowElem.insertAfter(rowElem.next());
+        url: "/swapSortOrder",
+        type: "POST",
+        cache: false,
+        data: { groupId: groupId, from: from, to: to },
+        success: function (data, status, jqxhr) {
+            rowElem.find("#sortorder").text(to);
+            if (dir == "up") {
+                rowElem.prev().find("#sortorder").text(from);
+                rowElem.insertBefore(rowElem.prev());
+            } else {
+                rowElem.next().find("#sortorder").text(from);
+                rowElem.insertAfter(rowElem.next());
+            }
+
         }
-  
-      }
     });
-  
-  }
+
+}
 
 function configurePayment(surplus) {
     var groupId = globals.activeGroup.groupid;
@@ -747,34 +747,34 @@ function configurePayment(surplus) {
         data: { groupId: groupId },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            data.surplus=surplus;
-            data.nrOfMembers=data.members.length;
-            data.members.forEach(function(e) {e.name=(e.name!="")?e.name:e.username});
+            data.surplus = surplus;
+            data.nrOfMembers = data.members.length;
+            data.members.forEach(function (e) { e.name = (e.name != "") ? e.name : e.username });
             showModal("#basic-modal", hbsTemplates["main-snippets"]["payment"](data));
-            $('.amount-per-member').text(Number(data.surplus/data.nrOfMembers).toFixed(2)+' kr')
+            $('.amount-per-member').text(Number(data.surplus / data.nrOfMembers).toFixed(2) + ' kr')
         }
     });
 }
 
-function makePayment(amount,surplus,sendMail) {
+function makePayment(amount, surplus, sendMail) {
     var groupId = globals.activeGroup.groupid;
-    var res={};
+    var res = {};
 
-    if(amount<=0) {
+    if (amount <= 0) {
         modalPopUp("#popup", "Utbetalning", "Summan måste vara större än noll!");
         return;
-    } 
+    }
 
-    if(amount>surplus) {
-        modalPopUp("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
+    if (amount > surplus) {
+        modalPopUp("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:" + surplus + " kr!");
         return;
 
     }
-    res.amount=amount;
-    res.groupId=groupId;
-    if(sendMail) {
-        res.mailTo=globals.userinfo.email;
-        res.mailBody=hbsTemplates["main-snippets"]["payment-mail-template"]({amount:amount,tablebody:$("#basic-modal").find("#payment-div").html()});
+    res.amount = amount;
+    res.groupId = groupId;
+    if (sendMail) {
+        res.mailTo = globals.userinfo.email;
+        res.mailBody = hbsTemplates["main-snippets"]["payment-mail-template"]({ amount: amount, tablebody: $("#basic-modal").find("#payment-div").html() });
     }
     //console.log(res.mailBody);
 
@@ -791,9 +791,9 @@ function makePayment(amount,surplus,sendMail) {
         },
         error: function (data, status, jqxhr) {
             if (data.status === 400) {
-                modalPopUp("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:"+surplus+" kr!");
-        
-            } else if(data.status === 406) { 
+                modalPopUp("#popup", "Utbetalning", "Maximalt belopp som går att utbetala är:" + surplus + " kr!");
+
+            } else if (data.status === 406) {
                 modalPopUp("#popup", "Utbetalning", "Utbetalning registrerad men det gick ej att skicka mail!");
             } else {
                 modalPopUp("#popup", "Utbetalning", "Tekniskt fel!");
@@ -826,7 +826,7 @@ function removeApplicant(userId, rowElem) {
         type: "POST",
         url: "/removeApplicant",
         cache: false,
-        data: { userId:userId, groupId: globals.activeGroup.groupid },
+        data: { userId: userId, groupId: globals.activeGroup.groupid },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             rowElem.remove();
@@ -842,7 +842,7 @@ function addApplicant(userId) {
         type: "POST",
         url: "/approveApplicant",
         cache: false,
-        data: { userId:userId, groupId: globals.activeGroup.groupid },
+        data: { userId: userId, groupId: globals.activeGroup.groupid },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             configureGroupMembers();
@@ -856,8 +856,8 @@ function addApplicant(userId) {
 function removeMember(memberId, groupId, rowElem) {
     var fun = function () {
 
-        if(isDemo()) {
-            modalPopUp("#popup","Demo", "det går inte att lämna en grupp när man är i demo-läge!");
+        if (isDemo()) {
+            modalPopUp("#popup", "Demo", "det går inte att lämna en grupp när man är i demo-läge!");
             return;
         }
 
@@ -902,7 +902,7 @@ function configurePlay() {
         return;
     }
 
-    
+
 
     showModal("#basic-modal", hbsTemplates["main-snippets"]["play"]());
 
@@ -927,16 +927,16 @@ function configureStatistics() {
         data: { groupId: groupId },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            data.tot_ord_games=data.userStats.map(e=>(e.games_ord)).reduce((total,v)=>(total+v));
-            data.tot_extra_games=data.userStats.map(e=>(e.games_extra)).reduce((total,v)=>(total+v));
-            data.tot_ord_input=data.userStats.map(e=>(e.input_ord)).reduce((total,v)=>(total+v));
-            data.tot_extra_input=data.userStats.map(e=>(e.input_extra)).reduce((total,v)=>(total+v));
-            data.tot_win_brutto=data.userStats.map(e=>(e.win_brutto)).reduce((total,v)=>(total+v));
-            data.tot_win_netto=data.userStats.map(e=>(e.win_netto)).reduce((total,v)=>(total+v));
-            data.tot_average_stryktips=data.userStats.map(e=>(e.average_stryktips!=="-"?e.average_stryktips:0)).reduce((total,v)=>(total+v))/data.userStats.length;
-            data.tot_average_stryktips=data.tot_average_stryktips.toFixed(2);
-            data.tot_average_topptips=data.userStats.map(e=>(e.average_topptips!=="-"?e.average_topptips:0)).reduce((total,v)=>(total+v))/data.userStats.length;
-            data.tot_average_topptips=data.tot_average_topptips.toFixed(2);
+            data.tot_ord_games = data.userStats.map(e => (e.games_ord)).reduce((total, v) => (total + v));
+            data.tot_extra_games = data.userStats.map(e => (e.games_extra)).reduce((total, v) => (total + v));
+            data.tot_ord_input = data.userStats.map(e => (e.input_ord)).reduce((total, v) => (total + v));
+            data.tot_extra_input = data.userStats.map(e => (e.input_extra)).reduce((total, v) => (total + v));
+            data.tot_win_brutto = data.userStats.map(e => (e.win_brutto)).reduce((total, v) => (total + v));
+            data.tot_win_netto = data.userStats.map(e => (e.win_netto)).reduce((total, v) => (total + v));
+            data.tot_average_stryktips = data.userStats.map(e => (e.average_stryktips !== "-" ? e.average_stryktips : 0)).reduce((total, v) => (total + v)) / data.userStats.length;
+            data.tot_average_stryktips = data.tot_average_stryktips.toFixed(2);
+            data.tot_average_topptips = data.userStats.map(e => (e.average_topptips !== "-" ? e.average_topptips : 0)).reduce((total, v) => (total + v)) / data.userStats.length;
+            data.tot_average_topptips = data.tot_average_topptips.toFixed(2);
             showModal("#basic-modal", hbsTemplates["main-snippets"]["statistics"](data));
 
             let cmpFun = function (e1, e2) {
@@ -948,7 +948,7 @@ function configureStatistics() {
                     return e1 - e2;
                 }
             }
-            initSortableTable($("#basic-modal").find('#stat-table'), {cmpFun:cmpFun,initialOrder:"asc",initialCol:1});
+            initSortableTable($("#basic-modal").find('#stat-table'), { cmpFun: cmpFun, initialOrder: "asc", initialCol: 1 });
         }
     });
 
@@ -963,12 +963,12 @@ function configureEvents() {
         modalPopUp("#popup", "Händelser", "Välj grupp först!");
         return;
     }
-    getUserSurplus(function(surplus) {
+    getUserSurplus(function (surplus) {
         $.ajax({
             url: "/getEvents",
             type: "POST",
             cache: false,
-            data: { groupId: groupId,page:0 },
+            data: { groupId: groupId, page: 0 },
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 data.events = data.events.map(e => {
@@ -977,16 +977,16 @@ function configureEvents() {
                         case "EXTRA BET": e.eventtype = "Extra spel"; break;
                         case "PAYMENT": e.eventtype = "Utbetalning"; break;
                     }
-                    e.eventtime=new Date(e.eventtime.replace(' ', 'T')).toLocaleDateString();
-                    if(e.eventtype=="Utbetalning") {
+                    e.eventtime = new Date(e.eventtime.replace(' ', 'T')).toLocaleDateString();
+                    if (e.eventtype == "Utbetalning") {
                         var isAdmin = globals.activeGroup.admin;
-                        if (isAdmin || e.userid == globals.userinfo.userid ) {
+                        if (isAdmin || e.userid == globals.userinfo.userid) {
                             e.isDeletable = true;
                         }
                     }
                     return e;
                 });
-                data.surplus=surplus;
+                data.surplus = surplus;
                 showModal("#basic-modal", hbsTemplates["main-snippets"]["events"](data));
             }
         });
@@ -994,14 +994,14 @@ function configureEvents() {
 
 }
 
-function getMoreEvents(buttonElem,page) {
+function getMoreEvents(buttonElem, page) {
     var groupId = globals.activeGroup.groupid;
-    var nextPage=page;
+    var nextPage = page;
     $.ajax({
         url: "/getEvents",
         type: "POST",
         cache: false,
-        data: { groupId: groupId,page:nextPage },
+        data: { groupId: groupId, page: nextPage },
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
             data.events = data.events.map(e => {
@@ -1010,26 +1010,26 @@ function getMoreEvents(buttonElem,page) {
                     case "EXTRA BET": e.eventtype = "Extra spel"; break;
                     case "PAYMENT": e.eventtype = "Utbetalning"; break;
                 }
-                e.eventtime=new Date(e.eventtime.replace(' ', 'T')).toLocaleDateString();
+                e.eventtime = new Date(e.eventtime.replace(' ', 'T')).toLocaleDateString();
                 return e;
             });
 
-            var rowTemplate=buttonElem.parent().parent().prev().clone();
-            var lastRow=buttonElem.parent().parent();
-            data.events.forEach(function(e) {
-                var row=rowTemplate.clone();
-                var c=row.children();
-                c.get(0).innerText=e.eventtime;
-                c.get(1).innerText=e.eventtype;
-                c.get(2).innerText=e.username;
-                c.get(3).innerText=e.cost;
-                c.get(4).innerText=e.profit;
-                row.insertBefore(lastRow);             
-               
+            var rowTemplate = buttonElem.parent().parent().prev().clone();
+            var lastRow = buttonElem.parent().parent();
+            data.events.forEach(function (e) {
+                var row = rowTemplate.clone();
+                var c = row.children();
+                c.get(0).innerText = e.eventtime;
+                c.get(1).innerText = e.eventtype;
+                c.get(2).innerText = e.username;
+                c.get(3).innerText = e.cost;
+                c.get(4).innerText = e.profit;
+                row.insertBefore(lastRow);
+
             });
-            if(data.hasMorePages) {
+            if (data.hasMorePages) {
                 buttonElem.attr("onclick", "").unbind("click");
-                buttonElem.click(function() {getMoreEvents(buttonElem,page+1)});
+                buttonElem.click(function () { getMoreEvents(buttonElem, page + 1) });
             } else {
                 buttonElem.parent().parent().remove();
             }
@@ -1039,14 +1039,14 @@ function getMoreEvents(buttonElem,page) {
 
 }
 
-function removeEvent(eventId,rowElem) {
+function removeEvent(eventId, rowElem) {
     var groupId = globals.activeGroup.groupid;
     var fun = function () {
         $.ajax({
             type: "POST",
             url: "/deleteEvent",
             cache: false,
-            data: { groupId: groupId,eventId:eventId },
+            data: { groupId: groupId, eventId: eventId },
             success: function (data, status, jqxhr) {
                 reloadIfLoggedOut(jqxhr);
                 rowElem.remove();
@@ -1074,17 +1074,18 @@ function getPlayable(product, div) {
         cache: false,
         data: { product: product },
         success: function (data, status, jqxhr) {
-            let drawDates=data.map(e=>{return e.productName+", "+dateFormat(e.regCloseTime,"YYYY-MM-DD")});
+            let drawDates = data.map(e => { return e.productName + ", " + dateFormat(e.regCloseTime, "YYYY-MM-DD") });
             reloadIfLoggedOut(jqxhr);
-            $("#basic-modal").find("#" + div).prepend(hbsTemplates["main-snippets"]["matches"]({drawDates:drawDates,draw:data[0]}));
+            $("#basic-modal").find("#" + div).empty();
+            $("#basic-modal").find("#" + div).prepend(hbsTemplates["main-snippets"]["matches"]({ drawDates: drawDates, draw: data[0] }));
 
-            $("#basic-modal").find("#" + div).find("#draw-selector").data("draws",data);
-            $("#basic-modal").find("#" + div).find("#draw-selector").change(function() {
-                let drawIndex=$(this).val();
-                $("#basic-modal").find("#" + div).find("#draw-stop").text(dateFormat(data[drawIndex].regCloseTime,"YYYY-MM-DD hh:mm:ss"));
-            
-                for(let r=1;r<=data[drawIndex].draws.length;r++) {
-                    $("#basic-modal").find("#" + div).find(".play-table").find("#row-"+r).find("#event-description").text(data[drawIndex].draws[r-1].eventDescription);
+            $("#basic-modal").find("#" + div).find("#draw-selector").data("draws", data);
+            $("#basic-modal").find("#" + div).find("#draw-selector").change(function () {
+                let drawIndex = $(this).val();
+                $("#basic-modal").find("#" + div).find("#draw-stop").text(dateFormat(data[drawIndex].regCloseTime, "YYYY-MM-DD hh:mm:ss"));
+
+                for (let r = 1; r <= data[drawIndex].draws.length; r++) {
+                    $("#basic-modal").find("#" + div).find(".play-table").find("#row-" + r).find("#event-description").text(data[drawIndex].draws[r - 1].eventDescription);
                 }
 
                 $("#basic-modal").find("#" + div).find("#clear").click();
@@ -1112,12 +1113,38 @@ function getPlayable(product, div) {
                 }
 
             });
-            $("#basic-modal").find("#" + div).find("#play").click(function () {
-                let drawIndex=0;
-                if(data.length>1) {
-                    drawIndex=$("#basic-modal").find("#" + div).find("#draw-selector").val();
+            let collectBet = () => {
+                let drawIndex = 0;
+                if (data.length > 1) {
+                    drawIndex = $("#basic-modal").find("#" + div).find("#draw-selector").val();
                 }
 
+                let drawInfo = {
+                    groupid: globals.activeGroup.groupid,
+                    drawnumber: data[drawIndex].drawNumber,
+                    product: data[drawIndex].productName,
+                    productId: data[drawIndex].productId,
+                    drawstate: data[drawIndex].drawState,
+                    regclosetime: data[drawIndex].regCloseTime,
+                    rowprice: data[drawIndex].rowPrice,
+                    extra_bet: false,
+                }
+
+                drawInfo.svenskaFolket = data[drawIndex].draws.map(d => (d.svenskaFolket));
+                drawInfo.odds = data[drawIndex].draws.map(d => (d.odds));
+
+                return drawInfo;
+
+
+            }
+
+
+
+            $("#basic-modal").find("#" + div).find("#play").click(function () {
+                let drawIndex = 0;
+                if (data.length > 1) {
+                    drawIndex = $("#basic-modal").find("#" + div).find("#draw-selector").val();
+                }
                 let drawInfo = {
                     groupid: globals.activeGroup.groupid,
                     drawnumber: data[drawIndex].drawNumber,
@@ -1136,11 +1163,10 @@ function getPlayable(product, div) {
                     row.rownr = i + 1;
                     row.teams = data[drawIndex].draws[i].eventDescription;
                     row.bet = bettings[i];
-                    row.matchstart=data[drawIndex].draws[i].match.matchStart;
+                    row.matchstart = data[drawIndex].draws[i].match.matchStart;
                     systemsize *= row.bet.length;
                     drawInfo.rows.push(row);
                 }
-
 
                 var ajaxCall = function () {
                     $.ajax({
@@ -1153,11 +1179,11 @@ function getPlayable(product, div) {
                             updateResults(globals.activeGroup.groupid);
                             hideModal("#basic-modal");
                             var url =
-                            modalDialog("#yes-no", "Lägg spel hos Svenska spel",
+                                modalDialog("#yes-no", "Lägg spel hos Svenska spel",
                                     "Vill du gå till svenska spel och göra det faktiska spelet där?",
                                     {
                                         text: "Ja", func: function () {
-                                            sendRows(drawInfo,bettings,systemsize);
+                                            sendRows(drawInfo);
                                             //window.open("https://spela.svenskaspel.se/" + drawInfo.product.toLowerCase().split(" ")[0] + "/" + drawInfo.drawnumber);
                                         }
                                     },
@@ -1171,7 +1197,7 @@ function getPlayable(product, div) {
                     });
                 }
                 getUserSurplus(function (surplus) {
-                    if (surplus>0 && globals.activeGroup.allowextragames===1) {
+                    if (surplus > 0 && globals.activeGroup.allowextragames === 1) {
                         modalDialog("#yes-no", "Extra spel",
                             "Är detta ett extra eller ett ordinarie spel?",
                             {
@@ -1181,7 +1207,7 @@ function getPlayable(product, div) {
 
                                 }
                             },
-                            { text: "ordinarie", func: function () {ajaxCall(); } })
+                            { text: "ordinarie", func: function () { ajaxCall(); } })
 
 
                     } else {
@@ -1192,7 +1218,72 @@ function getPlayable(product, div) {
 
 
 
-            })
+            });
+
+            if (globals.activeGroup.is_premium !== 1) {
+                $("#basic-modal").find("#" + div).find("#ask-tipsy").hide();
+            } else {
+
+                $("#basic-modal").find("#" + div).find("#ask-tipsy").click(function () {
+                    let drawInfo = collectBet();
+                    modalPopUp("#message-popup", "Fråga Tipsy", "Ett ögonblick...");
+                    $.ajax({
+                        type: "POST",
+                        url: "/askTipsy",
+                        cache: false,
+                        data: drawInfo,
+                        error: function (data, status, jqxhr) {
+                            hideModal("#message-popup");
+                            modalPopUp("#popup", "Fråga Tipsy", "Det gick inte att hämta tips från Tipsy just nu, försök igen senare!");
+                        },
+                        success: function (data, status, jqxhr) {
+                            reloadIfLoggedOut(jqxhr);
+                            hideModal("#message-popup");
+                            showSuggestions(div, data, 0, 0);
+                            $("#basic-modal").find("#" + div).find("#copy-tipsy").unbind("click");
+                            $("#basic-modal").find("#" + div).find("#copy-tipsy").click(function () {
+                                let fullGardElem = $("#basic-modal").find("#" + div).find("#full-gard");
+                                let halfGardElem = $("#basic-modal").find("#" + div).find("#half-gard");
+                                let nrofFullGards = Number(fullGardElem.val());
+                                let nrofHalfGards = Number(halfGardElem.val());
+                                let rows = addGuards(data, nrofFullGards, nrofHalfGards);
+                                pasteRows($(`#basic-modal #${div} .bettingtable`), rows);
+                            });
+                            const addGards = (ev) => {
+                                let rows = data.rows;
+                                let gard = ev.originalEvent.target.id;
+                                let fullGardElem = $("#basic-modal").find("#" + div).find("#full-gard");
+                                let halfGardElem = $("#basic-modal").find("#" + div).find("#half-gard");
+                                let nrofFullGards = Number(fullGardElem.val());
+                                let nrofHalfGards = Number(halfGardElem.val());
+                                if (nrofFullGards + nrofHalfGards > rows.length) {
+                                    if (gard === "full-gard") {
+                                        fullGardElem.val(rows.length - nrofHalfGards);
+
+                                    } else {
+                                        halfGardElem.val(rows.length - nrofFullGards);
+                                    }
+                                    return
+                                }
+                                showSuggestions(div, data, nrofFullGards, nrofHalfGards);
+                            };
+                            $("#basic-modal").find("#" + div).find("#full-gard").unbind("change", "keyup");
+                            $("#basic-modal").find("#" + div).find("#full-gard").change(addGards);
+                            $("#basic-modal").find("#" + div).find("#full-gard").keyup(addGards);
+                            $("#basic-modal").find("#" + div).find("#full-gard").val("");
+                            $("#basic-modal").find("#" + div).find("#half-gard").unbind("change", "keyup");
+                            $("#basic-modal").find("#" + div).find("#half-gard").change(addGards);
+                            $("#basic-modal").find("#" + div).find("#half-gard").keyup(addGards);
+                            $("#basic-modal").find("#" + div).find("#half-gard").val("");
+
+                        }
+                    })
+                });
+            }
+
+
+
+
         },
         error: function (data, status, jqxhr) {
             if (data.status == 403) {
@@ -1213,6 +1304,58 @@ function getDrawBettings(div) {
     return rows;
 }
 
+function showSuggestions(div, predictions, full, half) {
+    $(`#basic-modal #${div} .suggestions`).show();
+    $(`#basic-modal #${div} #copy-div`).show();
+    $(`#basic-modal #${div} #ask-tipsy`).hide();
+
+    let suggestions = addGuards(predictions, full, half);
+    suggestions.forEach((e, i) => {
+        $(`#basic-modal #${div} #suggestion-${i}`).html(`${_formatBet(e)}`);
+    })
+}
+
+function addGuards(predictions, full, half) {
+    let suggestions = predictions.rows.map(r => r[1]);
+    const entropies = [...predictions.rows].sort((a, b) => (b[5] - a[5]));
+    for (let i = 0; i < full; i++) {
+        suggestions[entropies[i][0]] = "1X2";
+    }
+    for (let i = full; i < full + half; i++) {
+        const [row, symbol, prob_1, prob_X, prob_2] = entropies[i];
+        let extra = ""
+        switch (symbol) {
+            case "1":
+                prob_X > prob_2 ? extra = "X" : extra = "2";
+                break;
+            case "X":
+                prob_1 > prob_2 ? extra = "1" : extra = "2";
+                break;
+            case "2":
+                prob_1 > prob_X ? extra = "1" : extra = "X";
+                break;
+        }
+        suggestions[row] = symbol + extra;
+    }
+    return suggestions;
+}
+
+
+function _formatBet(bet) {
+    let res = "(1)(X)(2)";
+    bet.split("").forEach(b => {
+        res = res.replace(`(${b})`, b);
+    })
+    return res.replace("(1)", "&nbsp;").replace("(X)", "&nbsp;").replace("(2)", "&nbsp; ");
+
+}
+function hideSuggestions(div) {
+    $(`#basic-modal #${div} .suggestions`).hide();
+    $(`#basic-modal #${div} #copy-div`).hide();
+    $(`#basic-modal #${div} #ask-tipsy`).show();
+}
+
+
 function updateResults(groupId) {
     if (groupId == undefined) {
         $("#latest-games").hide();
@@ -1229,7 +1372,7 @@ function updateResults(groupId) {
             reloadIfLoggedOut(jqxhr);
             getNextInLine(groupId);
             getToplist(groupId);
-            getResults(groupId,0);
+            getResults(groupId, 0);
         },
         error: function (data, status, jqxhr) {
             modalPopUp("#popup", "Uppdatera resultat", "Tekniskt fel!");
@@ -1244,19 +1387,19 @@ function getNextInLine(groupId) {
         type: "POST",
         url: "/getNextInLine",
         cache: false,
-        data: { groupId: groupId},
+        data: { groupId: groupId },
         success: function (data, status, jqxhr) {
 
-            if(data.extraBets.length>0) {
-                data.extraBets=data.extraBets.map(function(e) {return e.name+"("+e.surplus+" kr)"}).join(", ");
+            if (data.extraBets.length > 0) {
+                data.extraBets = data.extraBets.map(function (e) { return e.name + "(" + e.surplus + " kr)" }).join(", ");
             }
 
-            if(data.lastPlayed) {
-                var d=new Date(data.lastPlayed.replace(' ', 'T')+"Z");
-                data.lastPlayed=d.getDate()+"/"+(d.getMonth()+1);
+            if (data.lastPlayed) {
+                var d = new Date(data.lastPlayed.replace(' ', 'T') + "Z");
+                data.lastPlayed = d.getDate() + "/" + (d.getMonth() + 1);
             }
 
-            data.allowExtraGames=globals.activeGroup?globals.activeGroup.allowextragames:undefined;
+            data.allowExtraGames = globals.activeGroup ? globals.activeGroup.allowextragames : undefined;
             $("#who-should-play").empty();
             $("#who-should-play").append(hbsTemplates["main-snippets"]["playing-order"](data));
         }
@@ -1270,10 +1413,10 @@ function getToplist(groupId) {
         type: "POST",
         url: "/getToplist",
         cache: false,
-        data: { groupId: groupId},
+        data: { groupId: groupId },
         success: function (data, status, jqxhr) {
             $("#top-list").empty();
-            $("#top-list").append(hbsTemplates["main-snippets"]["top-order"]({list:data}));
+            $("#top-list").append(hbsTemplates["main-snippets"]["top-order"]({ list: data }));
             $("#top-list").show();
         }
     });
@@ -1282,26 +1425,26 @@ function getToplist(groupId) {
 
 
 
-function getRowsFromLink(link,callback) {
-    saveClientLog("link="+link);
+function getRowsFromLink(link, callback) {
+    saveClientLog("link=" + link);
     try {
         //link is on the formathttps://spela.svenskaspel.se/topptipset?product=25&draw=1744&signs=1:12,2:1,3:X2,4:1X,5:1,6:X2,7:12,8:1X&share=valid
-        let row=decodeURIComponent(link).match(/signs=([^&]*)/i)[1].split(",").map(r=>(r.split(":")[1]));
+        let row = decodeURIComponent(link).match(/signs=([^&]*)/i)[1].split(",").map(r => (r.split(":")[1]));
         callback(row);
-    } catch(err) {
-        saveClientLog("getRowsFromLink="+err);
+    } catch (err) {
+        saveClientLog("getRowsFromLink=" + err);
 
-        console.log("failed to parse out row from link",link);
+        console.log("failed to parse out row from link", link);
         callback(null);
 
     }
     return;
-//No need to webscrape SvSp site, the link contains the row.
+    //No need to webscrape SvSp site, the link contains the row.
     $.ajax({
         type: "POST",
         url: "/getRowsFromLink",
         cache: false,
-        data: { link: link},
+        data: { link: link },
         success: function (data, status, jqxhr) {
             callback(data);
         },
@@ -1314,23 +1457,23 @@ function getRowsFromLink(link,callback) {
 
 
 
-function getUrlFromClipboard(success,failure) {
+function getUrlFromClipboard(success, failure) {
     let urlRegex = /(https?:\/\/[^ ]*)/;
 
     navigator.clipboard.read().then((data) => {
         saveClientLog(JSON.stringify(data[0].types));
-        if(data[0].types.includes("text/plain")) {
-            data[0].getType('text/plain').then((d)=>{
-                d.text().then(t=>{
-                    let m=t.match(urlRegex); //try to find an url from plain/text clip
-                    if(m && m.length>1) {
+        if (data[0].types.includes("text/plain")) {
+            data[0].getType('text/plain').then((d) => {
+                d.text().then(t => {
+                    let m = t.match(urlRegex); //try to find an url from plain/text clip
+                    if (m && m.length > 1) {
                         success(m[1]); //found then success.
                     } else {
-                        if(data[0].types.includes("text/html")) { //see if you can find an url from the html text (should probably look for a href too)
-                            data[0].getType('text/html').then((d)=>{
-                                d.text().then(t=>{
-                                    let m=t.match(urlRegex);
-                                    if(m && m.length>1) {
+                        if (data[0].types.includes("text/html")) { //see if you can find an url from the html text (should probably look for a href too)
+                            data[0].getType('text/html').then((d) => {
+                                d.text().then(t => {
+                                    let m = t.match(urlRegex);
+                                    if (m && m.length > 1) {
                                         success(m[1]);
                                     } else {
                                         failure(); //did'nt find an url in either plain or html text then failure
@@ -1343,11 +1486,11 @@ function getUrlFromClipboard(success,failure) {
             });
         } else {
             //if there is no plain text, try with html
-            if(data[0].types.includes("text/html")) {
-                data[0].getType('text/html').then((d)=>{
-                    d.text().then(t=>{
-                        let m=t.match(urlRegex);
-                        if(m && m.length>1) {
+            if (data[0].types.includes("text/html")) {
+                data[0].getType('text/html').then((d) => {
+                    d.text().then(t => {
+                        let m = t.match(urlRegex);
+                        if (m && m.length > 1) {
                             success(m[1]);
                         } else {
                             failure();
@@ -1368,15 +1511,15 @@ function getUrlFromClipboard(success,failure) {
 
 
 
-function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
+function getRowsFromClipBoard(pasteButton, targetTable, drawSelector) {
     saveClientLog("getRowsFromClipBoard");
-    var f=function(clipText) {
-        saveClientLog("clipText="+clipText);
+    var f = function (clipText) {
+        saveClientLog("clipText=" + clipText);
         pasteButton.attr("disabled", true);
         if (clipText.match(/http.*/i)) {
             modalPopUp("#message-popup", "Klistra in", "Hämtar rader...");
             getRowsFromLink(clipText, function (rows) {
-                selectDrawFromLink(drawSelector,clipText);
+                selectDrawFromLink(drawSelector, clipText);
                 if (!pasteRows(targetTable, rows)) {
                     modalPopUp("#popup", "Klistra in", "Det gick inte att klistra in raderna");
                 }
@@ -1398,19 +1541,19 @@ function getRowsFromClipBoard(pasteButton, targetTable,drawSelector) {
     try {
         saveClientLog("trying to get url from clipboard");
         getUrlFromClipboard(
-            (url)=>{
+            (url) => {
                 f(url);
             },
-            ()=>{
+            () => {
                 saveClientLog("Failed to get url");
                 showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
                 $("#another-modal").find("#send-link").click(function () {
                     f($("#another-modal").find("#link-to-send").val());
-                });                
+                });
             }
         )
     } catch (err) {
-        saveClientLog("navigator-err="+err);
+        saveClientLog("navigator-err=" + err);
         showModal("#another-modal", hbsTemplates["main-snippets"]["allow-paste-rows"]());
         $("#another-modal").find("#send-link").click(function () {
             f($("#another-modal").find("#link-to-send").val());
@@ -1439,27 +1582,27 @@ function selectDrawFromLink(drawSelector, link) {
 }
 
 
-function getResults(groupId,page) {
-    if(page==0) {
+function getResults(groupId, page) {
+    if (page == 0) {
         $("#results").empty();
-        $("#no-ongoing-games").hide(); 
+        $("#no-ongoing-games").hide();
     }
     $.ajax({
         type: "GET",
-        url: "/getResults?groupId=" + groupId+"&page="+page,
+        url: "/getResults?groupId=" + groupId + "&page=" + page,
         cache: false,
         success: function (data, status, jqxhr) {
             reloadIfLoggedOut(jqxhr);
-            var finalizedHeader="";
+            var finalizedHeader = "";
             $("#ongoing-games").text("");
 
-            if(data.results[0]==undefined || data.results[0].drawstate=="Finalized") {
-                $("#no-ongoing-games").show();            
+            if (data.results[0] == undefined || data.results[0].drawstate == "Finalized") {
+                $("#no-ongoing-games").show();
             }
-            var ongoingGames=0;
+            var ongoingGames = 0;
             data.results.forEach(function (e) {
                 e.rows = parseRows(e.rows);
-                if ((e.drawstate != "Finalized" && e.created_by == globals.userinfo.userid)||globals.activeGroup.admin===1) {
+                if ((e.drawstate != "Finalized" && e.created_by == globals.userinfo.userid) || globals.activeGroup.admin === 1) {
                     e.showDelete = true;
                 }
 
@@ -1470,19 +1613,19 @@ function getResults(groupId,page) {
                 e.results = parseResults(e.results);
                 if (e.results != undefined) {
                     e.totalWin = 0;
-                    e.results.forEach(function (el) { 
-                        e.totalWin += el.total; 
-                        el.worth=Number(el.worth.replace(',','.')).toFixed(0);
+                    e.results.forEach(function (el) {
+                        e.totalWin += el.total;
+                        el.worth = Number(el.worth.replace(',', '.')).toFixed(0);
                     });
                 }
 
-                e.created = new Date(e.created.replace(' ', 'T')+"Z").toLocaleString();
+                e.created = new Date(e.created.replace(' ', 'T') + "Z").toLocaleString();
 
-                if(e.drawstate=="Finalized" && finalizedHeader=="") {
-                    finalizedHeader="Avgjorda spel"
-                    e.finalizedHeader=finalizedHeader;
-                    if(ongoingGames>0) {
-                        $("#ongoing-games").text("("+ongoingGames+" spel)");
+                if (e.drawstate == "Finalized" && finalizedHeader == "") {
+                    finalizedHeader = "Avgjorda spel"
+                    e.finalizedHeader = finalizedHeader;
+                    if (ongoingGames > 0) {
+                        $("#ongoing-games").text("(" + ongoingGames + " spel)");
                     }
                 }
 
@@ -1493,15 +1636,15 @@ function getResults(groupId,page) {
 
             })
             $("#results").find("#more-results").remove();
-            if(data.hasMorePages) {
-                $("#results").append('<input type="button" id="more-results" class="round-button" value="Mer..." onclick="getResults('+groupId+','+(page+1)+')"/>');
+            if (data.hasMorePages) {
+                $("#results").append('<input type="button" id="more-results" class="round-button" value="Mer..." onclick="getResults(' + groupId + ',' + (page + 1) + ')"/>');
 
             }
             if (globals.isRefreshing) {
                 document.getElementById("top-list").scrollIntoView();
             }
 
-            if(ongoingGames>0) {
+            if (ongoingGames > 0) {
                 $("#refresh-button").fadeIn(2000);
             }
         },
@@ -1525,8 +1668,8 @@ function parseRows(rows) {
             result: a[3],
             status: a[4],
             matchstart: a[5],
-            matchtime:a[6],
-            lastevent:a[7],
+            matchtime: a[6],
+            lastevent: a[7],
             on1: a[2].match("1") != undefined ? "on" : "off",
             onX: a[2].match("X") != undefined ? "on" : "off",
             on2: a[2].match("2") != undefined ? "on" : "off",
@@ -1535,23 +1678,23 @@ function parseRows(rows) {
             status2: ""
         };
 
-        if (res.status == "-1" || res.status== "" || res.status=="Uppskjuten") {
+        if (res.status == "-1" || res.status == "" || res.status == "Uppskjuten") {
             res.status = "Inte startat";
         }
- 
+
         if (res.status != "Inte startat") {
-            let matchResult=parseResult(res.result);
-            if(res.result.match(/Lottad/)) {
-                res.result="Lottad";
+            let matchResult = parseResult(res.result);
+            if (res.result.match(/Lottad/)) {
+                res.result = "Lottad";
             }
-            if (matchResult==="1") {
+            if (matchResult === "1") {
                 if (res.on1 == "on") {
                     res.status1 = "correct";
                     res.isCorrect = true;
                 } else {
                     res.status1 = "missed";
                 }
-            } else if (matchResult==="X") {
+            } else if (matchResult === "X") {
                 if (res.onX == "on") {
                     res.statusX = "correct";
                     res.isCorrect = true;
@@ -1568,13 +1711,13 @@ function parseRows(rows) {
             }
 
             try {
-                var last=new Date(res.lastevent);
-                var now=new Date();
-                if(((now-last)/(1000*60))<5) {
+                var last = new Date(res.lastevent);
+                var now = new Date();
+                if (((now - last) / (1000 * 60)) < 5) {
                     //If something have happend in the last 5 minutes, blink the result
-                    res.blink=true;
-                }  
-            } catch(err) {
+                    res.blink = true;
+                }
+            } catch (err) {
 
             }
 
@@ -1594,12 +1737,12 @@ function parseRows(rows) {
                     res.result = getWeekDay(matchStart);
                 }
             }
-            
+
         } else if (res.status.match(/.*slut.*/i)) {//om status är Avslutad","Slut efter förlängning","Slut efter straffläggning" etc
             res.matchtime = "FT";
         }
-        if(res.matchtime==="FT" || res.matchtime==="HT") {
-            res.blink=false;
+        if (res.matchtime === "FT" || res.matchtime === "HT") {
+            res.blink = false;
         }
 
         return res;
@@ -1642,18 +1785,18 @@ function deleteDraw(drawId) {
                 $("#results").find("#draw-" + drawId).empty();
                 getNextInLine(groupId);
                 getToplist(groupId);
-                var regexResult=/\d+/.exec($("#ongoing-games").text());
-                if(regexResult!=null) {
-                    let ongoingGames=parseInt(regexResult[0])-1;
-                    if(ongoingGames>0) {
-                        $("#ongoing-games").text("("+ongoingGames+" spel)");
+                var regexResult = /\d+/.exec($("#ongoing-games").text());
+                if (regexResult != null) {
+                    let ongoingGames = parseInt(regexResult[0]) - 1;
+                    if (ongoingGames > 0) {
+                        $("#ongoing-games").text("(" + ongoingGames + " spel)");
                     } else {
                         $("#ongoing-games").text("");
-                        $("#no-ongoing-games").show(); 
+                        $("#no-ongoing-games").show();
                     }
                 }
 
-                
+
             },
             error: function (data, status, jqxhr) {
                 modalPopUp("#popup", "Ta bort spel", "Ett Tekniskt fel har inträffat, försök igen senare!");
@@ -1673,6 +1816,8 @@ function deleteDraw(drawId) {
 function showPastingRowsInfo() {
     showModal("#another-modal", hbsTemplates["main-snippets"]["paste-rows"]);
 }
+
+
 
 function showUserTerms() {
     showModal("#another-modal", hbsTemplates["main-snippets"]["user-terms"]);

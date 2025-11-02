@@ -10,11 +10,14 @@ CREATE TABLE clientlog (
 
 -- groups definition
 
-CREATE TABLE groups (id INTEGER PRIMARY KEY AUTOINCREMENT, groupname TEXT, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, allowextragames INTEGER default 1, mailsecondplayer INTEGER);
+CREATE TABLE groups (id INTEGER PRIMARY KEY AUTOINCREMENT,
+groupname TEXT,
+created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+allowextragames INTEGER default 1,
+mailsecondplayer INTEGER,
+premium_expires TIMESTAMP DEFAULT ('1900-01-01T00:00:00.000'));
 
 CREATE UNIQUE INDEX groups_idx ON groups (groupname);
-
-
 -- saved_sessions definition
 
 CREATE TABLE saved_sessions(
@@ -116,7 +119,23 @@ CREATE VIEW v_draws_in_groups AS SELECT d.*,r.rows FROM draws d LEFT JOIN (SELEC
 
 -- v_group_members source
 
-CREATE VIEW v_group_members AS SELECT g.groupname,g.allowextragames,g.mailsecondplayer , m.groupid, m.admin, g.created AS group_created, u.*, m.sortorder FROM groups g LEFT JOIN group_members m ON g.id = m.groupid LEFT JOIN v_userinfo u ON u.userid = m.userid;
+CREATE VIEW v_group_members AS
+SELECT
+	g.groupname,
+	g.allowextragames,
+	g.mailsecondplayer ,
+	m.groupid,
+	m.admin,
+	g.created AS group_created,
+	g.premium_expires>CURRENT_TIMESTAMP as is_premium,
+	u.*,
+	m.sortorder
+FROM
+	groups g
+LEFT JOIN group_members m ON
+	g.id = m.groupid
+LEFT JOIN v_userinfo u ON
+	u.userid = m.userid;
 
 
 -- v_user_surplus source

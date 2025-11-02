@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
   <title>Tipsy</title>
@@ -16,361 +17,382 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
   <script src="/handlebars/myHbsFunctions.js"></script>
   <script src="/handlebars/main-snippets.hbs" type="text/x-handlebars-templates"></script>
-  
-  <script src="js/modal/modal.js"></script> 
-  <script src="/js/utils.js"></script> 
+
+  <script src="js/modal/modal.js"></script>
+  <script src="/js/utils.js"></script>
   <script src="/js/main.js"></script>
 
-<style>
-html,body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  height: 100%;
-  font-size: 13px;
-  background:#525252;
-  
-}
-h3 {
-  font-size: 24px;
-}
-
-.round-button {
-  border-radius: 45px;
-  background: #f6d403;
-  color: black;
-  font-size: 14px;
-  font-weight: bold;
-  border-style: none;
-  cursor: pointer;
-  border-bottom: 2px solid currentcolor; 
-}
-
-.round-button:disabled,
-.round-button[disabled]{
-  opacity: 0.75;
-  cursor: default;
-}
-
-
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')
-      !important;
-    background-repeat: no-repeat, repeat !important;
-    background-position: right .3em top 50%, 0 0 !important;
-    background-size: .65em auto, 100% !important;
-    border-bottom: 2px solid currentcolor; 
-    border-radius: 45px;
-    padding: 0em 1.2em 0em 0.35em;
-}
-
-
-
-.yellow-checkbox:after {
-  content: " ";
-  background-color: #f6d403;
-  display: inline-block;
-  visibility: visible;
-}
-
-.yellow-checkbox:checked:after {
-  content: "\2714";
-  box-shadow: 0px 2px 4px rgba(155, 155, 155, 0.15);
-  border-radius: 3px;
-  height: 14px;
-  display: block;
-  width: 14px;
-  text-align: center;
-  font-size: 11px;
-  color: black;
-}
-
-
-
-
-.fixed {
-  position: fixed;
-  top:0px;
-}
-
-.clickable {
-  cursor:pointer;
-}
-
-table.bettingtable td {
-    padding-left: 3px;
-    padding-right: 3px;
-    padding-top:3px;
-    padding-bottom: 2px;
-    border-bottom: 1px solid #555;
-  }
-
-  .bettingtable .on {
-    background:#626262;
-    color:white;
-    border-style: solid;
-    
-  }
-
-  .bettingtable .topptipset, .on {
-    background:#f29400;
-    color:white;
-  }
-
-  .bettingtable .stryktipset, .on {
-    background:#00427a;
-    color:white;
-  }
-
-  .bettingtable .europatipset, .on {
-    background:#008733;
-    color:white;
-  }
-
-
-  .bettingtable .off {
-    background:none;
-    color:white;
-    border-style: solid;
-    border-color: #626262;
-  }
-
-  .bettingtable .correct {
-    border-style: solid;
-    border-color: #00CF91;
-  }
-
-  
-  .bettingtable .missed {
-    border-style: solid;
-    border-color: #00CF91;
-    border-width: 1px;
-  }
-  
-
-  .bettingtable  button {
-    border-style: none;
-  }
- 
-
-  .circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    font-size: 22px;
-    font-weight: bold;
-    color: white;
-    padding:0;
-    
-    text-align: center;
-    background: #525252;
-    border: 3px solid white;
-    -moz-border-radius: 50%;
-    -webkit-border-radius: 50%;
-}
-
-.correct-color {
-  border-color:#0bad20;
-}
-
-.table-bordered {
-  border-collapse: collapse;
-}
-
-.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
-    border: 1px solid #ddd;
-    padding: 3px   5px;
-
-}
-
-
-#front-page {
-  display: block;
-  margin-left: 20%;
-  margin-right: 20%;
-  width: 60%;
-  height:auto;
-  min-height:100%;
-  text-align: center;
-  background:  #525252;
-  color:white;
-  
-}
-
-#front-page {
-  padding-top: 40px;
-}
-
-@media screen and (max-width: 1100px) {
-  #front-page {
-    width: 100%;
-    height:auto;
-    min-height:100%;
-    margin-left: 0;
-    margin-right: 0;
-    padding-top: 40px;
-  }
-  .modal-content {
-    width:90% !important;
-  }
-
-  .hor-scroll {
-    overflow-x:auto !important;
-  }
-
-  #refresh-button-container {
-    display:block;
-  }
-}
-
-@media screen and (min-width: 1100px) {
-  #info {
-    font-size: x-large;
-  }
-
-  #refresh-button-container {
-    display:none;
-  }
-
-}
-</style>
-
-
-<script>
-  function toggleMenu() {
-    let mq = window.matchMedia( "(max-width: 1100px)" );
-    if (mq.matches) {
-      $("#myTopnav").toggleClass("responsive");
-      window.scrollTo(0, 0);
-      $("#front-page").toggleClass("fixed");
+  <style>
+    html,
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      height: 100%;
+      font-size: 13px;
+      background: #525252;
 
     }
-  }
+
+    h3 {
+      font-size: 24px;
+    }
+
+    .round-button {
+      border-radius: 45px;
+      background: #f6d403;
+      color: black;
+      font-size: 14px;
+      font-weight: bold;
+      border-style: none;
+      cursor: pointer;
+      border-bottom: 2px solid currentcolor;
+    }
+
+    .round-button:disabled,
+    .round-button[disabled] {
+      opacity: 0.75;
+      cursor: default;
+    }
 
 
-  $(function () {
-    precompileHbs(function () {
-      globals = {};
-
-      //Close dropdown menu after click
-      $('.clickable-menu').on('click', function () {
-        //close menu after click.
-        toggleMenu();
-      });
-
-
-
-
-    $("#log-in-out,#login-button").click(function (e) {
-    logInOut();
-    });
-
-    $("#create-configure-user,#create-user").click(function (e) {
-        configureUser();
-      });
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E') !important;
+      background-repeat: no-repeat, repeat !important;
+      background-position: right .3em top 50%, 0 0 !important;
+      background-size: .65em auto, 100% !important;
+      border-bottom: 2px solid currentcolor;
+      border-radius: 45px;
+      padding: 0em 1.2em 0em 0.35em;
+    }
 
 
-      $("#more-info").click(function (e) {
-        showMoreInfo();
-      });
+
+    .yellow-checkbox:after {
+      content: " ";
+      background-color: #f6d403;
+      display: inline-block;
+      visibility: visible;
+    }
+
+    .yellow-checkbox:checked:after {
+      content: "\2714";
+      box-shadow: 0px 2px 4px rgba(155, 155, 155, 0.15);
+      border-radius: 3px;
+      height: 14px;
+      display: block;
+      width: 14px;
+      text-align: center;
+      font-size: 11px;
+      color: black;
+    }
 
 
-      $("#contact").click(function (e) {
-        showContact();
-      });
 
 
-      $("#groups").click(function (e) {
-        configureGroups();
-      });
+    .fixed {
+      position: fixed;
+      top: 0px;
+    }
 
-      $("#group-members").click(function (e) {
-        configureGroupMembers();
-      });
+    .clickable {
+      cursor: pointer;
+    }
+
+    table.bettingtable td {
+      padding-left: 3px;
+      padding-right: 3px;
+      padding-top: 3px;
+      padding-bottom: 2px;
+      border-bottom: 1px solid #555;
+    }
+
+    .bettingtable .on {
+      background: #626262;
+      color: white;
+      border-style: solid;
+
+    }
+
+    .bettingtable .topptipset,
+    .on {
+      background: #f29400;
+      color: white;
+    }
+
+    .bettingtable .stryktipset,
+    .on {
+      background: #00427a;
+      color: white;
+    }
+
+    .bettingtable .europatipset,
+    .on {
+      background: #008733;
+      color: white;
+    }
 
 
-      $("#statistics").click(function (e) {
-        configureStatistics();
-      });
+    .bettingtable .off {
+      background: none;
+      color: white;
+      border-style: solid;
+      border-color: #626262;
+    }
 
-      $("#events").click(function (e) {
-        configureEvents();
-      });
-
-      $("#instructions").click(function (e) {
-        showModal("#basic-modal", hbsTemplates["main-snippets"]["getting-started"]());
-      });
-
-      $("#play").click(function (e) {
-        configurePlay();
-      });
+    .bettingtable .correct {
+      border-style: solid;
+      border-color: #00CF91;
+    }
 
 
-      if (getUrlVars()["reset-token"]) {
-        resetPassword(getUrlVars()["reset-token"]);
-        return;
+    .bettingtable .missed {
+      border-style: solid;
+      border-color: #00CF91;
+      border-width: 1px;
+    }
+
+
+    .bettingtable button {
+      border-style: none;
+    }
+
+
+    .circle {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: bold;
+      color: white;
+      padding: 0;
+
+      text-align: center;
+      background: #525252;
+      border: 3px solid white;
+      -moz-border-radius: 50%;
+      -webkit-border-radius: 50%;
+    }
+
+    .correct-color {
+      border-color: #0bad20;
+    }
+
+    .table-bordered {
+      border-collapse: collapse;
+    }
+
+    .table-bordered>thead>tr>th,
+    .table-bordered>tbody>tr>th,
+    .table-bordered>tfoot>tr>th,
+    .table-bordered>thead>tr>td,
+    .table-bordered>tbody>tr>td,
+    .table-bordered>tfoot>tr>td {
+      border: 1px solid #ddd;
+      padding: 3px 5px;
+
+    }
+
+
+    #front-page {
+      display: block;
+      margin-left: 20%;
+      margin-right: 20%;
+      width: 60%;
+      height: auto;
+      min-height: 100%;
+      text-align: center;
+      background: #525252;
+      color: white;
+
+    }
+
+    #front-page {
+      padding-top: 40px;
+    }
+
+    @media screen and (max-width: 1100px) {
+      #front-page {
+        width: 100%;
+        height: auto;
+        min-height: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding-top: 40px;
       }
 
-      if (getUrlVars()["active-group"]) {
-        globals.lastGroup = getUrlVars()["active-group"];
+      .modal-content {
+        width: 90% !important;
       }
 
-
-      if (getCookie("SessId") && globals.lastGroup!=-10) { //if lastGroup=-10 then it's the demogroup, go back to startpage when reloading
-        globals.isRefreshing=true;
-        toggleLogInOutButton();
-        initApp();
-      } else {
-        $("#info").show();
+      .hor-scroll {
+        overflow-x: auto !important;
       }
 
+      #refresh-button-container {
+        display: block;
+      }
+    }
+
+    @media screen and (min-width: 1100px) {
+      #info {
+        font-size: x-large;
+      }
+
+      #refresh-button-container {
+        display: none;
+      }
+
+    }
+  </style>
+
+
+  <script>
+    function toggleMenu() {
+      let mq = window.matchMedia("(max-width: 1100px)");
+      if (mq.matches) {
+        $("#myTopnav").toggleClass("responsive");
+        window.scrollTo(0, 0);
+        $("#front-page").toggleClass("fixed");
+
+      }
+    }
+
+
+    $(function () {
+      precompileHbs(function () {
+        globals = {};
+
+        //Close dropdown menu after click
+        $('.clickable-menu').on('click', function () {
+          //close menu after click.
+          toggleMenu();
+        });
+
+
+
+
+        $("#log-in-out,#login-button").click(function (e) {
+          logInOut();
+        });
+
+        $("#create-configure-user,#create-user").click(function (e) {
+          configureUser();
+        });
+
+
+        $("#more-info").click(function (e) {
+          showMoreInfo();
+        });
+
+
+        $("#contact").click(function (e) {
+          showContact();
+        });
+
+
+        $("#groups").click(function (e) {
+          configureGroups();
+        });
+
+        $("#group-members").click(function (e) {
+          configureGroupMembers();
+        });
+
+
+        $("#statistics").click(function (e) {
+          configureStatistics();
+        });
+
+        $("#events").click(function (e) {
+          configureEvents();
+        });
+
+        $("#instructions").click(function (e) {
+          showModal("#basic-modal", hbsTemplates["main-snippets"]["getting-started"]());
+        });
+
+        $("#play").click(function (e) {
+          configurePlay();
+        });
+
+
+        if (getUrlVars()["reset-token"]) {
+          resetPassword(getUrlVars()["reset-token"]);
+          return;
+        }
+
+        if (getUrlVars()["active-group"]) {
+          globals.lastGroup = getUrlVars()["active-group"];
+        }
+
+
+        if (getCookie("SessId") && globals.lastGroup != -10) { //if lastGroup=-10 then it's the demogroup, go back to startpage when reloading
+          globals.isRefreshing = true;
+          toggleLogInOutButton();
+          initApp();
+        } else {
+          $("#info").show();
+        }
+
+      });
     });
-    });
 
 
 
-</script>
+  </script>
 
 
 </head>
-<body>
-<div class="topnav fixed" id="myTopnav">
-  <a href="javascript:void(0);" class="logo" onclick="toggleMenu()"><img src="img/tipsy_logo.png" style="height: 22px;vertical-align: middle;margin-bottom: 2px"> Tipsy.nu</a>
 
-  <div id="menu-items" style="display: none;">
-  <a id="play" class="clickable-menu" href="javascript:void(0);">Spela</a>
-  <a id="group-members" class="clickable-menu" href="javascript:void(0);">Medlemmar</a>
-  <a id="groups" class="clickable-menu" href="javascript:void(0);">Grupper</a>
-  <a id="statistics" class="clickable-menu" href="javascript:void(0);">Statistik</a>
-  <a id="events" class="clickable-menu" href="javascript:void(0);">Händelser</a>
-  <a id="instructions" class="clickable-menu" href="javascript:void(0);">Kom-igång</a>
-  <a><select id="available-groups" style="background-color:whitesmoke;"><option value="." disabled>Välj spelgrupp...</option></select></a>
-  </div>
+<body>
+  <div class="topnav fixed" id="myTopnav">
+    <a href="javascript:void(0);" class="logo" onclick="toggleMenu()"><img src="img/tipsy_logo.png"
+        style="height: 22px;vertical-align: middle;margin-bottom: 2px"> Tipsy.nu</a>
+
+    <div id="menu-items" style="display: none;">
+      <a id="play" class="clickable-menu" href="javascript:void(0);">Spela</a>
+      <a id="group-members" class="clickable-menu" href="javascript:void(0);">Medlemmar</a>
+      <a id="groups" class="clickable-menu" href="javascript:void(0);">Grupper</a>
+      <a id="statistics" class="clickable-menu" href="javascript:void(0);">Statistik</a>
+      <a id="events" class="clickable-menu" href="javascript:void(0);">Händelser</a>
+      <a id="instructions" class="clickable-menu" href="javascript:void(0);">Kom-igång</a>
+      <a><select id="available-groups" style="background-color:whitesmoke;">
+          <option value="." disabled>Välj spelgrupp...</option>
+        </select></a>
+    </div>
 
     <a id="contact" class="to-the-right clickable-menu" href="javascript:void(0);">Kontakt</a>
-    <a id="log-in-out" href="javascript:void(0);" class="to-the-right clickable-menu"><i class="fa fa-sign-in"></i>&nbsp;<span>Logga in</span></a>
-    <a id="create-configure-user" href="javascript:void(0);" class="to-the-right clickable-menu"><i class="fa fa-user"></i> <span id="logged-in-user">Skapa användare</span></a>
+    <a id="log-in-out" href="javascript:void(0);" class="to-the-right clickable-menu"><i
+        class="fa fa-sign-in"></i>&nbsp;<span>Logga in</span></a>
+    <a id="create-configure-user" href="javascript:void(0);" class="to-the-right clickable-menu"><i
+        class="fa fa-user"></i> <span id="logged-in-user">Skapa användare</span></a>
 
-  <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
-    <i style="font-size: 20px;" class="fa fa-bars"></i>
-  </a>
-</div>
-<div id="refresh-button-container" style="position:fixed;bottom:10px;right:10px;">
-<i id="refresh-button" class="fa fa-refresh" style="color:#f6d403; font-size:22px;opacity: 0.75;display:none" aria-hidden="true" onclick="location.reload();"></i>
-</div>
+    <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
+      <i style="font-size: 20px;" class="fa fa-bars"></i>
+    </a>
+  </div>
+  <div id="refresh-button-container" style="position:fixed;bottom:10px;right:10px;">
+    <i id="refresh-button" class="fa fa-refresh" style="color:#f6d403; font-size:22px;opacity: 0.75;display:none"
+      aria-hidden="true" onclick="location.reload();"></i>
+  </div>
 
-<div id="front-page">
-<div id="start-info" style="height: auto;padding-top: 20px; min-height: 800px;display:none">
-  <h1>Välkommen till Tipsy</h1>
+  <div id="front-page">
+    <div id="start-info" style="height: auto;padding-top: 20px; min-height: 800px;display:none">
+      <h1>Välkommen till Tipsy</h1>
 
-    <p>Börja med att skapa en grupp via menyn <a style="color:#f6d403" href="javascript:configureGroups();" >Grupper</a>.</p>
-    <p>Bjud sen in dina vänner via menyn <a style="color:#f6d403" href="javascript:configureGroupMembers();" >Medlemmar</a>.</p>
-    <p><i>Eller...</i></p>
-    <p>Hitta en befintlig grupp att bli medlem i via menyn <a style="color:#f6d403" href="javascript:configureGroups(true);" >Grupper</a>.</p>
-    <br/>
-    <p>Se menyn <a style="color:#f6d403" href='javascript:showModal("#basic-modal", hbsTemplates["main-snippets"]["getting-started"]());'' >Kom igång</a> för mer info.</p>
+      <p>Börja med att skapa en grupp via menyn <a style="color:#f6d403"
+          href="javascript:configureGroups();">Grupper</a>.</p>
+      <p>Bjud sen in dina vänner via menyn <a style="color:#f6d403"
+          href="javascript:configureGroupMembers();">Medlemmar</a>.</p>
+      <p><i>Eller...</i></p>
+      <p>Hitta en befintlig grupp att bli medlem i via menyn <a style="color:#f6d403"
+          href="javascript:configureGroups(true);">Grupper</a>.</p>
+      <br />
+      <p>Se menyn <a style="color:#f6d403"
+          href='javascript:showModal("#basic-modal", hbsTemplates["main-snippets"]["getting-started"]());'' >Kom igång</a> för mer info.</p>
 
 </div>
 <div id="info" style="height: auto; min-height: 800px;display:none">
@@ -398,56 +420,59 @@ table.bettingtable td {
           <br/>
           <div id="top-list" style="padding: 5px;background: #626262;border-radius: 10px;text-align: left;display:none"></div>
           <br/>
-          <!--<a style="color:#f6d403" href='javascript:showModal("#basic-modal", hbsTemplates["main-snippets"]["news"]());'>Nyheter</a>-->
-          <h3>Pågående spel <span id="ongoing-games"></span></h3>
-          <p id="no-ongoing-games" style="padding-left: 30px; display: none;"><i>Inga pågående spel.</i></p>
-          <div id="results" class="row text-left col-xs-12">
-          </div>
-        </div>
+          <!--<a style="color:#f6d403" href=' javascript:showModal("#basic-modal",
+          hbsTemplates["main-snippets"]["news"]());'>Nyheter</a>-->
+      <h3>Pågående spel <span id="ongoing-games"></span></h3>
+      <p id="no-ongoing-games" style="padding-left: 30px; display: none;"><i>Inga pågående spel.</i></p>
+      <div id="results" class="row text-left col-xs-12">
       </div>
+    </div>
+  </div>
 
   </div>
-  
 
 
 
 
-<!--Modal and popups-->
-<div id="basic-modal" style="display:none" class="modal"></div>
-<div id="another-modal" style="display:none" class="modal"></div>
 
-<!--Popup-->
-<div id="popup" style="display:none" class="modal">
-  <div class="modal-content" style="width: fit-content; min-width:50%">
-  <div class="modal-header"><button type="button" class="close">&times;</button></div>
-  <h4 id="popup-header"></h4>
-  <p id="popup-message">This is a small modal.</p>
-  <button type="button" id="close-button" class="round-button">Ok</button>
+  <!--Modal and popups-->
+  <div id="basic-modal" style="display:none" class="modal"></div>
+  <div id="another-modal" style="display:none" class="modal"></div>
+
+  <!--Popup-->
+  <div id="popup" style="display:none" class="modal">
+    <div class="modal-content" style="width: fit-content; min-width:50%">
+      <div class="modal-header"><button type="button" class="close">&times;</button></div>
+      <h4 id="popup-header"></h4>
+      <p id="popup-message">This is a small modal.</p>
+      <button type="button" id="close-button" class="round-button">Ok</button>
+    </div>
   </div>
-</div>
 
-<!--Message popup no button-->
-<div id="message-popup" style="display:none" class="modal">
-  <div class="modal-content" style="width: fit-content; min-width:50%">
+  <!--Message popup no button-->
+  <div id="message-popup" style="display:none" class="modal">
+    <div class="modal-content" style="width: fit-content; min-width:50%">
 
-  <h4 id="popup-header"></h4>
-  <p id="popup-message">This is a small modal.</p>
+      <h4 id="popup-header"></h4>
+      <p id="popup-message">This is a small modal.</p>
+    </div>
   </div>
-</div>
 
-<!--Yes/No dialog-->
-<div id="yes-no" style="display:none" class="modal">
-  <div class="modal-content" style="width: fit-content; min-width:50%">
-  <div class="modal-header"><button type="button" class="close">&times;</button></div>
-  <h4 id="modal-title">title goes here</h4>
-  <p id="modal-message">message goes here</p>
-  <div class="modal-footer">
-    <button id="button1" type="button" class="round-button" style="margin-right:12px;">Ja</button>
-    <button id="button2" type="button" class="round-button">Nej</button>
+  <!--Yes/No dialog-->
+  <div id="yes-no" style="display:none" class="modal">
+    <div class="modal-content" style="width: fit-content; min-width:50%">
+      <div class="modal-header"><button type="button" class="close">&times;</button></div>
+      <h4 id="modal-title">title goes here</h4>
+      <p id="modal-message">message goes here</p>
+      <div class="modal-footer">
+        <button id="button1" type="button" class="round-button" style="margin-right:12px;">Ja</button>
+        <button id="button2" type="button" class="round-button">Nej</button>
+      </div>
+    </div>
   </div>
-  </div>
-</div>
+
 
 
 </body>
+
 </html>

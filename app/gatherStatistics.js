@@ -209,6 +209,15 @@ function updateDraw(draw) {
     }
 }
 
+
+function getSuggestion(product,draw,callback=console.log) {
+    matchInfoHandler.getDraw(product,draw,function(status,data) {
+        suggest(data.draws);
+    })
+}
+
+
+
 function getSuggestions() {
     matchInfoHandler.getPlayable("topptipsetfamily",function(status,data) {
         if(status) {
@@ -525,30 +534,9 @@ function P_C_outcome_outcome_o(type,result,outcome,odds) {
 
 
 
-/*
-getDraw("topptipsetstryk",668,function(status,data) {
-    suggest(data.draw.drawEvents);
-})
 
-return;
-*/
 
 main(process.argv);
-
-/*
-
-updateStatistics("stryktipset",2020,7);
-updateStatistics("stryktipset",2020,8);
-updateStatistics("stryktipset",2020,9);
-
-updateStatistics("europatipset",2020,7);
-updateStatistics("europatipset",2020,8);
-updateStatistics("europatipset",2020,9);
-
-updateStatistics("topptipsetfamily",2020,7);
-updateStatistics("topptipsetfamily",2020,8);
-updateStatistics("topptipsetfamily",2020,9);
-*/
 
 
 

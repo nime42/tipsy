@@ -121,8 +121,7 @@ function getWeekDay(date) {
 }
 
 
-function sendRows(drawData,rows,systemSize) {
-  var form=$("#send-rows");
+function sendRows(drawData) {
 
   var product="";
   switch(drawData.product) {
@@ -140,7 +139,7 @@ function sendRows(drawData,rows,systemSize) {
   }
   var draw_id=drawData.productId+"_"+drawData.drawnumber;
 
-  var betRow=rows.map((r,i)=>(i+1+":"+r)).join(",");
+  var betRow=drawData.rows.map((r,i)=>(i+1+":"+r.bet)).join(",");
   var url=`https://spela.svenskaspel.se/${product}/?product=${drawData.productId}&draw=${drawData.drawnumber}&signs=${betRow}`;
 
   window.open(url);

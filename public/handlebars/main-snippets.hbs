@@ -882,15 +882,24 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
   <button id="paste" type="button" class="round-button" onclick="getRowsFromClipBoard($(this),$(this).parent().find('.bettingtable'),$(this).parent().find('#draw-selector'))">Klistra in</button>
   <span style="color: #f6d403;margin: 7px;font-size: 15px;" class="fa fa-info-circle clickable"  onclick='showPastingRowsInfo()'></span>
 
-  <table class="bettingtable play-table" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;min-width:300px;" >
+  <table id="bettings" class="bettingtable play-table" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;min-width:300px;" >
     <colgroup>
       <col span="1" style="width: 5%;">
-      <col span="1" style="width: 80%;">
+      <col span="1" style="width: 75%;">
+      <col span="1" style="width: 5%;">
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 5%;">
       <col span="1" style="width: 5%;">
    </colgroup>
    <tbody>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="suggestions" style="padding-left:15px;color: #f6d403;font-style: italic;display:none"><b>Tipsy</b></td>
+    </tr>
     {{#each draw.draws}}
     <tr id="row-{{inc @index}}" class="draw-row">
       <td>{{inc @index}}.</td>
@@ -898,6 +907,7 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
       <td><button class="1x2 {{../productClass}} off" style="border-style: solid; margin-right:3px;">1</button></td>
       <td><button class="1x2 {{../productClass}} off" style="border-style: solid;margin-right:3px;">X</button></td>
       <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">2</button></td>
+      <td id="suggestion-{{@index}}" class="1x2 suggestions" style="padding-left:15px;color: #f6d403;border:0px;font-style: italic;display:none;font-family: monospace;text-wrap: nowrap;">(1X2)</td>
     </tr>
     {{/each}}
    
@@ -907,12 +917,65 @@ Ta ut vinsten från ditt konto hos Svenska Spel och skicka vidare till dina spel
   
    <div>
     <button id="play" type="button" disabled class="round-button" style="margin-right:12px;">Spela</button>
-    <button id="clear" type="button" class="round-button" onclick="clearRows($(this).parent().parent().find('.bettingtable'))">Rensa</button>
+    <button id="clear" type="button" class="round-button" onclick="clearRows($(this).parent().parent().find('.bettingtable'));hideSuggestions($(this).parent().parent().parent().attr('id'))">Rensa</button>
+    <button id="ask-tipsy" type="button" class="round-button" style="float: right;" onclick="">Fråga Tipsy</button>
+    <span id="copy-div" style="display:none; float:right">
+      <button id="copy-tipsy" type="button" class="round-button suggestions" style="margin-left: 35px;margin-bottom: 2px;" onclick="">Kopiera Tipsy</button>
+      <br>
+      <label for="full-gard" style="color: rgb(246, 212, 3);font-weight: bold;font-style: italic;">Hel:</label>
+      <input type="number" id="full-gard" name="full-gard" min="0" max="13" style="width: 30px;width: 30px;background: #f6d403;border-radius: 25px;font-weight: bold;font-style: italic;text-align: right;">
+      <label for="half-gard" style="color: rgb(246, 212, 3);font-weight: bold;font-style: italic;">Halv:</label>
+      <input type="number" id="half-gard" name="half-gard" min="0" max="13" style="width: 30px;width: 30px;background: #f6d403;border-radius: 25px;font-weight: bold;font-style: italic;text-align: right;">
+    </span>
+
   </div>
   </div>
 </script>
 
+<script id="tipsy-suggestion" type="text/x-handlebars-template">
+<style>
 
+  @media screen and (max-width: 1100px) {
+  .play-table td {
+    font-size: 12px !important;
+    padding-top: 0px !important;
+    padding-bottom: 1px !important;
+    
+  }
+  }
+
+  #draw-selector {
+    font-size: 17px;
+    background-color:#f6d403;
+    font-weight:bold;
+    }
+</style>
+<div style="overflow: auto;max-height: calc(100vh - 110px);"> 
+
+  <table class="bettingtable play-table" style="width:80%;border-collapse: collapse;border-spacing: 0 0.5em;max-width: 400px;min-width:300px;" >
+    <colgroup>
+      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 80%;">
+      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 5%;">
+      <col span="1" style="width: 5%;">
+   </colgroup>
+   <tbody>
+    {{#each rows}}
+    <tr id="row-{{inc @index}}" class="draw-row">
+      <td>{{inc @index}}.</td>
+      <td id="event-description">{{teams}}</td>
+      <td><button class="1x2 {{../productClass}} off" style="border-style: solid; margin-right:3px;">1</button></td>
+      <td><button class="1x2 {{../productClass}} off" style="border-style: solid;margin-right:3px;">X</button></td>
+      <td><button class="1x2 {{../productClass}} off" style="border-style: solid;">2</button></td>
+      <td>1X2</td>
+    </tr>
+    {{/each}}
+   </tbody>
+  </table>
+</div>
+
+</script>
 
 <script id="results" type="text/x-handlebars-template">
 <style>
