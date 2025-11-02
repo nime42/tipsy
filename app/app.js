@@ -951,7 +951,7 @@ app.post("/askTipsy", (req, res) => {
 
     const predictions = predict(betInfo).then(predictions => {
         console.log("Predictions:", predictions);
-        let result = predictions.trim().split("\r\n").map(r => r.replace(/ +/g, " ").split(" "))
+        let result = predictions.trim().split(/\r?\n/).map(r => r.replace(/ +/g, " ").split(" "))
         let headers = result[0];
         let rows = result.slice(1).map(r => [Number(r[0]), r[1], ...r.slice(2).map(v => Number(v))]);
         let newRows = [];
