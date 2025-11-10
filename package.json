@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "basic-auth": "^2.0.1",
-    "better-sqlite3": "^12.4.1",
+    "better-sqlite3": "^7.4.6",
     "body-parser": "^1.20.3",
     "child_process": "^1.0.2",
     "cookie-parser": "^1.4.7",
