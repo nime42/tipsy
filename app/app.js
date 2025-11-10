@@ -973,7 +973,14 @@ function predict(betInfo) {
     }
     let rows = [];
     for (let i = 0; i < svFolket.length; i++) {
-        let cols = [svFolket[i].one / 100.0, svFolket[i].x / 100.0, svFolket[i].two / 100.0, Number(odds[i].one.replace(",", ".")), Number(odds[i].x.replace(",", ".")), Number(odds[i].two.replace(",", "."))].join(",");
+        const sv_1 = (svFolket[i].one != undefined ? svFolket[i].one : 30) / 100.0;
+        const sv_x = (svFolket[i].x != undefined ? svFolket[i].x : 30) / 100.0;
+        const sv_2 = (svFolket[i].two != undefined ? svFolket[i].two : 30) / 100.0;
+        const odds_1 = odds[i].one ? odds[i].one.replace(",", ".") : 1.0;
+        const odds_x = odds[i].x ? odds[i].x.replace(",", ".") : 1.0;
+        const odds_2 = odds[i].two ? odds[i].two.replace(",", ".") : 1.0;
+
+        let cols = [sv_1, sv_x, sv_2, odds_1, odds_x, odds_2].join(",");
         rows.push(cols);
     }
     let oddsString = rows.join(";");

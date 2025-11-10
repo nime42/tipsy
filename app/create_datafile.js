@@ -19,6 +19,7 @@ function createDatafile(outfile, db) {
     LEFT join odds svX on r.drawId =svX.drawId and r.matchNr =svX.matchNr and svX."type" ='SvenskaFolket' and svX.outcome ='x'
     LEFT join odds sv2 on r.drawId =sv2.drawId and r.matchNr =sv2.matchNr and sv2."type" ='SvenskaFolket' and sv2.outcome ='two'
     where r.drawstate='Finalized' AND r.result IS not null and sv1.odds is not null and odds_1 is  not null
+    and product not like '%topptips%'
     order by drawnumber,r.matchNr
     `;
     const rows = db.prepare(sql).all();
