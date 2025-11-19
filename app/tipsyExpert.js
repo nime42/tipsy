@@ -58,6 +58,9 @@ function predict(betInfo) {
         const sv_1 = (svFolket[i].one != undefined ? svFolket[i].one : 30) / 100.0;
         const sv_x = (svFolket[i].x != undefined ? svFolket[i].x : 30) / 100.0;
         const sv_2 = (svFolket[i].two != undefined ? svFolket[i].two : 30) / 100.0;
+        if (!odds[i]) {
+            odds[i] = {}
+        }
         const odds_1 = odds[i].one ? odds[i].one.replace(",", ".") : 1.0;
         const odds_x = odds[i].x ? odds[i].x.replace(",", ".") : 1.0;
         const odds_2 = odds[i].two ? odds[i].two.replace(",", ".") : 1.0;
