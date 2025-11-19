@@ -5,8 +5,8 @@ var db = new sqlite3('./resources/tipsy_statistics.db');
 db.pragma("foreign_keys = ON");
 
 
-function createDatafile(outfile, db) {
-    const sql = `
+function createDatafile(outfile, constraint, db) {
+    let sql = `
         SELECT r.drawnumber , 
     CAST(sv1.odds as decimal)/100.0 as folket_1,CAST(svX.odds as decimal)/100.0 as folket_x,CAST(sv2.odds as decimal)/100.0 as folket_2,
     CAST(replace(o1.odds,',','.') as decimal) as odds_1,cast(replace(oX.odds,',','.') as decimal) as odds_x,cast(replace(o2.odds,',','.') as decimal) as odds_2,
@@ -19,9 +19,18 @@ function createDatafile(outfile, db) {
     LEFT join odds svX on r.drawId =svX.drawId and r.matchNr =svX.matchNr and svX."type" ='SvenskaFolket' and svX.outcome ='x'
     LEFT join odds sv2 on r.drawId =sv2.drawId and r.matchNr =sv2.matchNr and sv2."type" ='SvenskaFolket' and sv2.outcome ='two'
     where r.drawstate='Finalized' AND r.result IS not null and sv1.odds is not null and odds_1 is  not null
-    and product not like '%topptips%'
+    and %%CONSTRAINT%%
     order by drawnumber,r.matchNr
     `;
+
+    const default_constraint = "1=1";
+
+    if (constraint === undefined) {
+        constraint = default_constraint;
+    }
+
+    sql = sql.replace("%%CONSTRAINT%%", constraint);
+
     const rows = db.prepare(sql).all();
     const fs = require('fs');
     const writeStream = fs.createWriteStream(outfile);
@@ -37,10 +46,10 @@ function createDatafile(outfile, db) {
 }
 
 if (argv.length < 3) {
-    console.log("Usage: node create_datafile.js <outputfile>");
+    console.log("Usage: node create_datafile.js <outputfile> [search_constraint]");
     process.exit(1);
 }
-createDatafile(argv[2], db);
+createDatafile(argv[2], argv[3], db);
 db.close();
 
 
