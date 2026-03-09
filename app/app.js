@@ -985,7 +985,15 @@ function predict(betInfo) {
     }
     let oddsString = rows.join(";");
     const pythonscript = config.predictions.python_script;
-    const model = config.predictions.model_file;
+    let model = config.predictions.model_file;
+    if (betInfo.product != undefined && betInfo.product.startsWith("Topptipset")) {
+        model = config.predictions.topptips_model_file;
+    } else if (betInfo.product === "Stryktipset") {
+        model = config.predictions.stryktips_model_file;
+    } else if (betInfo.product === "Europatipset") {
+        model = config.predictions.europatips_model_file;
+    }
+
     return runPythonWithData(pythonscript, [model, oddsString]);
 
 
