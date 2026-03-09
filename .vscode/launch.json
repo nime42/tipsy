@@ -1,0 +1,121 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+
+        {
+            "name": "Launch createReducedsystem",
+            "program": "${workspaceFolder}\\app\\createReducedsystem.js",
+            "args":["topptips", "-row", "SvF", "-maxErrors", "1,2,3,4,5,6,7", "-median", "0.5"],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+
+
+        {
+            "name": "Launch gatherStatistics",
+            "program": "${workspaceFolder}\\app\\gatherStatistics.js",
+            "args":["getStatistics", "2023", "11"],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "name": "Launch suggest",
+            "program":  "${workspaceFolder}\\app\\gatherStatistics.js",
+            "args":["suggest"],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
+            "name": "Launch test",
+            "program": "${workspaceFolder}\\app\\test.js",
+            "args":["suggest"],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+
+        {
+            "name": "Launch newtest",
+            "program": "${workspaceFolder}\\app\\newtest.js",
+            "args":["suggest"],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+
+        {
+            "name": "Launch test2",
+            "program": "${workspaceFolder}\\app\\test2.js",
+            "args":["suggest"],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+
+
+
+        {
+            "name": "Launch analyze",
+            "program": "${workspaceFolder}\\app\\analyze.js",
+            "args":["suggest"],
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Tipsy",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\app\\app.js"
+        }, 
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch TipsyExpert",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\app\\tipsyExpert.js",
+            //"args":["stryktips", "1", "6"]
+            //"args":["topptipset", "1", "3"]
+             "args":["europatips"]
+
+        },          
+        
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program postRegister",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\app\\utils\\postRegister.js"
+        }
+    ]
+}
