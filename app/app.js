@@ -5,7 +5,6 @@ var db = require('./db/dbFunctions_better.js');
 var mailSender = require('./utils/mailSender.js');
 var sessionHandler = require('./utils/sessionHandler.js');
 var matchInfoHandler = require('./utils/matchInfoHandler.js');
-var webScraper = require('./utils/webScraper.js');
 var statisticsManager = require('./utils/statisticsManager.js');
 require('log-timestamp');
 
@@ -927,14 +926,7 @@ app.post('/saveClientLog', (req, res) => {
     })
 })
 
-app.post("/getRowsFromLink", (req, res) => {
-    var link = req.body.link;
-    (async () => {
-        var rows = await webScraper.getRows(link);
-        res.json(rows);
-    })()
 
-});
 
 
 app.post("/askTipsy", (req, res) => {
