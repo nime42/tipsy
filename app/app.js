@@ -13,12 +13,18 @@ sessionHandler.resumeSessions(db.getDbInstance());
 
 var config = require('../resources/config.js');
 
+var credentials;
+try {
+    privateKey = fs.readFileSync(config.certs.privateKey, 'utf8');
+    certificate = fs.readFileSync(config.certs.certificate, 'utf8');
+    ca = fs.readFileSync(config.certs.ca, 'utf8');
+    credentials = { key: privateKey, cert: certificate, ca: ca };
+} catch (e) {
+    console.log("Failed to read certs, falling back to http", e);
+    credentials = null;
+}
 
-var privateKey = fs.readFileSync(config.certs.privateKey, 'utf8');
-var certificate = fs.readFileSync(config.certs.certificate, 'utf8');
-var ca = fs.readFileSync(config.certs.ca, 'utf8');
 
-var credentials = { key: privateKey, cert: certificate, ca: ca };
 var express = require('express');
 var app = express();
 
@@ -1004,8 +1010,9 @@ process.on('SIGINT', function (e) {
 
 
 var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
-
 httpServer.listen(config.app.http, () => console.log('App listening at http://localhost:' + config.app.http));
-httpsServer.listen(config.app.https, () => console.log('App listening at https://localhost:' + config.app.https));
 
+if (credentials) {
+    var httpsServer = https.createServer(credentials, app);
+    httpsServer.listen(config.app.https, () => console.log('App listening at https://localhost:' + config.app.https));
+}
