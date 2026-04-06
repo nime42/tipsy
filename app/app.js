@@ -12,7 +12,7 @@ sessionHandler.resumeSessions(db.getDbInstance());
 
 
 var config = require('../resources/config.js');
-
+var useHttps = true;
 var credentials;
 try {
     privateKey = fs.readFileSync(config.certs.privateKey, 'utf8');
@@ -20,8 +20,9 @@ try {
     ca = fs.readFileSync(config.certs.ca, 'utf8');
     credentials = { key: privateKey, cert: certificate, ca: ca };
 } catch (e) {
-    console.log("Failed to read certs, falling back to http", e);
+    console.log("Failed to read certs, falling back to http");
     credentials = null;
+    useHttps = false;
 }
 
 
@@ -51,7 +52,9 @@ app.use((req, res, next) => {
         return;
     }
 
-    if (req.headers.host.indexOf('localhost') > -1 || req.secure) {
+
+
+    if (req.headers.host.indexOf('localhost') > -1 || req.secure || !useHttps) {
         next()
     } else {
         res.redirect('https://' + req.headers.host + req.url);
@@ -1012,7 +1015,7 @@ process.on('SIGINT', function (e) {
 var httpServer = http.createServer(app);
 httpServer.listen(config.app.http, () => console.log('App listening at http://localhost:' + config.app.http));
 
-if (credentials) {
+if (useHttps) {
     var httpsServer = https.createServer(credentials, app);
     httpsServer.listen(config.app.https, () => console.log('App listening at https://localhost:' + config.app.https));
 }
