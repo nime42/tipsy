@@ -128,7 +128,7 @@ app.use(express.static('public'))
 
 
 app.get("/shutdown", (req, res) => {
-    var isLocal = (req.connection.localAddress === req.connection.remoteAddress);
+    var isLocal = (req.ip === "::1");
     if (isLocal) {
         console.log("Shutting down!");
         res.sendStatus(200);
@@ -143,7 +143,7 @@ app.get("/shutdown", (req, res) => {
 })
 
 app.get("/updateAllResults", (req, res) => {
-    var isLocal = (req.connection.localAddress === req.connection.remoteAddress);
+    var isLocal = (req.ip === "::1");
     if (isLocal) {
         res.sendStatus(200);
         updateAllResults();
