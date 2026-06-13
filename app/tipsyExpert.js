@@ -126,6 +126,11 @@ function makePlay(product) {
                 const predictions = getPredictions(output);
                 const suggestions = addGuards(predictions, wholeGuards, halfGuards);
                 const rows = draw.draws.map((r, i) => ({ teams: r.eventDescription, rownr: r.eventNumber, matchstart: r.match.matchStart, bet: suggestions[i] }));
+
+                if (draw.productName == "VM-tipset") {
+                    draw.productName = "Europatipset";
+                }
+
                 const betInfo = {
                     product: draw.productName,
                     regclosetime: draw.regCloseTime,

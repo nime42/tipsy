@@ -52,7 +52,7 @@ function getDrawAndResult(product, draw, callback) {
                 res.forecast = parseForecast(json.responses[1]);
                 res.result = parseResult(json.responses[2]);
 
-                res.draws.draws.filter(d => (d.result === "? - ?")).forEach(d => {
+                res.draws?.draws.filter(d => (d.result === "? - ?")).forEach(d => {
                     let i = d.eventNumber - 1;
                     let matchInfo = (res.forecast != null && res.forecast.matchinfo) ? res.forecast.matchInfo[i] : undefined
                     if (matchInfo) {
