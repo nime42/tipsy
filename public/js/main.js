@@ -1023,7 +1023,8 @@ function getMoreEvents(buttonElem, page) {
                 c.get(1).innerText = e.eventtype;
                 c.get(2).innerText = e.username;
                 c.get(3).innerText = e.cost;
-                c.get(4).innerText = e.profit;
+                c.get(4).innerText = e.nrofrights;
+                c.get(5).innerText = e.profit;
                 row.insertBefore(lastRow);
 
             });
