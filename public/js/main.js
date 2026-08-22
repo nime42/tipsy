@@ -1268,107 +1268,7 @@ function getPlayable(product, div) {
           });
         });
 
-      if (globals.activeGroup.is_premium !== 1) {
-        $("#basic-modal")
-          .find("#" + div)
-          .find("#ask-tipsy")
-          .hide();
-      } else {
-        $("#basic-modal")
-          .find("#" + div)
-          .find("#ask-tipsy")
-          .click(function () {
-            let drawInfo = collectBet();
-            modalPopUp("#message-popup", "Fråga Tipsy", "Ett ögonblick...");
-            $.ajax({
-              type: "POST",
-              url: "/askTipsy",
-              cache: false,
-              data: drawInfo,
-              error: function (data, status, jqxhr) {
-                hideModal("#message-popup");
-                modalPopUp("#popup", "Fråga Tipsy", "Det gick inte att hämta tips från Tipsy just nu, försök igen senare!");
-              },
-              success: function (data, status, jqxhr) {
-                reloadIfLoggedOut(jqxhr);
-                hideModal("#message-popup");
-                showSuggestions(div, data, 0, 0);
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#copy-tipsy")
-                  .unbind("click");
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#copy-tipsy")
-                  .click(function () {
-                    let fullGardElem = $("#basic-modal")
-                      .find("#" + div)
-                      .find("#full-gard");
-                    let halfGardElem = $("#basic-modal")
-                      .find("#" + div)
-                      .find("#half-gard");
-                    let nrofFullGards = Number(fullGardElem.val());
-                    let nrofHalfGards = Number(halfGardElem.val());
-                    let rows = addGuards(data, nrofFullGards, nrofHalfGards);
-                    pasteRows($(`#basic-modal #${div} .bettingtable`), rows);
-                  });
-                const addGards = (ev) => {
-                  let rows = data.rows;
-                  let gard = ev.originalEvent.target.id;
-                  let fullGardElem = $("#basic-modal")
-                    .find("#" + div)
-                    .find("#full-gard");
-                  let halfGardElem = $("#basic-modal")
-                    .find("#" + div)
-                    .find("#half-gard");
-                  let nrofFullGards = Number(fullGardElem.val());
-                  let nrofHalfGards = Number(halfGardElem.val());
-                  if (nrofFullGards + nrofHalfGards > rows.length) {
-                    if (gard === "full-gard") {
-                      fullGardElem.val(rows.length - nrofHalfGards);
-                    } else {
-                      halfGardElem.val(rows.length - nrofFullGards);
-                    }
-                    return;
-                  }
-                  showSuggestions(div, data, nrofFullGards, nrofHalfGards);
-                };
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#full-gard")
-                  .unbind("change", "keyup");
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#full-gard")
-                  .change(addGards);
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#full-gard")
-                  .keyup(addGards);
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#full-gard")
-                  .val("");
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#half-gard")
-                  .unbind("change", "keyup");
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#half-gard")
-                  .change(addGards);
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#half-gard")
-                  .keyup(addGards);
-                $("#basic-modal")
-                  .find("#" + div)
-                  .find("#half-gard")
-                  .val("");
-              },
-            });
-          });
-      }
+      setUpAskTipsy(data, div);
     },
     error: function (data, status, jqxhr) {
       if (data.status == 403) {
@@ -1384,6 +1284,111 @@ function getPlayable(product, div) {
   });
 }
 
+function setUpAskTipsy(data, div) {
+  if (globals.activeGroup.is_premium != 1) {
+    return;
+  }
+
+  let askTipsyElem = $("#basic-modal")
+    .find("#" + div)
+    .find("#ask-tipsy");
+
+  let drawSelectorElem = $("#basic-modal")
+    .find("#" + div)
+    .find("#draw-selector");
+
+  let copyTipsyElem = $("#basic-modal")
+    .find("#" + div)
+    .find("#copy-tipsy");
+
+  let fullGardElem = $("#basic-modal")
+    .find("#" + div)
+    .find("#full-gard");
+
+  let halfGardElem = $("#basic-modal")
+    .find("#" + div)
+    .find("#half-gard");
+
+  const getDrawIndex = () => {
+    let drawIndex = 0;
+    if (data.length > 1) {
+      drawIndex = drawSelectorElem.val();
+    }
+    return drawIndex;
+  };
+
+  const getDrawInfo = () => {
+    const drawIndex = getDrawIndex();
+    const drawInfo = data[drawIndex];
+    return {
+      svenskaFolket: drawInfo.draws.map((d) => d.svenskaFolket),
+      odds: drawInfo.draws.map((d) => d.odds),
+      matches: drawInfo.draws.map((d) => d.eventDescription),
+      drawnumber: drawInfo.drawNumber,
+      product: drawInfo.productName,
+      productId: drawInfo.productId,
+    };
+  };
+
+  askTipsyElem.show();
+
+  askTipsyElem.unbind("click");
+  askTipsyElem.click(async function () {
+    $(`#basic-modal #${div} .suggestions`).show();
+    $(`#basic-modal #${div} #copy-div`).show();
+    $(`#basic-modal #${div} #ask-tipsy`).hide();
+
+    const drawInfo = getDrawInfo();
+    fullGardElem.val("");
+    halfGardElem.val("");
+
+    const predictions = await predict(drawInfo, 0, 0);
+    showSuggestions(div, predictions.selections, 0, 0);
+  });
+
+  const onGardsGardsChange = async (ev) => {
+    const drawInfo = getDrawInfo();
+    const nrofFullGards = Number(fullGardElem.val());
+    const nrofHalfGards = Number(halfGardElem.val());
+    const predictions = await predict(drawInfo, nrofFullGards, nrofHalfGards);
+
+    let gard = ev.originalEvent.target.id;
+    if (nrofFullGards + nrofHalfGards > drawInfo.matches.length) {
+      if (gard === "full-gard") {
+        fullGardElem.val(drawInfo.matches.length - nrofHalfGards);
+      } else {
+        halfGardElem.val(drawInfo.matches.length - nrofFullGards);
+      }
+      return;
+    }
+    showSuggestions(div, predictions.selections, nrofFullGards, nrofHalfGards);
+  };
+
+  fullGardElem.unbind("change keyup");
+  halfGardElem.unbind("change keyup");
+  fullGardElem.change(onGardsGardsChange);
+  fullGardElem.keyup(onGardsGardsChange);
+  halfGardElem.change(onGardsGardsChange);
+  halfGardElem.keyup(onGardsGardsChange);
+
+  copyTipsyElem.unbind("click");
+  copyTipsyElem.click(function () {
+    const suggestions = getSuggestions(div);
+    pasteRows($(`#basic-modal #${div} .bettingtable`), suggestions);
+  });
+}
+
+async function predict(drawInfo, fullGards, halfGards) {
+  const groupid = globals.activeGroup.groupid;
+  res = await $.ajax({
+    type: "POST",
+    url: "/getPredictions",
+    cache: false,
+    data: { betInfo: drawInfo, gards: { full: fullGards, half: halfGards }, groupId: groupid },
+  });
+  return res;
+}
+
 function getDrawBettings(div) {
   var rows = [];
   $("#basic-modal")
@@ -1395,49 +1400,22 @@ function getDrawBettings(div) {
   return rows;
 }
 
-function showSuggestions(div, predictions, full, half) {
+function showSuggestions(div, suggestions, full, half) {
   $(`#basic-modal #${div} .suggestions`).show();
   $(`#basic-modal #${div} #copy-div`).show();
   $(`#basic-modal #${div} #ask-tipsy`).hide();
 
-  let suggestions = addGuards(predictions, full, half);
-  suggestions.forEach((e, i) => {
-    $(`#basic-modal #${div} #suggestion-${i}`).html(`${_formatBet(e)}`);
+  suggestions.forEach((r, i) => {
+    $(`#basic-modal #${div} #suggestion-${i}`).html(`${r.join(" ")}`);
   });
 }
 
-function addGuards(predictions, full, half) {
-  let suggestions = predictions.rows.map((r) => r[1]);
-  const entropies = [...predictions.rows].sort((a, b) => b[5] - a[5]);
-  for (let i = 0; i < full; i++) {
-    suggestions[entropies[i][0]] = "1X2";
-  }
-  for (let i = full; i < full + half; i++) {
-    const [row, symbol, prob_1, prob_X, prob_2] = entropies[i];
-    let extra = "";
-    switch (symbol) {
-      case "1":
-        prob_X > prob_2 ? (extra = "X") : (extra = "2");
-        break;
-      case "X":
-        prob_1 > prob_2 ? (extra = "1") : (extra = "2");
-        break;
-      case "2":
-        prob_1 > prob_X ? (extra = "1") : (extra = "X");
-        break;
-    }
-    suggestions[row] = symbol + extra;
-  }
-  return suggestions;
+function getSuggestions(div) {
+  return $(`#basic-modal #${div} .suggestions[id^="suggestion-"]`)
+    .map((i, e) => $(e).text().replaceAll(" ", ""))
+    .get();
 }
 
-function _formatBet(bet) {
-  let res = "(1)(X)(2)";
-  bet.split("").forEach((b) => {
-    res = res.replace(`(${b})`, b);
-  });
-  return res.replace("(1)", "&nbsp;").replace("(X)", "&nbsp;").replace("(2)", "&nbsp; ");
-}
 function hideSuggestions(div) {
   $(`#basic-modal #${div} .suggestions`).hide();
   $(`#basic-modal #${div} #copy-div`).hide();
