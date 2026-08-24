@@ -1,5 +1,5 @@
 function generateSystem(matches, options = {}) {
-  const { half = 3, full = 3, valueWeight = 0.4, xUncertaintyWeight = 0.15 } = options;
+  const { half = 3, full = 3, valueWeight = 0.4, xUncertaintyWeight = 0.05 } = options;
 
   // 1. Analysera varje match
   const analysed = matches.map((match) => analyseMatch(match, valueWeight, xUncertaintyWeight));
