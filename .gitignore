@@ -119,5 +119,5 @@ resources/private.key
 prediction_functionality/data/*
 prediction_functionality/models/*
 **test**
-
-
+ignoreMe/**
+.vscode/launch.json

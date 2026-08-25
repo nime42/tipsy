@@ -17,3 +17,10 @@ and bet like '%2%'
 group by rownr) r2 on rows.rownr=r2.rownr
 left join
 (select distinct rownr,teams from draw_rows where drawid in (select id from draws where groupid=4 and drawnumber=4663)) t on rows.rownr=t.rownr
+
+
+---Tipsy statistik
+select d.product,e.eventtype,g.groupname,e.username,e.cost,e.eventtime,e.profit,d.nrofrights from events e
+join groups g on e.groupid =g.id 
+left join draws d on d.id =e.drawid
+order by e.eventtime desc 

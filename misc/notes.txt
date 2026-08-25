@@ -67,3 +67,6 @@ sudo chmod 755 /etc/letsencrypt/renewal-hooks/post/restartTipsy.sh
     echo "`date` Restarting" >> nohup.out
     nohup npm run start 2>&1 &
     exit
+
+//if something goes wrong try to kill eventual hanging certbot process and then run:
+sudo certbot renew --dry-run
