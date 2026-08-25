@@ -133,7 +133,9 @@ function analyseMatch(match, valueWeight = 0.4, xUncertaintyWeight = 1.5) {
 
     best: ranked[0].sign,
 
-    bestTwo: [ranked[0].sign, ranked[1].sign],
+    bestTwo: [ranked[0].sign, ranked[1].sign].sort(
+      (a, b) => signs.indexOf(a) - signs.indexOf(b),
+    ),
 
     halfValue,
     fullValue,
