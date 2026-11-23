@@ -27,7 +27,7 @@
     "log-timestamp": "^0.3.0",
     "morgan": "^1.10.0",
     "node-fetch": "^2.7.0",
-    "nodemailer": ">=9.0.1",
+    "nodemailer": ">=10.1.4",
     "path": "^0.12.7",
     "rotating-file-stream": "^2.1.1",
     "sqlite3": "^6.0.1"
